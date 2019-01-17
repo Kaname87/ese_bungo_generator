@@ -1,0 +1,6 @@
+.env
+.vscode
+tmp
+__pycache__
+word2vec
+.DS_Store
