@@ -5,15 +5,18 @@ import string
 from util import is_noun, has_part_length, create_tagger
 from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
 
+
 def read_json_to_dict(file_path):
     res = {}
     with open(file_path) as f:
         res = json.loads(f.read())
     return res
 
-# 切り下げ. 最大で名前の半分を変更
+
 def get_max_replace_char_num(name):
+    # 切り下げ. 最大で名前の半分を変更
     return len(name) // 2
+
 
 def create_replace_char_idx_list(name):
     replace_char_idx_list = []
@@ -121,6 +124,8 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
     return replaced_text, used_word
 
 # 一つだけrandomで
+
+
 def random_generate_ese_bungo_one():
     tagger = create_tagger()
     source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
@@ -130,7 +135,7 @@ def random_generate_ese_bungo_one():
     novel = random.choice(novel_list)
     title = novel['title']
     quote = random.choice(novel['quotes'])
-   
+
     used_word = {}
     generated_quote, used_word = replace_noun_by_similar_word(
         quote, noun_list_dict, tagger, used_word)
@@ -138,15 +143,17 @@ def random_generate_ese_bungo_one():
         title, noun_list_dict, tagger, used_word)
     generated_name = generate_name(author_name)
 
-
     print(author_name, title, quote)
     print('')
     print(generated_name, generated_title, generated_quote)
     print('---')
 
-    original = {'author':author_name, 'title':title, 'quote': quote, 'url': novel['url'] }
-    generated = {'author':generated_name, 'title':generated_title, 'quote': generated_quote}
+    original = {'author': author_name, 'title': title,
+                'quote': quote, 'url': novel['url']}
+    generated = {'author': generated_name,
+                 'title': generated_title, 'quote': generated_quote}
     return original, generated
+
 
 def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
     tagger = create_tagger()
@@ -207,6 +214,7 @@ def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
 
     return orginal_list, results
 
+
 def output_ese_bungo_to_js(num=1):
     orginal_list, results = generate_ese_bungo_all(num)
 
@@ -221,9 +229,10 @@ def output_ese_bungo_to_js(num=1):
         f.write(original_list + '\n')
         f.write(ese_bungo_list)
 
+
 if __name__ == "__main__":
     # output_ese_bungo_for_tweet()
     # output_ese_bungo_to_js(60)
 
-#     # output_ese_bungo_to_js(15000)
+    #     # output_ese_bungo_to_js(15000)
     print('Done')

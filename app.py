@@ -16,5 +16,5 @@ if __name__ == "__main__":
     )
 
     text = generate_tweet()
-    status= api.PostUpdate(text)
+    status = api.PostUpdate(text)
     print(status)
