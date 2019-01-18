@@ -220,7 +220,7 @@ def output_ese_bungo_to_csv(num=1, keep_title_author_consistency=False):
     # twitter のソースに使う用
     # deploy先でmecab-python3が使えないので、暫定対応
     # tweet作成用ファイルではなくこのファイルにおくのはmecabをつかってるファイルをapp.pyで呼ばないようにするため
-    _, results = generate_ese_bungo_all(num)
+    _, results = generate_ese_bungo_all(num, keep_title_author_consistency)
 
     with open(TWEET_SOURCE_FILE_NAME, 'w') as f:
         writer = csv.writer(f, lineterminator='\n')
