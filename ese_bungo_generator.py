@@ -44,7 +44,7 @@ def generate_name(author_name):
     return replaced_name
 
 def generate_unique_place_holder(placeholder_dict):
-    placeholder_base = 'PLACE_HOLDER'
+    placeholder_base = '_PLACE_HOLDER'
     while(True):
         placeholder = placeholder_base + "".join([random.choice(string.digits) for _ in range(15)])
         if placeholder not in placeholder_dict.keys():
@@ -52,32 +52,39 @@ def generate_unique_place_holder(placeholder_dict):
     return placeholder
 
 def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
+    WORD_IDX = 0
+    PART_IDX = 3
+    
+
     # 名詞を類義語で置き換える。
     # 置き換え後の単語の一部が再度別の類義後に置き換えられる問題（「天」を「天人」に置き換えた後に「人」が別のに置き換えられる問題）
     # をふせぐため、直接置き換えるのではなく、一度ユニークなプレースホルダーに置き換えておく。
     # 全部のプレースホルダー置き換え完了後、プレースホルダーを対応する類義語に置き換える。
-
+    
     # 置き換え結果テキストを初期化
     replaced_text = target_text
 
-    # 一度置き換えた単語保持
+    # 一度置き換えた単語保持用
     replaced_word_list = []
 
     # placeholder と類義語の対応dict
     placeholder_similar_word_dict = {}
 
     parsed_text_list = tagger.parse(target_text).split('\n')
-    for parsed_word in parsed_text_list:
+    
+    # 長い単語から走査するためソート。短いものから置換してしまうと、別の単語の一部が先に置換されてしまう。「怪人」と「人」など。
+    # ソートのために品詞を持ってるものだけでフィルター (EOSなどは含まない)
+    has_part_list = [parsed_word for parsed_word in parsed_text_list if has_part_length(parsed_word.split('\t'))]
+    sorted_text_list = sorted(has_part_list, key=lambda parsed_word: len(parsed_word.split('\t')[WORD_IDX]), reverse=True)
 
-        # 品詞を含まないものは対象外
+    for parsed_word in sorted_text_list:
+
         word_detail = parsed_word.split('\t')
-        if not has_part_length(word_detail):
-            continue
+        part = word_detail[PART_IDX]
 
-        part = word_detail[3]
-
+        # 名詞のみ対象
         if is_noun(part):
-            word = word_detail[0]
+            word = word_detail[WORD_IDX]
             if word not in noun_list:
                 continue
 
@@ -89,7 +96,7 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
             similar_word = ''
             # 一度つかった置き換えパターンはおなじのをつかう
             if word in used_word.keys():
-                similar_word =  used_word[word]
+                similar_word = used_word[word]
             else:
                 similar_word = random.choice(similar_word_list)
                 used_word[word] = similar_word
@@ -130,7 +137,7 @@ def generate_ese_bungo(num = 1):
                 for _ in range(num):
                     loop_cnt = loop_cnt + 1
 
-                    # 1つの結果の中で、おなじ単語は同じように変換するようにused_wordに保持。
+                    # 1つの作品（タイトル＋クオート）の中で、おなじ単語は同じように変換するようにused_wordに保持。
                     #『走れメロス』の「メロスは激怒した。」のようにタイトル中の単語が本文中で使われてる時、
                     # 別々に変換すると面白みが減るため
                     used_word = {}
