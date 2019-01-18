@@ -13,11 +13,8 @@ def read_json_to_dict(file_path):
     return res
 
 # 切り下げ. 最大で名前の半分を変更
-
-
 def get_max_replace_char_num(name):
     return len(name) // 2
-
 
 def create_replace_char_idx_list(name):
     replace_char_idx_list = []
@@ -198,7 +195,6 @@ def output_ese_bungo_to_js(num):
     with open(ESE_BUNGO_LIST, "w") as f:
         f.write(original_list + '\n')
         f.write(ese_bungo_list)
-
 
 if __name__ == "__main__":
     output_ese_bungo_to_js(60)

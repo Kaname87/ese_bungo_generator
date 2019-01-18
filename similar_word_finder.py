@@ -6,18 +6,21 @@ from gensim.models import KeyedVectors
 from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, NOUN_LIST_FILE, WORD2VEC_MODEL_PATH
 from util import is_noun, has_part_length, create_tagger
 
+
 def load_model():
     return KeyedVectors.load_word2vec_format(WORD2VEC_MODEL_PATH, binary=True)
 
+
 def find_similar_word(model, word, topn=10):
-    similar_word_list  = []
+    similar_word_list = []
     try:
         similar_word_list = model.most_similar(f'{word}', topn=topn)
     except Exception as e:
         print(f'Exception is raiesd when finding similar word of {word}')
         print(type(e), e)
-        
+
     return similar_word_list
+
 
 def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
     similar_noun_results = {}
@@ -71,13 +74,15 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
 
     return similar_noun_results
 
+
 def replace_by_similar_word(target_text, similar_word_dict):
     replaced_text = target_text
     for target_word, similar_words in similar_word_dict.items():
         similar_word = random.choice(similar_words)
         replaced_text = replaced_text.replace(target_word, similar_word)
-        
+
     return replaced_text
+
 
 def create_noun_list(parsed_text):
     noun_list = []
@@ -93,10 +98,11 @@ def create_noun_list(parsed_text):
 
     return noun_list
 
+
 def read_and_parse_json(model, tagger):
     name_char_dict = {}
     noun_dict = {}
-    
+
     dictdump = {}
     with open(ORIGINAL_NOVEL_FILE) as f:
         dictdump = json.loads(f.read())
@@ -104,7 +110,8 @@ def read_and_parse_json(model, tagger):
     for author, novel_list in dictdump.items():
         # Author
         author_char_list = list(author)
-        author_results = create_similar_noun_dict(model, tagger, author_char_list, 7)
+        author_results = create_similar_noun_dict(
+            model, tagger, author_char_list, 7)
         name_char_dict.update(author_results)
 
         for novel in novel_list:
@@ -114,24 +121,28 @@ def read_and_parse_json(model, tagger):
             for target in target_list:
                 parsed_text = tagger.parse(target).split('\n')
                 noun_list = create_noun_list(parsed_text)
-                noun_results = create_similar_noun_dict(model, tagger, noun_list, 8)
+                noun_results = create_similar_noun_dict(
+                    model, tagger, noun_list, 8)
                 noun_dict.update(noun_results)
 
     return name_char_dict, noun_dict
+
 
 def write_to_json(filepath, result_dict):
     result_json = json.dumps(result_dict, ensure_ascii=False)
     with open(filepath, "w") as f:
         f.write(result_json)
 
+
 def output_to_json():
     model = load_model()
     tagger = create_tagger()
 
     name_char_dict, noun_dict = read_and_parse_json(model, tagger)
-    
+
     write_to_json(NAME_CHARCTER_LIST_FILE, name_char_dict)
     write_to_json(NOUN_LIST_FILE, noun_dict)
+
 
 if __name__ == "__main__":
     output_to_json()
