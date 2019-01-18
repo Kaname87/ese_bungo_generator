@@ -6,3 +6,5 @@ NAME_CHARCTER_LIST_FILE = './data/name_char_list.json'
 NOUN_LIST_FILE = './data/noun_list.json'
 
 ESE_BUNGO_LIST = './js/ese_bungo_list.js'
+
+TWEET_SOURCE_FILE_NAME = './data/tweet_source.csv'

@@ -3,8 +3,7 @@ import random
 import string
 
 from util import is_noun, has_part_length, create_tagger
-from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, NOUN_LIST_FILE, ESE_BUNGO_LIST
-
+from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
 
 def read_json_to_dict(file_path):
     res = {}
@@ -149,7 +148,7 @@ def random_generate_ese_bungo_one():
     generated = {'author':generated_name, 'title':generated_title, 'quote': generated_quote}
     return original, generated
 
-def generate_ese_bungo_all(num=1):
+def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
     tagger = create_tagger()
     source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
     noun_list_dict = read_json_to_dict(NOUN_LIST_FILE)
@@ -188,13 +187,13 @@ def generate_ese_bungo_all(num=1):
                     generated_title, used_word = replace_noun_by_similar_word(
                         title, noun_list_dict, tagger, used_word)
                     generated_name = ''
-                    if generated_title in list(used_title_author.keys()):
+
+                    if keep_title_author_consistency and generated_title in list(used_title_author.keys()):
                         generated_name = used_title_author[generated_title]
                     else:
                         generated_name = generate_name(author_name)
                         used_title_author[generated_title] = generated_name
 
-                    # print(used_word)
                     print(author_name, title, quote)
                     print('')
                     print(generated_name, generated_title, generated_quote)
@@ -207,22 +206,6 @@ def generate_ese_bungo_all(num=1):
     print('total:', len(results))
 
     return orginal_list, results
-
-def format_for_tweet(gererated):
-    author = gererated['author']
-    title = gererated['title']
-    quote = gererated['quote']
-    return f"{quote}\n\n{author}『{title}』"
-
-def output_ese_bungo_for_tweet():
-    TWEET_MAX_LENGTH = 140
-    while(True):
-        _, gererated = random_generate_ese_bungo_one()
-        
-        tweet = format_for_tweet(gererated)
-        if len(tweet) < TWEET_MAX_LENGTH:
-            return tweet
-
 
 def output_ese_bungo_to_js(num=1):
     orginal_list, results = generate_ese_bungo_all(num)
@@ -240,6 +223,7 @@ def output_ese_bungo_to_js(num=1):
 
 if __name__ == "__main__":
     # output_ese_bungo_for_tweet()
-    output_ese_bungo_to_js(60)
+    # output_ese_bungo_to_js(60)
+
 #     # output_ese_bungo_to_js(15000)
     print('Done')

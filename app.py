@@ -2,7 +2,7 @@ import os
 import twitter
 
 from dotenv import load_dotenv
-from ese_bungo_generator import output_ese_bungo_for_tweet
+from tweet_generator import generate_tweet
 
 if __name__ == "__main__":
     dotenv_path = os.path.dirname(__file__) + '.env'
@@ -15,6 +15,6 @@ if __name__ == "__main__":
         access_token_secret=os.environ.get('ACCESS_SECRET')
     )
 
-    text = output_ese_bungo_for_tweet()
+    text = generate_tweet()
     status= api.PostUpdate(text)
     print(status)
