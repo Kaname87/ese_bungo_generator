@@ -1,6 +1,7 @@
 import json
 import random
 import string
+import csv
 
 from util import is_noun, has_part_length, create_tagger
 from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
@@ -215,6 +216,17 @@ def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
     return orginal_list, results
 
 
+def output_ese_bungo_to_csv(num=1, keep_title_author_consistency=False):
+    # twitter のソースに使う用
+    # deploy先でmecab-python3が使えないので、暫定対応
+    # tweet作成用ファイルではなくこのファイルにおくのはmecabをつかってるファイルをapp.pyで呼ばないようにするため
+    _, results = generate_ese_bungo_all(num)
+
+    with open(TWEET_SOURCE_FILE_NAME, 'w') as f:
+        writer = csv.writer(f, lineterminator='\n')
+        writer.writerows(results)
+
+
 def output_ese_bungo_to_js(num=1):
     orginal_list, results = generate_ese_bungo_all(num)
 
@@ -233,6 +245,6 @@ def output_ese_bungo_to_js(num=1):
 if __name__ == "__main__":
     # output_ese_bungo_for_tweet()
     # output_ese_bungo_to_js(60)
-
+    output_ese_bungo_to_csv(120)
     #     # output_ese_bungo_to_js(15000)
     print('Done')

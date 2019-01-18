@@ -1,21 +1,8 @@
-import json
 import random
-import string
 import csv
 
-from ese_bungo_generator import generate_ese_bungo_all
+
 from const import TWEET_SOURCE_FILE_NAME
-
-# twitter のソースに使う用
-# deploy先でmecab-python3が使えないので、暫定対応
-
-
-def output_ese_bungo_to_csv(num=1, keep_title_author_consistency=False):
-    _, results = generate_ese_bungo_all(num)
-
-    with open(TWEET_SOURCE_FILE_NAME, 'w') as f:
-        writer = csv.writer(f, lineterminator='\n')
-        writer.writerows(results)
 
 
 def random_pick_one():
@@ -37,4 +24,5 @@ def generate_tweet():
 
 
 if __name__ == "__main__":
-    output_ese_bungo_to_csv(120)
+    tweet = generate_tweet()
+    print(tweet)
