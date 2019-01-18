@@ -1,4 +1,6 @@
+python_version = "3.7"
+
 python-dotenv ~= 0.10.1
 python-twitter ~= 3.5
 gensim ~= 3.6.0
-mecab-python3 ~= 0.996.1
+mecab-python3
