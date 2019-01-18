@@ -401,10 +401,12 @@
 
         document.onkeydown = function(e) {
           switch (e.keyCode) {
-            case 37:
+            case 13: // enter
+              pickRandomNovel();
+            case 37: // left
               pickPrevNovel();
               break;
-            case 39:
+            case 39: // right
               pickNextNovel();
               break;
           }
