@@ -119,10 +119,37 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
     for placeholder, similar_word in placeholder_similar_word_dict.items():
         replaced_text = replaced_text.replace(placeholder, similar_word)
 
-    return replaced_text
+    return replaced_text, used_word
+
+# 一つだけrandomで
+def random_generate_ese_bungo_one():
+    tagger = create_tagger()
+    source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
+    noun_list_dict = read_json_to_dict(NOUN_LIST_FILE)
+
+    author_name, novel_list = random.choice(list(source_dict.items()))
+    novel = random.choice(novel_list)
+    title = novel['title']
+    quote = random.choice(novel['quotes'])
+   
+    used_word = {}
+    generated_quote, used_word = replace_noun_by_similar_word(
+        quote, noun_list_dict, tagger, used_word)
+    generated_title, used_word = replace_noun_by_similar_word(
+        title, noun_list_dict, tagger, used_word)
+    generated_name = generate_name(author_name)
 
 
-def generate_ese_bungo(num=1):
+    print(author_name, title, quote)
+    print('')
+    print(generated_name, generated_title, generated_quote)
+    print('---')
+
+    original = {'author':author_name, 'title':title, 'quote': quote, 'url': novel['url'] }
+    generated = {'author':generated_name, 'title':generated_title, 'quote': generated_quote}
+    return original, generated
+
+def generate_ese_bungo_all(num=1):
     tagger = create_tagger()
     source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
     noun_list_dict = read_json_to_dict(NOUN_LIST_FILE)
@@ -150,7 +177,7 @@ def generate_ese_bungo(num=1):
                     # 別々に変換すると面白みが減るため
                     used_word = {}
 
-                    generated_quote = replace_noun_by_similar_word(
+                    generated_quote, used_word = replace_noun_by_similar_word(
                         quote, noun_list_dict, tagger, used_word)
                     # 同じQuoteは省く。なんども同じの見ても退屈なので(デモサイト用)
                     if generated_quote in used_quote:
@@ -158,7 +185,7 @@ def generate_ese_bungo(num=1):
                     else:
                         used_quote.append(generated_quote)
 
-                    generated_title = replace_noun_by_similar_word(
+                    generated_title, used_word = replace_noun_by_similar_word(
                         title, noun_list_dict, tagger, used_word)
                     generated_name = ''
                     if generated_title in list(used_title_author.keys()):
@@ -181,9 +208,24 @@ def generate_ese_bungo(num=1):
 
     return orginal_list, results
 
+def format_for_tweet(gererated):
+    author = gererated['author']
+    title = gererated['title']
+    quote = gererated['quote']
+    return f"{quote}\n\n{author}『{title}』"
 
-def output_ese_bungo_to_js(num):
-    orginal_list, results = generate_ese_bungo(num)
+def output_ese_bungo_for_tweet():
+    TWEET_MAX_LENGTH = 140
+    while(True):
+        _, gererated = random_generate_ese_bungo_one()
+        
+        tweet = format_for_tweet(gererated)
+        if len(tweet) < TWEET_MAX_LENGTH:
+            return tweet
+
+
+def output_ese_bungo_to_js(num=1):
+    orginal_list, results = generate_ese_bungo_all(num)
 
     result_json = json.dumps(results, ensure_ascii=False)
     orginal_list_json = json.dumps(orginal_list, ensure_ascii=False)
@@ -197,5 +239,7 @@ def output_ese_bungo_to_js(num):
         f.write(ese_bungo_list)
 
 if __name__ == "__main__":
-    output_ese_bungo_to_js(60)
-    # output_ese_bungo_to_js(15000)
+    # output_ese_bungo_for_tweet()
+#     output_ese_bungo_to_js(60)
+#     # output_ese_bungo_to_js(15000)
+    print('Done')
