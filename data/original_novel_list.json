@@ -11,9 +11,7 @@
     {
       "title": "河童",
       "url": "https://www.aozora.gr.jp/cards/000879/card69.html",
-      "quotes": [
-        "阿呆はいつも彼以外のものを阿呆であると信じている。"
-      ]
+      "quotes": ["阿呆はいつも彼以外のものを阿呆であると信じている。"]
     }
   ],
 
@@ -42,9 +40,7 @@
     {
       "title": "出汁の取り方",
       "url": "https://www.aozora.gr.jp/cards/001403/card49986.html",
-      "quotes": [
-        "かつおぶしはどういうふうに選択し、どういうふうにして削るか。"
-      ]
+      "quotes": ["かつおぶしはどういうふうに選択し、どういうふうにして削るか。"]
     },
     {
       "title": "握り寿司の名人",
@@ -119,12 +115,20 @@
       ]
     }
   ],
-
+  "田山花袋": [
+    {
+      "title": "田舎教師",
+      "url": "https://www.aozora.gr.jp/cards/000214/card1668.html",
+      "quotes": ["四里の道は長かった。"]
+    }
+  ],
   "夏目漱石": [
     {
       "title": "草枕",
       "url": "https://www.aozora.gr.jp/cards/000148/card776.html",
-      "quotes": ["智に働けば角が立つ。情に棹させば流される。意地を通せば窮屈だ。とかくに人の世は住みにくい。"]
+      "quotes": [
+        "智に働けば角が立つ。情に棹させば流される。意地を通せば窮屈だ。とかくに人の世は住みにくい。"
+      ]
     },
     {
       "title": "こころ",
@@ -180,22 +184,17 @@
     }
   ],
   "室生犀星": [
-      {
-        "title": "抒情小曲集",
-        "url": "https://www.aozora.gr.jp/cards/001579/card53241.html",
-        "quotes": [
-          "ふるさとは遠きにありて思うもの そして悲しくうたうもの"
-        ]
-      }
+    {
+      "title": "抒情小曲集",
+      "url": "https://www.aozora.gr.jp/cards/001579/card53241.html",
+      "quotes": ["ふるさとは遠きにありて思うもの そして悲しくうたうもの"]
+    }
   ],
   "森鴎外": [
     {
       "title": "寒山拾得",
       "url": "https://www.aozora.gr.jp/cards/000129/card1071.html",
-      "quotes": [
-        "水が来た。"
-      ]
+      "quotes": ["水が来た。"]
     }
-]
-
+  ]
 }
