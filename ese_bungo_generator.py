@@ -240,6 +240,6 @@ def output_ese_bungo_to_js(num=1):
 
 if __name__ == "__main__":
     # output_ese_bungo_for_tweet()
-#     output_ese_bungo_to_js(60)
+    output_ese_bungo_to_js(60)
 #     # output_ese_bungo_to_js(15000)
     print('Done')
