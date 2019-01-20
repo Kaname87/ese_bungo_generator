@@ -3,8 +3,8 @@ import random
 import string
 import csv
 
-from util import is_noun, has_part_length, create_tagger
-from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
+from util import is_target_noun, has_part_length, create_tagger
+from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
 
 
 def read_json_to_dict(file_path):
@@ -92,7 +92,7 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
         part = word_detail[PART_IDX]
 
         # 名詞のみ対象
-        if is_noun(part):
+        if is_target_noun(part):
             word = word_detail[WORD_IDX]
             if word not in noun_list:
                 continue
@@ -130,7 +130,7 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
 def random_generate_ese_bungo_one():
     tagger = create_tagger()
     source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
-    noun_list_dict = read_json_to_dict(NOUN_LIST_FILE)
+    noun_list_dict = read_json_to_dict(SIMILAR_NOUN_LIST_FILE)
 
     author_name, novel_list = random.choice(list(source_dict.items()))
     novel = random.choice(novel_list)
@@ -159,25 +159,25 @@ def random_generate_ese_bungo_one():
 def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
     tagger = create_tagger()
     source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
-    noun_list_dict = read_json_to_dict(NOUN_LIST_FILE)
+    noun_list_dict = read_json_to_dict(SIMILAR_NOUN_LIST_FILE)
 
     results = []
     loop_cnt = 0
 
     orginal_list = []
-    
-    a_c = 0 # 作家数
-    n_c = 0 # 作品数
-    q_c = 0 # 引用文数
+
+    a_c = 0  # 作家数
+    n_c = 0  # 作品数
+    q_c = 0  # 引用文数
     for author_name, novel_list in source_dict.items():
         a_c += 1
         for novel in novel_list:
-            n_c +=1
+            n_c += 1
             used_title_author = {}
             title = novel['title']
             # for quote in novel['quotes']:
             for quote in novel['quotes']:
-                q_c +=1
+                q_c += 1
                 orginal_list.append([author_name, title, quote, novel['url']])
                 orginal_list_idx = len(orginal_list) - 1
                 used_quote = []
@@ -214,8 +214,8 @@ def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
                     fake = [generated_name, generated_title,
                             generated_quote, orginal_list_idx]
                     results.append(fake)
-    
-    print(f'author :{a_c}, novel :{n_c}, quote :{q_c}' )
+
+    print(f'author :{a_c}, novel :{n_c}, quote :{q_c}')
     print('loop_cnt:', loop_cnt)
     print('total:', len(results))
 

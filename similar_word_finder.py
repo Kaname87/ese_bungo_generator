@@ -3,8 +3,8 @@ import csv
 import random
 from gensim.models import KeyedVectors
 
-from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, NOUN_LIST_FILE, WORD2VEC_MODEL_PATH
-from util import is_noun, has_part_length, create_tagger
+from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, WORD2VEC_MODEL_PATH
+from util import is_target_noun, has_part_length, create_tagger
 
 
 def load_model():
@@ -47,7 +47,7 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
                 continue
             # 品詞 Check
             part = similar_word_detail.split('\t')[3]
-            if not is_noun(part):
+            if not is_target_noun(part):
                 continue
 
             # 候補の単語の次も文字判定
@@ -97,7 +97,7 @@ def create_noun_list(parsed_text):
 
         word = word_detail[0]
         part = word_detail[3]
-        if is_noun(part):
+        if is_target_noun(part):
             noun_list.append(word)
 
     return noun_list
@@ -145,7 +145,7 @@ def output_to_json():
     name_char_dict, noun_dict = read_and_parse_json(model, tagger)
 
     write_to_json(NAME_CHARCTER_LIST_FILE, name_char_dict)
-    write_to_json(NOUN_LIST_FILE, noun_dict)
+    write_to_json(SIMILAR_NOUN_LIST_FILE, noun_dict)
 
 
 if __name__ == "__main__":
