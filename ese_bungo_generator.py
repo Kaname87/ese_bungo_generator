@@ -34,7 +34,10 @@ def create_replace_char_idx_list(name):
 
 
 def generate_name(author_name):
+    # 名前の全ての文字を置き換えるのではなく、一部のみを置き換える。
+    # 全部を置き換えると、元ネタと離れすぎるため
     name_char_dict = read_json_to_dict(NAME_CHARCTER_LIST_FILE)
+    # 置き換え対象の文字のindexを取得
     replace_char_idx_list = create_replace_char_idx_list(author_name)
 
     replaced_name = ''
@@ -124,10 +127,9 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
 
     return replaced_text, used_word
 
-# 一つだけrandomで
-
 
 def random_generate_ese_bungo_one():
+    # 一つだけrandomで取得する用
     tagger = create_tagger()
     source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
     noun_list_dict = read_json_to_dict(SIMILAR_NOUN_LIST_FILE)
@@ -156,7 +158,7 @@ def random_generate_ese_bungo_one():
     return original, generated
 
 
-def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
+def generate_ese_bungo_all(num=1):
     tagger = create_tagger()
     source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
     noun_list_dict = read_json_to_dict(SIMILAR_NOUN_LIST_FILE)
@@ -173,7 +175,6 @@ def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
         a_c += 1
         for novel in novel_list:
             n_c += 1
-            used_title_author = {}
             title = novel['title']
             # for quote in novel['quotes']:
             for quote in novel['quotes']:
@@ -199,13 +200,8 @@ def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
 
                     generated_title, used_word = replace_noun_by_similar_word(
                         title, noun_list_dict, tagger, used_word)
-                    generated_name = ''
 
-                    if keep_title_author_consistency and generated_title in list(used_title_author.keys()):
-                        generated_name = used_title_author[generated_title]
-                    else:
-                        generated_name = generate_name(author_name)
-                        used_title_author[generated_title] = generated_name
+                    generated_name = generate_name(author_name)
 
                     print(author_name, title, quote)
                     print('')
@@ -222,11 +218,11 @@ def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
     return orginal_list, results
 
 
-def output_ese_bungo_to_csv(num=1, keep_title_author_consistency=False):
+def output_ese_bungo_to_csv(num=1):
     # twitter のソースに使う用
     # deploy先でmecab-python3が使えないので、暫定対応
     # tweet作成用ファイルではなくこのファイルにおくのはmecabをつかってるファイルをapp.pyで呼ばないようにするため
-    _, results = generate_ese_bungo_all(num, keep_title_author_consistency)
+    _, results = generate_ese_bungo_all(num)
 
     with open(TWEET_SOURCE_FILE_NAME, 'w') as f:
         writer = csv.writer(f, lineterminator='\n')
@@ -249,9 +245,8 @@ def output_ese_bungo_to_js(num=1):
 
 
 if __name__ == "__main__":
-    generate_ese_bungo_all()
-    # output_ese_bungo_for_tweet()
-    # output_ese_bungo_to_js(60)
+    # generate_ese_bungo_all()
+    output_ese_bungo_to_js(60)
     # output_ese_bungo_to_csv(120)
     #     # output_ese_bungo_to_js(15000)
     print('Done')
