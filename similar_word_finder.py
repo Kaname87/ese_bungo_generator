@@ -103,7 +103,7 @@ def create_noun_list(parsed_text):
     return noun_list
 
 
-def read_and_parse_json(model, tagger):
+def read_and_parse_json(model, tagger, name_char_topn, noun_topn):
     name_char_dict = {}
     noun_dict = {}
 
@@ -115,7 +115,7 @@ def read_and_parse_json(model, tagger):
         # Author
         author_char_list = list(author)
         author_results = create_similar_noun_dict(
-            model, tagger, author_char_list, 7)
+            model, tagger, author_char_list, name_char_topn)
         name_char_dict.update(author_results)
 
         for novel in novel_list:
@@ -126,7 +126,7 @@ def read_and_parse_json(model, tagger):
                 parsed_text = tagger.parse(target).split('\n')
                 noun_list = create_noun_list(parsed_text)
                 noun_results = create_similar_noun_dict(
-                    model, tagger, noun_list, 8)
+                    model, tagger, noun_list, noun_topn)
                 noun_dict.update(noun_results)
 
     return name_char_dict, noun_dict
@@ -138,16 +138,19 @@ def write_to_json(filepath, result_dict):
         f.write(result_json)
 
 
-def output_to_json():
+def output_to_json(name_char_topn, noun_topn):
+    # name_char_topn, noun_topn は類似度のチューニング用
     model = load_model()
     tagger = create_tagger()
-
-    name_char_dict, noun_dict = read_and_parse_json(model, tagger)
+    
+    name_char_dict, noun_dict = read_and_parse_json(model, tagger, name_char_topn, noun_topn)
 
     write_to_json(NAME_CHARCTER_LIST_FILE, name_char_dict)
     write_to_json(SIMILAR_NOUN_LIST_FILE, noun_dict)
 
 
 if __name__ == "__main__":
-    output_to_json()
+    name_char_topn = 8
+    noun_topn = 9
+    output_to_json(name_char_topn, noun_topn)
     print('Done')
