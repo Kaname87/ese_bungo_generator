@@ -165,14 +165,19 @@ def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
     loop_cnt = 0
 
     orginal_list = []
+    
+    a_c = 0 # 作家数
+    n_c = 0 # 作品数
+    q_c = 0 # 引用文数
     for author_name, novel_list in source_dict.items():
+        a_c += 1
         for novel in novel_list:
+            n_c +=1
             used_title_author = {}
             title = novel['title']
             # for quote in novel['quotes']:
-            for q_idx in range(len(novel['quotes'])):
-                quote = novel['quotes'][q_idx]
-
+            for quote in novel['quotes']:
+                q_c +=1
                 orginal_list.append([author_name, title, quote, novel['url']])
                 orginal_list_idx = len(orginal_list) - 1
                 used_quote = []
@@ -209,7 +214,8 @@ def generate_ese_bungo_all(num=1, keep_title_author_consistency=True):
                     fake = [generated_name, generated_title,
                             generated_quote, orginal_list_idx]
                     results.append(fake)
-
+    
+    print(f'author :{a_c}, novel :{n_c}, quote :{q_c}' )
     print('loop_cnt:', loop_cnt)
     print('total:', len(results))
 
@@ -243,8 +249,9 @@ def output_ese_bungo_to_js(num=1):
 
 
 if __name__ == "__main__":
+    generate_ese_bungo_all()
     # output_ese_bungo_for_tweet()
     # output_ese_bungo_to_js(60)
-    output_ese_bungo_to_csv(120)
+    # output_ese_bungo_to_csv(120)
     #     # output_ese_bungo_to_js(15000)
     print('Done')
