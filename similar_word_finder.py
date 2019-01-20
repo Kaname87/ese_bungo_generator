@@ -150,7 +150,13 @@ def output_to_json(name_char_topn, noun_topn):
 
 
 if __name__ == "__main__":
+    # demo サイト用パラメータ
+    # name_char_topn = 7
+    # noun_topn = 8
+
+    # Twiiter 用パラメータ
     name_char_topn = 8
     noun_topn = 9
+
     output_to_json(name_char_topn, noun_topn)
     print('Done')
