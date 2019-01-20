@@ -26,7 +26,6 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
     similar_noun_results = {}
     for target_noun in target_noun_list:
         similar_word_list = find_similar_word(model, target_noun, topn)
-
         for similar_word_with_similarity in similar_word_list:
             similar_word = similar_word_with_similarity[0]
 
@@ -51,12 +50,17 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
             if not is_noun(part):
                 continue
 
+            # 候補の単語の次も文字判定
             # 名詞＋助詞、という類義語のパターンは文章が崩れるのでスキップ
             # ("人" => "人が" や、"桜" => "桜の" など）
+            # 「基本的」のような「的」というパターンも名詞ではないのでスキップ
             post_similar_word_detail = similar_word_details[1]
             if has_part_length(post_similar_word_detail):
                 post_part = post_similar_word_detail.split('\t')[3]
                 if '助詞' in post_part:
+                    continue
+                # 「-的」を対象外に
+                if '名詞-接尾-形容動詞語幹' in post_part:
                     continue
 
             # 不愉快な差別的文章になりそうなものを排除。
