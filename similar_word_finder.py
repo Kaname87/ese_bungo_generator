@@ -50,7 +50,7 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
             if not is_target_noun(part):
                 continue
 
-            # 候補の単語の次も文字判定
+            # 候補の単語の次の単語（post_similar_word）判定
             # 名詞＋助詞、という類義語のパターンは文章が崩れるのでスキップ
             # ("人" => "人が" や、"桜" => "桜の" など）
             # 「基本的」のような「的」というパターンも名詞ではないのでスキップ

@@ -15,7 +15,7 @@ def read_json_to_dict(file_path):
 
 
 def get_max_replace_char_num(name):
-    # 切り下げ. 最大で名前の半分を変更
+    # 切り下げ。 最低でも名前の半分を変更
     return len(name) // 2
 
 
