@@ -4,7 +4,7 @@ import random
 from gensim.models import KeyedVectors
 
 from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, WORD2VEC_MODEL_PATH
-from util import is_target_noun, has_part_length, create_tagger
+from util import create_tagger, is_target_noun, is_independent_noun
 
 
 def load_model():
@@ -42,26 +42,15 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
             similar_word_details = tagger.parse(similar_word).split('\n')
             similar_word_detail = similar_word_details[0]
 
-            # Length Check
-            if not has_part_length(similar_word_detail):
-                continue
-            # 品詞 Check
-            part = similar_word_detail.split('\t')[3]
-            if not is_target_noun(part):
+            # 名詞のみ
+            if not is_target_noun(similar_word_detail):
                 continue
 
             # 候補の単語の次の単語（post_similar_word）判定
-            # 名詞＋助詞、という類義語のパターンは文章が崩れるのでスキップ
-            # ("人" => "人が" や、"桜" => "桜の" など）
-            # 「基本的」のような「的」というパターンも名詞ではないのでスキップ
+            # 名詞として完結してる単語出ない場合つかわない
             post_similar_word_detail = similar_word_details[1]
-            if has_part_length(post_similar_word_detail):
-                post_part = post_similar_word_detail.split('\t')[3]
-                if '助詞' in post_part:
-                    continue
-                # 「-的」を対象外に
-                if '名詞-接尾-形容動詞語幹' in post_part:
-                    continue
+            if not is_independent_noun(post_similar_word_detail):
+                continue
 
             # 不愉快な差別的文章になりそうなものを排除。
             # 発見ベースで随時リスト追加
@@ -90,15 +79,12 @@ def replace_by_similar_word(target_text, similar_word_dict):
 
 def create_noun_list(parsed_text):
     noun_list = []
-    for parsed_word in parsed_text:
-        word_detail = parsed_word.split('\t')
-        if not has_part_length(word_detail):
+    for parsed_word_detail in parsed_text:
+        if not is_target_noun(parsed_word_detail):
             continue
-
+        word_detail = parsed_word_detail.split('\t')
         word = word_detail[0]
-        part = word_detail[3]
-        if is_target_noun(part):
-            noun_list.append(word)
+        noun_list.append(word)
 
     return noun_list
 
@@ -142,8 +128,9 @@ def output_to_json(name_char_topn, noun_topn):
     # name_char_topn, noun_topn は類似度のチューニング用
     model = load_model()
     tagger = create_tagger()
-    
-    name_char_dict, noun_dict = read_and_parse_json(model, tagger, name_char_topn, noun_topn)
+
+    name_char_dict, noun_dict = read_and_parse_json(
+        model, tagger, name_char_topn, noun_topn)
 
     write_to_json(NAME_CHARCTER_LIST_FILE, name_char_dict)
     write_to_json(SIMILAR_NOUN_LIST_FILE, noun_dict)

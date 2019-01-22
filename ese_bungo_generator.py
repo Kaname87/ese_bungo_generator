@@ -3,7 +3,7 @@ import random
 import string
 import csv
 
-from util import is_target_noun, has_part_length, create_tagger
+from util import create_tagger, is_target_noun
 from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
 
 
@@ -62,14 +62,14 @@ def generate_unique_place_holder(placeholder_dict):
     return placeholder
 
 
-def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
+def replace_noun_by_similar_word(target_text, similar_noun_list, tagger, used_word):
+    '''
+    名詞を類義語で置き換える。
+    置き換え後の単語の一部が再度別の類義後に置き換えられる問題（「天」を「天人」に置き換えた後に「人」が別のに置き換えられる問題）
+    をふせぐため、直接置き換えるのではなく、一度ユニークなプレースホルダーに置き換えておく。
+    全部のプレースホルダー置き換え完了後、プレースホルダーを対応する類義語に置き換える。
+    '''
     WORD_IDX = 0
-    PART_IDX = 3
-
-    # 名詞を類義語で置き換える。
-    # 置き換え後の単語の一部が再度別の類義後に置き換えられる問題（「天」を「天人」に置き換えた後に「人」が別のに置き換えられる問題）
-    # をふせぐため、直接置き換えるのではなく、一度ユニークなプレースホルダーに置き換えておく。
-    # 全部のプレースホルダー置き換え完了後、プレースホルダーを対応する類義語に置き換える。
 
     # 置き換え結果テキストを初期化
     replaced_text = target_text
@@ -83,43 +83,38 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
     parsed_text_list = tagger.parse(target_text).split('\n')
 
     # 長い単語から走査するためソート。短いものから置換してしまうと、別の単語の一部が先に置換されてしまう。「怪人」と「人」など。
-    # ソートのために品詞を持ってるものだけでフィルター (EOSなどは含まない)
-    has_part_list = [parsed_word for parsed_word in parsed_text_list if has_part_length(
-        parsed_word.split('\t'))]
-    sorted_text_list = sorted(has_part_list, key=lambda parsed_word: len(
+    # ソートのために先に名詞のものだけにでフィルター (EOSなどは含まない)
+    noun_list = [parsed_word for parsed_word in parsed_text_list if is_target_noun(
+        parsed_word)]
+    sorted_text_list = sorted(noun_list, key=lambda parsed_word: len(
         parsed_word.split('\t')[WORD_IDX]), reverse=True)
 
     for parsed_word in sorted_text_list:
-
         word_detail = parsed_word.split('\t')
-        part = word_detail[PART_IDX]
+        word = word_detail[WORD_IDX]
+        if word not in similar_noun_list:
+            continue
 
-        # 名詞のみ対象
-        if is_target_noun(part):
-            word = word_detail[WORD_IDX]
-            if word not in noun_list:
-                continue
+        #  一文で同じ単語を一度置き換えた単語保持。なんども置き換えない
+        if word in replaced_word_list:
+            continue
 
-            #  一文で同じ単語を一度置き換えた単語保持。なんども置き換えない
-            if word in replaced_word_list:
-                continue
+        similar_word_list = similar_noun_list[word]
+        similar_word = ''
+        # 一度つかった置き換えパターンはおなじのをつかう
+        if word in used_word.keys():
+            similar_word = used_word[word]
+        else:
+            similar_word = random.choice(similar_word_list)
+            used_word[word] = similar_word
 
-            similar_word_list = noun_list[word]
-            similar_word = ''
-            # 一度つかった置き換えパターンはおなじのをつかう
-            if word in used_word.keys():
-                similar_word = used_word[word]
-            else:
-                similar_word = random.choice(similar_word_list)
-                used_word[word] = similar_word
-
-            # プレースホルダーで置き換え
-            placeholder = generate_unique_place_holder(
-                placeholder_similar_word_dict)
-            replaced_text = replaced_text.replace(word, placeholder)
-            # 一度置き換えた単語保持
-            placeholder_similar_word_dict[placeholder] = similar_word
-            replaced_word_list.append(word)
+        # プレースホルダーで置き換え
+        placeholder = generate_unique_place_holder(
+            placeholder_similar_word_dict)
+        replaced_text = replaced_text.replace(word, placeholder)
+        # 一度置き換えた単語保持
+        placeholder_similar_word_dict[placeholder] = similar_word
+        replaced_word_list.append(word)
 
     # プレースホルダー 置き換え
     for placeholder, similar_word in placeholder_similar_word_dict.items():
