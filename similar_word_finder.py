@@ -7,14 +7,14 @@ import const
 
 
 def find_similar_word(model, word, topn=10):
-    similar_word_list = []
+    similar_word_tuple_list = []
     try:
-        similar_word_list = model.most_similar(f'{word}', topn=topn)
+        similar_word_tuple_list = model.most_similar(f'{word}', topn=topn)
     except Exception as e:
         print(f'Exception is raiesd when finding similar word of {word}')
         print(type(e), e)
 
-    return similar_word_list
+    return similar_word_tuple_list
 
 
 def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
@@ -23,9 +23,9 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
     '''
     similar_noun_results = {}
     for target_noun in target_noun_list:
-        similar_word_list = find_similar_word(model, target_noun, topn)
-        for similar_word_with_similarity in similar_word_list:
-            similar_word = similar_word_with_similarity[0]
+        similar_word_tuple_list = find_similar_word(model, target_noun, topn)
+        for similar_word_tuple in similar_word_tuple_list:
+            similar_word = similar_word_tuple[0]
 
             # 余計な括弧を削除
             similar_word = similar_word.strip('[').strip(']')
