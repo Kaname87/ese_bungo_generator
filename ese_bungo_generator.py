@@ -1,10 +1,11 @@
 import json
-import random
-import string
 import csv
+import random
 
-from util import is_target_noun, has_part_length, create_tagger
-from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
+# from util import create_tagger, is_target_noun
+# from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
+import util
+import const
 
 
 def read_json_to_dict(file_path):
@@ -15,11 +16,17 @@ def read_json_to_dict(file_path):
 
 
 def get_max_replace_char_num(name):
+    '''
+    名前のうち何文字を変換するか取得
+    '''
     # 切り下げ。 最低でも名前の半分を変更
     return len(name) // 2
 
 
 def create_replace_char_idx_list(name):
+    '''
+    名前の置き換える文字のindexリスト作成
+    '''
     replace_char_idx_list = []
 
     replace_char_num = get_max_replace_char_num(name)
@@ -34,9 +41,12 @@ def create_replace_char_idx_list(name):
 
 
 def generate_name(author_name):
-    # 名前の全ての文字を置き換えるのではなく、一部のみを置き換える。
-    # 全部を置き換えると、元ネタと離れすぎるため
-    name_char_dict = read_json_to_dict(NAME_CHARCTER_LIST_FILE)
+    '''
+    名前の文字を置き換えて、新しい文字を生成
+    名前の全ての文字を置き換えるのではなく、一部のみを置き換える。
+    全部を置き換えると、元ネタと離れすぎるため
+    '''
+    name_char_dict = read_json_to_dict(const.NAME_CHARCTER_LIST_FILE)
     # 置き換え対象の文字のindexを取得
     replace_char_idx_list = create_replace_char_idx_list(author_name)
 
@@ -52,24 +62,14 @@ def generate_name(author_name):
     return replaced_name
 
 
-def generate_unique_place_holder(placeholder_dict):
-    placeholder_base = '_PLACE_HOLDER'
-    while(True):
-        placeholder = placeholder_base + \
-            "".join([random.choice(string.digits) for _ in range(15)])
-        if placeholder not in placeholder_dict.keys():
-            break
-    return placeholder
-
-
-def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
+def replace_noun_by_similar_word(target_text, similar_noun_list, tagger, used_word):
+    '''
+    名詞を類義語で置き換える。
+    置き換え後の単語の一部が再度別の類義後に置き換えられる問題（「天」を「天人」に置き換えた後に「人」が別のに置き換えられる問題）
+    をふせぐため、直接置き換えるのではなく、一度ユニークなプレースホルダーに置き換えておく。
+    全部のプレースホルダー置き換え完了後、プレースホルダーを対応する類義語に置き換える。
+    '''
     WORD_IDX = 0
-    PART_IDX = 3
-
-    # 名詞を類義語で置き換える。
-    # 置き換え後の単語の一部が再度別の類義後に置き換えられる問題（「天」を「天人」に置き換えた後に「人」が別のに置き換えられる問題）
-    # をふせぐため、直接置き換えるのではなく、一度ユニークなプレースホルダーに置き換えておく。
-    # 全部のプレースホルダー置き換え完了後、プレースホルダーを対応する類義語に置き換える。
 
     # 置き換え結果テキストを初期化
     replaced_text = target_text
@@ -80,46 +80,41 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
     # placeholder と類義語の対応dict
     placeholder_similar_word_dict = {}
 
-    parsed_text_list = tagger.parse(target_text).split('\n')
+    tab_divided_word_token_list = tagger.parse(target_text).split('\n')
 
     # 長い単語から走査するためソート。短いものから置換してしまうと、別の単語の一部が先に置換されてしまう。「怪人」と「人」など。
-    # ソートのために品詞を持ってるものだけでフィルター (EOSなどは含まない)
-    has_part_list = [parsed_word for parsed_word in parsed_text_list if has_part_length(
-        parsed_word.split('\t'))]
-    sorted_text_list = sorted(has_part_list, key=lambda parsed_word: len(
-        parsed_word.split('\t')[WORD_IDX]), reverse=True)
+    # ソートのために先に名詞のものだけにでフィルター (EOSなどは含まない)
+    noun_tab_divided_word_token_list = [tab_divided_word_token for tab_divided_word_token in tab_divided_word_token_list if util.is_target_noun(
+        tab_divided_word_token)]
+    sorted_tab_divided_word_token_list = sorted(noun_tab_divided_word_token_list, key=lambda tab_divided_word_token: len(
+        tab_divided_word_token.split('\t')[WORD_IDX]), reverse=True)
 
-    for parsed_word in sorted_text_list:
+    for tab_divided_word_token in sorted_tab_divided_word_token_list:
+        word_token_list = tab_divided_word_token.split('\t')
+        word = word_token_list[WORD_IDX]
+        if word not in similar_noun_list:
+            continue
 
-        word_detail = parsed_word.split('\t')
-        part = word_detail[PART_IDX]
+        #  一文で同じ単語を一度置き換えた単語保持。なんども置き換えない
+        if word in replaced_word_list:
+            continue
 
-        # 名詞のみ対象
-        if is_target_noun(part):
-            word = word_detail[WORD_IDX]
-            if word not in noun_list:
-                continue
+        similar_word_list = similar_noun_list[word]
+        similar_word = ''
+        # 一度つかった置き換えパターンはおなじのをつかう
+        if word in used_word.keys():
+            similar_word = used_word[word]
+        else:
+            similar_word = random.choice(similar_word_list)
+            used_word[word] = similar_word
 
-            #  一文で同じ単語を一度置き換えた単語保持。なんども置き換えない
-            if word in replaced_word_list:
-                continue
-
-            similar_word_list = noun_list[word]
-            similar_word = ''
-            # 一度つかった置き換えパターンはおなじのをつかう
-            if word in used_word.keys():
-                similar_word = used_word[word]
-            else:
-                similar_word = random.choice(similar_word_list)
-                used_word[word] = similar_word
-
-            # プレースホルダーで置き換え
-            placeholder = generate_unique_place_holder(
-                placeholder_similar_word_dict)
-            replaced_text = replaced_text.replace(word, placeholder)
-            # 一度置き換えた単語保持
-            placeholder_similar_word_dict[placeholder] = similar_word
-            replaced_word_list.append(word)
+        # プレースホルダーで置き換え
+        placeholder = util.generate_unique_place_holder(
+            placeholder_similar_word_dict)
+        replaced_text = replaced_text.replace(word, placeholder)
+        # 一度置き換えた単語保持
+        placeholder_similar_word_dict[placeholder] = similar_word
+        replaced_word_list.append(word)
 
     # プレースホルダー 置き換え
     for placeholder, similar_word in placeholder_similar_word_dict.items():
@@ -129,10 +124,12 @@ def replace_noun_by_similar_word(target_text, noun_list, tagger, used_word):
 
 
 def random_generate_ese_bungo_one():
-    # 一つだけrandomで取得する用
-    tagger = create_tagger()
-    source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
-    noun_list_dict = read_json_to_dict(SIMILAR_NOUN_LIST_FILE)
+    '''
+    一つだけrandomで取得する用
+    '''
+    tagger = util.create_tagger()
+    source_dict = read_json_to_dict(const.ORIGINAL_NOVEL_FILE)
+    noun_list_dict = read_json_to_dict(const.SIMILAR_NOUN_LIST_FILE)
 
     author_name, novel_list = random.choice(list(source_dict.items()))
     novel = random.choice(novel_list)
@@ -159,9 +156,12 @@ def random_generate_ese_bungo_one():
 
 
 def generate_ese_bungo_all(num=1):
-    tagger = create_tagger()
-    source_dict = read_json_to_dict(ORIGINAL_NOVEL_FILE)
-    noun_list_dict = read_json_to_dict(SIMILAR_NOUN_LIST_FILE)
+    '''
+    元データにある文言をnum分だけ変換
+    '''
+    tagger = util.create_tagger()
+    source_dict = read_json_to_dict(const.ORIGINAL_NOVEL_FILE)
+    noun_list_dict = read_json_to_dict(const.SIMILAR_NOUN_LIST_FILE)
 
     results = []
     loop_cnt = 0
@@ -219,17 +219,22 @@ def generate_ese_bungo_all(num=1):
 
 
 def output_ese_bungo_to_csv(num=1):
-    # twitter のソースに使う用
-    # deploy先でmecab-python3が使えないので、暫定対応
-    # tweet作成用ファイルではなくこのファイルにおくのはmecabをつかってるファイルをapp.pyで呼ばないようにするため
+    '''
+    twitter のソースに使う用
+    deploy先でmecab-python3が使えないので、暫定対応
+    tweet作成用ファイルではなくこのファイルにおくのはmecabをつかってるファイルをapp.pyで呼ばないようにするため
+    '''
     _, results = generate_ese_bungo_all(num)
 
-    with open(TWEET_SOURCE_FILE_NAME, 'w') as f:
+    with open(const.TWEET_SOURCE_FILE_NAME, 'w') as f:
         writer = csv.writer(f, lineterminator='\n')
         writer.writerows(results)
 
 
 def output_ese_bungo_to_js(num=1):
+    '''
+    デモサイト用に結果をJSファイルで吐き出す
+    '''
     orginal_list, results = generate_ese_bungo_all(num)
 
     result_json = json.dumps(results, ensure_ascii=False)
@@ -239,7 +244,7 @@ def output_ese_bungo_to_js(num=1):
     original_list = 'const ORIGINAL_LIST= ' + orginal_list_json + ';'
     ese_bungo_list = 'const ESE_BUNGO_LIST= ' + result_json + ';'
 
-    with open(ESE_BUNGO_LIST, "w") as f:
+    with open(const.ESE_BUNGO_LIST, "w") as f:
         f.write(original_list + '\n')
         f.write(ese_bungo_list)
 
