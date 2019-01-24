@@ -1,14 +1,9 @@
 import json
 import csv
 import random
-from gensim.models import KeyedVectors
 
 import util
 import const
-
-
-def load_model(path):
-    return KeyedVectors.load_word2vec_format(path, binary=True)
 
 
 def find_similar_word(model, word, topn=10):
@@ -23,6 +18,9 @@ def find_similar_word(model, word, topn=10):
 
 
 def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
+    '''
+    名詞をキーに類似名詞の辞書を作成
+    '''
     similar_noun_results = {}
     for target_noun in target_noun_list:
         similar_word_list = find_similar_word(model, target_noun, topn)
@@ -39,7 +37,8 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
             if "_(" in similar_word or "Category:" in similar_word:
                 continue
 
-            tab_divided_word_token_list = tagger.parse(similar_word).split('\n')
+            tab_divided_word_token_list = tagger.parse(
+                similar_word).split('\n')
             tab_divided_word_token = tab_divided_word_token_list[0]
 
             # 名詞のみ
@@ -89,9 +88,15 @@ def create_noun_list(tab_divided_word_token_list):
     return noun_list
 
 
-def read_and_parse_json(model, tagger, name_char_topn, noun_topn):
-    name_char_dict = {}
-    noun_dict = {}
+def crate_target_word_dict(model, tagger, name_char_topn, noun_topn):
+    '''
+    変換元小説情報から、
+    変換対象になる名前の文字と類似文字の辞書、
+    変換対象になる名詞と類似名詞の辞書
+    を作成する
+    '''
+    similar_name_char_dict = {}
+    similar_noun_dict = {}
 
     dictdump = {}
     with open(const.ORIGINAL_NOVEL_FILE) as f:
@@ -102,7 +107,7 @@ def read_and_parse_json(model, tagger, name_char_topn, noun_topn):
         author_char_list = list(author)
         author_results = create_similar_noun_dict(
             model, tagger, author_char_list, name_char_topn)
-        name_char_dict.update(author_results)
+        similar_name_char_dict.update(author_results)
 
         for novel in novel_list:
             # 名詞のリストをつくるのに、title, quotes の区別不要なので、マージ
@@ -113,9 +118,9 @@ def read_and_parse_json(model, tagger, name_char_topn, noun_topn):
                 noun_list = create_noun_list(tab_divided_word_token_list)
                 noun_results = create_similar_noun_dict(
                     model, tagger, noun_list, noun_topn)
-                noun_dict.update(noun_results)
+                similar_noun_dict.update(noun_results)
 
-    return name_char_dict, noun_dict
+    return similar_name_char_dict, similar_noun_dict
 
 
 def write_to_json(filepath, result_dict):
@@ -125,25 +130,39 @@ def write_to_json(filepath, result_dict):
 
 
 def output_to_json(name_char_topn, noun_topn):
+    '''
+    JSON出力
+    '''
     # name_char_topn, noun_topn は類似度のチューニング用
-    model = load_model(const.WORD2VEC_MODEL_PATH)
+    model = util.load_model(const.WORD2VEC_MODEL_PATH)
     tagger = util.create_tagger()
 
-    name_char_dict, noun_dict = read_and_parse_json(
+    name_char_dict, noun_dict = crate_target_word_dict(
         model, tagger, name_char_topn, noun_topn)
 
     write_to_json(const.NAME_CHARCTER_LIST_FILE, name_char_dict)
     write_to_json(const.SIMILAR_NOUN_LIST_FILE, noun_dict)
 
 
-if __name__ == "__main__":
+def out_put_for_demosite():
+    '''
+    デモサイト用出力
+    '''
     # demo サイト用パラメータ
-    # name_char_topn = 7
-    # noun_topn = 8
+    name_char_topn = 7
+    noun_topn = 8
+    output_to_json(name_char_topn, noun_topn)
 
-    # Twiiter 用パラメータ
+
+def out_put_for_twitter():
+    '''
+    Twitter用出力
+    '''
     name_char_topn = 8
     noun_topn = 9
-
     output_to_json(name_char_topn, noun_topn)
+
+
+if __name__ == "__main__":
+    out_put_for_twitter()
     print('Done')

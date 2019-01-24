@@ -1,8 +1,11 @@
-# -*- coding: utf-8 -*-
 import MeCab
 import random
 import string
+from gensim.models import KeyedVectors
 
+
+def load_model(path):
+    return KeyedVectors.load_word2vec_format(path, binary=True)
 
 
 def create_tagger(tagger_name="-Ochasen"):
