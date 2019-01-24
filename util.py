@@ -4,6 +4,7 @@ import random
 import string
 
 
+
 def create_tagger(tagger_name="-Ochasen"):
     '''
     タガー作成
@@ -51,15 +52,15 @@ def is_target_noun(tab_divided_word_token):
     return has_part_length(text_token_list) and in_target_noun_type(text_token_list[3])
 
 
-def is_independent_noun(tab_divided_post_target_word_token):
+def is_independent_noun(next_word_tab_divided_word_token):
     '''
-    候補の単語の次の単語（post_similar_word）判定
+    候補の名詞の次の単語判定
     名詞＋助詞、という類義語のパターンは文章が崩れるのでスキップ
     ("人" => "人が" や、"桜" => "桜の" など）
    「基本的」のような「的」というパターンも名詞ではないのでスキップ
     '''
-    if has_part_length(tab_divided_post_target_word_token):
-        part = tab_divided_post_target_word_token.split('\t')[3]
+    if has_part_length(next_word_tab_divided_word_token):
+        part = next_word_tab_divided_word_token.split('\t')[3]
         if '助詞' in part:
             return False
         # 「-的」を対象外に

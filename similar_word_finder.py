@@ -3,12 +3,12 @@ import csv
 import random
 from gensim.models import KeyedVectors
 
-from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, WORD2VEC_MODEL_PATH
-from util import create_tagger, is_target_noun, is_independent_noun
+import util
+import const
 
 
-def load_model():
-    return KeyedVectors.load_word2vec_format(WORD2VEC_MODEL_PATH, binary=True)
+def load_model(path):
+    return KeyedVectors.load_word2vec_format(path, binary=True)
 
 
 def find_similar_word(model, word, topn=10):
@@ -39,17 +39,17 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
             if "_(" in similar_word or "Category:" in similar_word:
                 continue
 
-            similar_word_details = tagger.parse(similar_word).split('\n')
-            similar_word_detail = similar_word_details[0]
+            tab_divided_word_token_list = tagger.parse(similar_word).split('\n')
+            tab_divided_word_token = tab_divided_word_token_list[0]
 
             # 名詞のみ
-            if not is_target_noun(similar_word_detail):
+            if not util.is_target_noun(tab_divided_word_token):
                 continue
 
-            # 候補の単語の次の単語（post_similar_word）判定
+            # 候補の名詞の次の単語判定
             # 名詞として完結してる単語出ない場合つかわない
-            post_similar_word_detail = similar_word_details[1]
-            if not is_independent_noun(post_similar_word_detail):
+            next_word_tab_divided_word_token = tab_divided_word_token_list[1]
+            if not util.is_independent_noun(next_word_tab_divided_word_token):
                 continue
 
             # 不愉快な差別的文章になりそうなものを排除。
@@ -77,13 +77,13 @@ def replace_by_similar_word(target_text, similar_word_dict):
     return replaced_text
 
 
-def create_noun_list(parsed_text):
+def create_noun_list(tab_divided_word_token_list):
     noun_list = []
-    for parsed_word_detail in parsed_text:
-        if not is_target_noun(parsed_word_detail):
+    for tab_divided_word_token in tab_divided_word_token_list:
+        if not util.is_target_noun(tab_divided_word_token):
             continue
-        word_detail = parsed_word_detail.split('\t')
-        word = word_detail[0]
+        word_token_list = tab_divided_word_token.split('\t')
+        word = word_token_list[0]
         noun_list.append(word)
 
     return noun_list
@@ -94,7 +94,7 @@ def read_and_parse_json(model, tagger, name_char_topn, noun_topn):
     noun_dict = {}
 
     dictdump = {}
-    with open(ORIGINAL_NOVEL_FILE) as f:
+    with open(const.ORIGINAL_NOVEL_FILE) as f:
         dictdump = json.loads(f.read())
 
     for author, novel_list in dictdump.items():
@@ -109,8 +109,8 @@ def read_and_parse_json(model, tagger, name_char_topn, noun_topn):
             target_list = [novel['title']] + novel['quotes']
 
             for target in target_list:
-                parsed_text = tagger.parse(target).split('\n')
-                noun_list = create_noun_list(parsed_text)
+                tab_divided_word_token_list = tagger.parse(target).split('\n')
+                noun_list = create_noun_list(tab_divided_word_token_list)
                 noun_results = create_similar_noun_dict(
                     model, tagger, noun_list, noun_topn)
                 noun_dict.update(noun_results)
@@ -126,14 +126,14 @@ def write_to_json(filepath, result_dict):
 
 def output_to_json(name_char_topn, noun_topn):
     # name_char_topn, noun_topn は類似度のチューニング用
-    model = load_model()
-    tagger = create_tagger()
+    model = load_model(const.WORD2VEC_MODEL_PATH)
+    tagger = util.create_tagger()
 
     name_char_dict, noun_dict = read_and_parse_json(
         model, tagger, name_char_topn, noun_topn)
 
-    write_to_json(NAME_CHARCTER_LIST_FILE, name_char_dict)
-    write_to_json(SIMILAR_NOUN_LIST_FILE, noun_dict)
+    write_to_json(const.NAME_CHARCTER_LIST_FILE, name_char_dict)
+    write_to_json(const.SIMILAR_NOUN_LIST_FILE, noun_dict)
 
 
 if __name__ == "__main__":
