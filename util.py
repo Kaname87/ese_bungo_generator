@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 import MeCab
+import random
+import string
 
 
-def create_tagger():
-    tagger = MeCab.Tagger("-Ochasen")
+def create_tagger(tagger_name="-Ochasen"):
+    '''
+    タガー作成
+    '''
+    tagger = MeCab.Tagger(tagger_name)
     tagger.parse('')
     return tagger
 
@@ -38,20 +43,23 @@ def has_part_length(word_detail):
     return len(word_detail) >= 4
 
 
-def is_target_noun(parsed_text):
-    parsed_text_detail = parsed_text.split('\t')
-    return has_part_length(parsed_text_detail) and in_target_noun_type(parsed_text_detail[3])
+def is_target_noun(tab_divided_word_token):
+    '''
+    変換対象の名詞かどうかチェック
+    '''
+    text_token_list = tab_divided_word_token.split('\t')
+    return has_part_length(text_token_list) and in_target_noun_type(text_token_list[3])
 
 
-def is_independent_noun(post_target_parsed_text):
+def is_independent_noun(tab_divided_post_target_word_token):
     '''
     候補の単語の次の単語（post_similar_word）判定
     名詞＋助詞、という類義語のパターンは文章が崩れるのでスキップ
     ("人" => "人が" や、"桜" => "桜の" など）
    「基本的」のような「的」というパターンも名詞ではないのでスキップ
     '''
-    if has_part_length(post_target_parsed_text):
-        part = post_target_parsed_text.split('\t')[3]
+    if has_part_length(tab_divided_post_target_word_token):
+        part = tab_divided_post_target_word_token.split('\t')[3]
         if '助詞' in part:
             return False
         # 「-的」を対象外に
@@ -62,8 +70,26 @@ def is_independent_noun(post_target_parsed_text):
 
 def get_noun_list(text):
     tagger = create_tagger()
-    parsed_text_list = tagger.parse(text).split('\n')
-    return [parsed_text.split('\t')[0] for parsed_text in parsed_text_list if is_target_noun(parsed_text)]
+    tab_divided_word_token_list = tagger.parse(text).split('\n')
+    return [tab_divided_word_token.split('\t')[0] for tab_divided_word_token in tab_divided_word_token_list if is_target_noun(tab_divided_word_token)]
+
+
+def generate_unique_place_holder(placeholder_dict):
+    '''
+    文章の置き換え必要な一意のplaceholderを生成する
+    パラメータのplaceholder_dictはすでに生成されたplaceholderをkeyに持つ
+    '''
+    placeholder_base = '_PLACE_HOLDER'
+    while(True):
+        placeholder = placeholder_base + \
+            "".join([random.choice(string.digits) for _ in range(15)])
+        if placeholder not in placeholder_dict.keys():
+            break
+    return placeholder
+
+
+def diff_list(a, b):
+    return list(set(a)-set(b))
 
 
 if __name__ == "__main__":
