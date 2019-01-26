@@ -17,6 +17,13 @@ def create_tagger(tagger_name="-Ochasen"):
     return tagger
 
 
+def strip_unnecessary_characters(similar_word):
+    '''
+    Word2Vecのsimilarwordにふくまれるゴミ削除
+    '''
+    return similar_word.strip('[').strip(']')
+
+
 def in_target_noun_type(part):
     '''
     対象の名詞かチェック。

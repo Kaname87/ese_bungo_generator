@@ -28,7 +28,7 @@ def create_similar_noun_dict(model, tagger, target_noun_list, topn=10):
             similar_word = similar_word_tuple[0]
 
             # 余計な括弧を削除
-            similar_word = similar_word.strip('[').strip(']')
+            similar_word = util.strip_unnecessary_characters(similar_word)
 
             # 同じ単語はスキップ
             if similar_word == target_noun:
