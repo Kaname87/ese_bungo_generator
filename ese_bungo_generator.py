@@ -6,6 +6,7 @@ import random
 # from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
 import util
 import const
+import argparse
 
 
 def read_json_to_dict(file_path):
@@ -248,10 +249,28 @@ def output_ese_bungo_to_js(num=1):
         f.write(original_list + '\n')
         f.write(ese_bungo_list)
 
+def execute():
+    parser = argparse.ArgumentParser(description='')
+
+    parser.add_argument('action', type=str,  choices=['update_csv', 'update_js'])
+    parser.add_argument("-n", "--number", default=100, type=int)
+
+    args = parser.parse_args()
+
+    action = args.action
+    number = args.number
+    print('Action: ' + action)
+    print('Number: ' + str(number))
+
+    if args.action == 'update_csv':
+        # For twitter
+        output_ese_bungo_to_csv(number)
+    elif args.action == 'update_js':
+        # For demosite
+        output_ese_bungo_to_js(number)
+
+    print('Done')
 
 if __name__ == "__main__":
-    # generate_ese_bungo_all()
-    output_ese_bungo_to_js(60)
-    # output_ese_bungo_to_csv(120)
-    #     # output_ese_bungo_to_js(15000)
-    print('Done')
+    execute()
+
