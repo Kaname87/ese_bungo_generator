@@ -6,8 +6,6 @@ import random
 # from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
 import util
 import const
-import argparse
-
 
 def read_json_to_dict(file_path):
     res = {}
@@ -122,6 +120,12 @@ def replace_noun_by_similar_word(target_text, similar_noun_list, tagger, used_wo
         replaced_text = replaced_text.replace(placeholder, similar_word)
 
     return replaced_text, used_word
+
+
+def tmp():
+    tagger = util.create_tagger()
+    source_dict = read_json_to_dict(const.ORIGINAL_NOVEL_FILE_TMP)
+    noun_list_dict = read_json_to_dict(const.SIMILAR_NOUN_LIST_FILE)
 
 
 def random_generate_ese_bungo_one():
@@ -248,29 +252,4 @@ def output_ese_bungo_to_js(num=1):
     with open(const.ESE_BUNGO_LIST, "w") as f:
         f.write(original_list + '\n')
         f.write(ese_bungo_list)
-
-def execute():
-    parser = argparse.ArgumentParser(description='')
-
-    parser.add_argument('action', type=str,  choices=['update_csv', 'update_js'])
-    parser.add_argument("-n", "--number", default=100, type=int)
-
-    args = parser.parse_args()
-
-    action = args.action
-    number = args.number
-    print('Action: ' + action)
-    print('Number: ' + str(number))
-
-    if args.action == 'update_csv':
-        # For twitter
-        output_ese_bungo_to_csv(number)
-    elif args.action == 'update_js':
-        # For demosite
-        output_ese_bungo_to_js(number)
-
-    print('Done')
-
-if __name__ == "__main__":
-    execute()
 

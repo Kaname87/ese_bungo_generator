@@ -129,7 +129,7 @@ def write_to_json(filepath, result_dict):
         f.write(result_json)
 
 
-def output_to_json(name_char_topn, noun_topn):
+def output_word_list(name_char_topn, noun_topn):
     '''
     JSON出力
     '''
@@ -144,23 +144,23 @@ def output_to_json(name_char_topn, noun_topn):
     write_to_json(const.SIMILAR_NOUN_LIST_FILE, noun_dict)
 
 
-def out_put_for_demosite():
+def out_put_for_demosite(name_char_topn=7, noun_topn=8):
     '''
     デモサイト用出力
     '''
     # demo サイト用パラメータ
-    name_char_topn = 7
-    noun_topn = 8
-    output_to_json(name_char_topn, noun_topn)
+    # name_char_topn = 7
+    # noun_topn = 8
+    output_word_list(name_char_topn, noun_topn)
 
 
-def out_put_for_twitter():
+def out_put_for_twitter(name_char_topn=8, noun_topn=9):
     '''
     Twitter用出力
     '''
-    name_char_topn = 8
-    noun_topn = 9
-    output_to_json(name_char_topn, noun_topn)
+    # name_char_topn = 8
+    # noun_topn = 9
+    output_word_list(name_char_topn, noun_topn)
 
 
 if __name__ == "__main__":
