@@ -1,11 +1,9 @@
-import MeCab
 import random
 import string
 import json
-from gensim.models import KeyedVectors
-
 
 def load_model(path):
+    from gensim.models import KeyedVectors
     return KeyedVectors.load_word2vec_format(path, binary=True)
 
 
@@ -13,10 +11,10 @@ def create_tagger(tagger_name="-Ochasen"):
     '''
     タガー作成
     '''
+    import MeCab
     tagger = MeCab.Tagger(tagger_name)
     tagger.parse('')
     return tagger
-
 
 def strip_unnecessary_characters(similar_word):
     '''
