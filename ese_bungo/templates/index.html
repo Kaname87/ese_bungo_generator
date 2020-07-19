@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132694979-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "UA-132694979-1");
+    </script>
+ -->
+    <meta charset="utf-8" />
+    <meta http-equiv="content-language" content="ja" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="keywords" content="文豪,名言,エセ,似非" />
+    <meta name="description" content="文豪みたいな人の名言みたいな言葉。" />
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <!-- og -->
+    <meta property="og:title" content="エセ文豪 エセ名言集">
+    <meta property="og:description" content="文豪みたいな人の名言みたいな言葉。" />
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://esebungo.netlify.com/">
+    <meta property="og:image" content="https://esebungo.netlify.com./image/og.png">
+
+    <title>エセ文豪 エセ名言集</title>
+    <style type="text/css">
+      html {
+        height: 100%;
+        font-size: 16px;
+      }
+
+      body {
+        height: 100%;
+        background-image: url("../image/white_paper.jpg");
+        color: #000000;
+        font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
+          "Hiragino Mincho Pro", "メイリオ";
+      }
+
+      header {
+        font-size: 0.7rem;
+        width: 100%;
+        margin: 4% 0 2% 0;
+      }
+
+      .service-name-wrapper {
+        display: flex;
+        justify-content: space-between;
+        vertical-align: middle;
+      }
+
+      #service-name {
+        margin: auto;
+      }
+
+      #page {
+        color: #000;
+        float: right;
+        margin-right: 5%;
+      }
+
+      .page-controller {
+        color: transparent;
+        width: 25%;
+        font-size: 0.6rem;
+      }
+
+      .page-controller:visited {
+        cursor: pointer;
+      }
+
+      .service-name-wrapper > .page-controller {
+        margin: auto;
+      }
+
+      .prev {
+        text-align: left;
+      }
+      .next {
+        text-align: right;
+      }
+      .service-name-wrapper .prev {
+        margin-left: 5%;
+      }
+      .service-name-wrapper .next {
+        margin-right: 5%;
+      }
+
+      .version-name {
+        font-size: 0.5rem;
+      }
+
+      .main {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .fake {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      #fake-author {
+        flex-grow: 1;
+        margin: 2% 5% 5% 5%;
+        width: 70%;
+      }
+
+      .profile {
+        max-width: 100%;
+        object-fit: contain;
+      }
+
+      .novel {
+        justify-content: flex-start;
+        margin: auto;
+        flex-grow: 3;
+      }
+
+      #fake-quote {
+        font-size: 1.1rem;
+        margin: 0 5%;
+      }
+
+      #fake-cite {
+        margin: 5% 10% 2% 0;
+        font-size: 0.9rem;
+        margin-left: auto;
+        text-align: right;
+      }
+
+      .author-wrapper {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+      }
+
+      .author-wrapper .page-controller {
+        flex-grow: 1;
+      }
+
+      .author-wrapper .prev {
+        margin-left: 0;
+      }
+
+      .author-wrapper .next {
+        margin-right: 0;
+      }
+
+      .original {
+        margin: 2% 3%;
+      }
+
+      .original blockquote {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        color: #666;
+        font-style: italic;
+        padding: 4% 1%;
+        text-align: center;
+      }
+
+      .original blockquote p {
+        padding: 0;
+        margin: 0 0 3% 0;
+        line-height: 1.7;
+        font-size: 0.8rem;
+      }
+
+      .original blockquote cite {
+        display: block;
+        text-align: right;
+        font-size: 0.65rem;
+      }
+
+      .original a:link,
+      .original a:visited,
+      .original a:hover,
+      .original a:active {
+        color: #666;
+      }
+
+      @media screen and (min-width: 320px) {
+        #fake-quote {
+          font-size: 1.3rem;
+        }
+      }
+
+      @media screen and (min-width: 568px) {
+        header {
+          margin: 2% 0 2% 0;
+        }
+
+        #service-name {
+          font-size: 0.8rem;
+        }
+
+        .fake {
+          flex-wrap: nowrap;
+          margin: 0 3%;
+        }
+
+        .author-wrapper {
+          max-width: 30%;
+          min-width: 30%;
+        }
+
+        .author-wrapper .page-controller {
+          display: none;
+        }
+
+        #fake-quote {
+          padding-top: 3%;
+          font-size: 1.4rem;
+        }
+        #fake-cite {
+          font-size: 1rem;
+        }
+
+        .original blockquote {
+          padding: 3% 1%;
+        }
+
+        .original blockquote p {
+          font-size: 0.9rem;
+        }
+        .original blockquote cite {
+          font-size: 0.7rem;
+        }
+      }
+
+      @media screen and (min-width: 1024px) {
+        #service-name {
+          font-size: 1rem;
+        }
+
+        #fake-quote {
+          font-size: 1.7rem;
+        }
+
+        #fake-cite {
+          font-size: 1.3rem;
+        }
+
+        .original blockquote p {
+          font-size: 1.2rem;
+        }
+        .original blockquote cite {
+          font-size: 1rem;
+        }
+      }
+    </style>
+    <script type="text/javascript" src="./../js/ese_bungo_list.js"></script>
+    <script type="text/javascript" src="./../js/author_image_list.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div class="service-name-wrapper">
+        <div class="page-controller prev" onclick="pickPrevNovel()">←</div>
+        <div><span id="service-name">エセ文豪 エセ名言集</span></div>
+        <div class="page-controller next" onclick="pickNextNovel()">
+          <span id="page"></span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="fake">
+        <div class="author-wrapper">
+          <div class="page-controller prev" onclick="pickPrevNovel()">←</div>
+          <div id="fake-author"></div>
+          <div class="page-controller next" onclick="pickNextNovel()">→</div>
+        </div>
+
+        <div class="novel">
+        {% for entry in entries %}
+          <p>{{entry.title}}</p>
+          <p>{{entry.body}}</p>
+        {% endfor %}
+        </div>
+
+        <div class="novel">
+          <p id="fake-quote"></p>
+          <p id="fake-cite"></p>
+        </div>
+      </div>
+      <div class="original">
+        <blockquote>
+          <p id="original-quote"></p>
+          <cite id="original-cite"></cite>
+        </blockquote>
+      </div>
+    </main>
+    <script>
+      function getRandomVal(list) {
+        return list[Math.floor(list.length * Math.random())];
+      }
+
+      function getRandomIdx(list) {
+        return Math.floor(list.length * Math.random());
+      }
+
+      function pickNovelByPage(page, reloadAuthorImage) {
+        document.getElementById("page").innerHTML = page;
+        const idx = page - 1;
+        setNovel(idx, reloadAuthorImage);
+      }
+
+      function isValidPage(page) {
+        return (
+          !isNaN(page) && 0 < page && page < Object.keys(ESE_BUNGO_LIST).length
+        );
+      }
+
+      function pickPrevNovel() {
+        const pageText = document.getElementById("page").innerText;
+        if (!pageText) return;
+
+        const prevPage = parseInt(pageText) - 1;
+        if (isValidPage(prevPage)) {
+          pickNovelByPage(prevPage, false);
+        }
+      }
+
+      function pickNextNovel() {
+        const pageText = document.getElementById("page").innerText;
+        if (!pageText) return;
+
+        const nextPage = parseInt(pageText) + 1;
+        if (isValidPage(nextPage)) {
+          pickNovelByPage(nextPage, false);
+        }
+      }
+
+      function pickRandomNovel(reloadAuthorImage = false) {
+        const idx = getRandomIdx(ESE_BUNGO_LIST);
+        const page = idx + 1;
+        document.getElementById("page").innerHTML = page;
+
+        setNovel(idx, reloadAuthorImage);
+      }
+
+      function setNovel(idx, reloadAuthorImage) {
+        const fakeNovel = ESE_BUNGO_LIST[idx];
+        const fakeAuthor = fakeNovel[0];
+        const fakeTitle = fakeNovel[1];
+        const fakeQuote = fakeNovel[2];
+        const originalIdx = fakeNovel[3];
+
+        const fakeCite = fakeAuthor + "『" + fakeTitle + "』";
+        document.getElementById("fake-cite").innerHTML = fakeCite;
+        document.getElementById("fake-quote").innerHTML = fakeQuote;
+
+        if (reloadAuthorImage) {
+          const authorImage =
+            '<image class="profile" onclick="pickRandomNovel()" src="' +
+            getRandomVal(AUTHOR_IMAGE_LIST) +
+            '" alt="エセ文豪近影"></image>';
+          document.getElementById("fake-author").innerHTML = authorImage;
+          '<a href="#">' + authorImage + "</a>";
+        }
+
+        const orginallNovel = ORIGINAL_LIST[originalIdx];
+        const originalAuthor = orginallNovel[0];
+        const originalTitle = orginallNovel[1];
+        const originalQuote = orginallNovel[2];
+        const originalUrl = orginallNovel[3];
+
+        const titleLink =
+          '<a href="' +
+          originalUrl +
+          '" target="_blank" rel="noopener noreferrer">' +
+          originalAuthor +
+          "『" +
+          originalTitle +
+          "』" +
+          "</a>";
+        document.getElementById("original-cite").innerHTML = titleLink;
+        document.getElementById("original-quote").innerHTML = originalQuote;
+
+        const page = idx + 1
+        history.pushState('', '', '/?page=' + page)
+      }
+
+      function init() {
+
+
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const page = urlParams.get("page");
+
+        if (isValidPage(page)) {
+          window.onload = pickNovelByPage(page, true);
+        } else {
+          window.onload = pickRandomNovel(true);
+        }
+
+        document.onkeydown = function(e) {
+          switch (e.keyCode) {
+            case 13: // enter
+              pickRandomNovel();
+            case 37: // left
+              pickPrevNovel();
+              break;
+            case 39: // right
+              pickNextNovel();
+              break;
+          }
+        };
+      }
+
+      init();
+    </script>
+  </body>
+</html>
