@@ -38,7 +38,7 @@
 
       body {
         height: 100%;
-        background-image: url("../image/white_paper.jpg");
+        background-image: url("static/image/white_paper.jpg");
         color: #000000;
         font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
           "Hiragino Mincho Pro", "メイリオ";
@@ -283,22 +283,23 @@
           <div class="page-controller next" onclick="pickNextNovel()">→</div>
         </div>
 
-        <div class="novel">
-        {% for entry in entries %}
-          <p>{{entry.title}}</p>
-          <p>{{entry.body}}</p>
-        {% endfor %}
-        </div>
 
         <div class="novel">
-          <p id="fake-quote"></p>
-          <p id="fake-cite"></p>
+          <p id="fake-quote">{{ fake_quote.text }}</p>
+          <p id="fake-cite">{{ fake_author.name }}『{{ fake_book.title }}』</p>
         </div>
       </div>
       <div class="original">
         <blockquote>
-          <p id="original-quote"></p>
-          <cite id="original-cite"></cite>
+          <p id="original-quote">{{ quote.text }}</p>
+          <cite id="original-cite">
+            <a href="{{ book.url }}" target="_blank" rel="noopener noreferrer">
+              {{ author.name }}『{{ book.title }}』
+            </a>
+          </cite>
+
+
+
         </blockquote>
       </div>
     </main>

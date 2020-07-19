@@ -76,6 +76,7 @@ class FakeBook(db.Model):
 
     # Relation
     original_book = db.relationship("Book",  back_populates="fake_books") # Has One
+    fake_quotes = db.relationship("FakeQuote",  backref="fake_books") # Has Many
 
     def __init__(self, book_id, title):
         self.book_id = book_id
@@ -87,10 +88,12 @@ class FakeQuote(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True)
     quote_id = db.Column(UUID(as_uuid=True), db.ForeignKey('quotes.id'))
+    fake_book_id = db.Column(UUID(as_uuid=True), db.ForeignKey('fake_books.id'))
     text = db.Column(db.String(), nullable=False)
 
     # Relation
     original_quote = db.relationship("Quote",  back_populates="fake_quotes") # Has One
+    fake_book = db.relationship("FakeBook",  back_populates="fake_quotes") # Has One
 
     def __init__(self, quote_id, text):
         self.quote_id = quote_id
