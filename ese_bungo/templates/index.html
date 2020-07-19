@@ -260,16 +260,14 @@
         }
       }
     </style>
-    <script type="text/javascript" src="./../js/ese_bungo_list.js"></script>
-    <script type="text/javascript" src="./../js/author_image_list.js"></script>
   </head>
 
   <body>
     <header>
       <div class="service-name-wrapper">
-        <div class="page-controller prev" onclick="pickPrevNovel()">←</div>
+        <div class="page-controller prev">←</div>
         <div><span id="service-name">エセ文豪 エセ名言集</span></div>
-        <div class="page-controller next" onclick="pickNextNovel()">
+        <div class="page-controller next">
           <span id="page"></span>
         </div>
       </div>
@@ -278,9 +276,12 @@
     <main class="main">
       <div class="fake">
         <div class="author-wrapper">
-          <div class="page-controller prev" onclick="pickPrevNovel()">←</div>
-          <div id="fake-author"></div>
-          <div class="page-controller next" onclick="pickNextNovel()">→</div>
+          <div class="page-controller prev">←</div>
+          <div id="fake-author">
+            <image class="profile" src="/static/image/bungo/hayashi.jpg"
+            alt="エセ文豪近影"></image>
+          </div>
+          <div class="page-controller next">→</div>
         </div>
 
 
@@ -365,7 +366,7 @@
 
         if (reloadAuthorImage) {
           const authorImage =
-            '<image class="profile" onclick="pickRandomNovel()" src="' +
+            '<image class="profile" src="' +
             getRandomVal(AUTHOR_IMAGE_LIST) +
             '" alt="エセ文豪近影"></image>';
           document.getElementById("fake-author").innerHTML = authorImage;
