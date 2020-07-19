@@ -1,6 +1,7 @@
 import MeCab
 import random
 import string
+import json
 from gensim.models import KeyedVectors
 
 
@@ -102,8 +103,15 @@ def generate_unique_place_holder(placeholder_dict):
 def diff_list(a, b):
     return list(set(a)-set(b))
 
+def read_json_to_dict(file_path):
+    res = {}
+    with open(file_path) as f:
+        res = json.loads(f.read())
+    return res
+
 
 if __name__ == "__main__":
     text = '俺がおまえで、お前が俺で'
     out = get_noun_list(text)
     print(out)
+
