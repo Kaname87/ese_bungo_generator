@@ -9,7 +9,7 @@ class Author(db.Model):
     name = db.Column(db.String(), nullable=False)
 
     # Relation
-    fake_authors = db.relationship("FakeAuthor",  backref="authors") # Has many
+    fake_authors = db.relationship("FakeAuthor", backref="authors") # Has many
     books = db.relationship("Book", backref="authors") # Has many
 
     def __init__(self, name):
@@ -26,9 +26,9 @@ class Book(db.Model):
     url = db.Column(db.String(), nullable=False)
 
     # Relation
-    author = db.relationship("Author",  back_populates="books") # Has One
-    quotes  = db.relationship("Quote",  backref="books") # Has Many
-    fake_books = db.relationship("FakeBook",  backref="books") # Has Many
+    author = db.relationship("Author", back_populates="books") # Has One
+    quotes  = db.relationship("Quote", backref="books") # Has Many
+    fake_books = db.relationship("FakeBook", backref="books") # Has Many
 
     def __init__(self, title, url):
         self.title = title
@@ -44,8 +44,8 @@ class Quote(db.Model):
     text = db.Column(db.String(), nullable=False)
 
     # Relation
-    book = db.relationship("Book",  back_populates="quotes")  # Has One
-    fake_quotes = db.relationship("FakeQuote",  backref="quotes")  # Has Many
+    book = db.relationship("Book", back_populates="quotes")  # Has One
+    fake_quotes = db.relationship("FakeQuote", backref="quotes")  # Has Many
 
     def __init__(self, text):
         self.text = text
@@ -59,7 +59,8 @@ class FakeAuthor(db.Model):
     name = db.Column(db.String(), nullable=False)
 
     # Relation
-    original_author = db.relationship("Author",  back_populates="fake_authors") # Has One
+    original_author = db.relationship("Author", back_populates="fake_authors") # Has One
+    fake_books = db.relationship("FakeBook", backref="fake_authors") # Has Many
 
     def __init__(self, author_id, name):
         self.author_id = author_id
@@ -72,11 +73,13 @@ class FakeBook(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True)
     book_id = db.Column(UUID(as_uuid=True), db.ForeignKey('books.id'))
+    fake_author_id = db.Column(UUID(as_uuid=True), db.ForeignKey('fake_authors.id'))
     title = db.Column(db.String(), nullable=False)
 
     # Relation
-    original_book = db.relationship("Book",  back_populates="fake_books") # Has One
-    fake_quotes = db.relationship("FakeQuote",  backref="fake_books") # Has Many
+    original_book = db.relationship("Book", back_populates="fake_books") # Has One
+    fake_author = db.relationship("FakeAuthor", back_populates="fake_authors") # Has One
+    fake_quotes = db.relationship("FakeQuote", backref="fake_books") # Has Many
 
     def __init__(self, book_id, title):
         self.book_id = book_id
@@ -92,8 +95,8 @@ class FakeQuote(db.Model):
     text = db.Column(db.String(), nullable=False)
 
     # Relation
-    original_quote = db.relationship("Quote",  back_populates="fake_quotes") # Has One
-    fake_book = db.relationship("FakeBook",  back_populates="fake_quotes") # Has One
+    original_quote = db.relationship("Quote", back_populates="fake_quotes") # Has One
+    fake_book = db.relationship("FakeBook", back_populates="fake_quotes") # Has One
 
     def __init__(self, quote_id, text):
         self.quote_id = quote_id
