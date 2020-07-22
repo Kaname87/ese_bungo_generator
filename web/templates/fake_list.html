@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>エセ文豪著作一覧</h1>
+  <div class="original-book-list">
+  {% for fake_author in fake_authors %}
+      <div class="original-book">
+      <p class="author">
+          <a href={{ url_for('list_fake_books', fake_author_id=fake_author.id) }}>{{fake_author.name}}</a>
+      </p>
+      <ul>
+          {% for fake_book in fake_author.fake_books %}
+          <li>『{{fake_book.title}}』</li>
+          {% endfor %}
+      </ul>
+      </div>
+  {% endfor %}
+  </div>
+{% endblock content %}

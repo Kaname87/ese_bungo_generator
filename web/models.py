@@ -78,7 +78,9 @@ class FakeBook(db.Model):
 
     # Relation
     original_book = db.relationship("Book", back_populates="fake_books") # Has One
-    fake_author = db.relationship("FakeAuthor", back_populates="fake_authors") # Has One
+
+    fake_author = db.relationship("FakeAuthor", back_populates="fake_books") # Has One
+
     fake_quotes = db.relationship("FakeQuote", backref="fake_books") # Has Many
 
     def __init__(self, book_id, title):

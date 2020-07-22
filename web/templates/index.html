@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="fake">
+    <div class="author-wrapper">
+      <div class="page-controller prev">←</div>
+      <div id="fake-author">
+        <image class="profile" src="/static/image/bungo/hayashi.jpg"
+        alt="エセ文豪近影"></image>
+      </div>
+      <div class="page-controller next">→</div>
+    </div>
+
+
+    <div class="novel">
+      <p id="fake-quote">{{ fake_quote.text }}</p>
+      <p id="fake-cite">
+        <a href={{ url_for('list_fake_books', fake_author_id=fake_author.id) }}>{{ fake_author.name }}『{{ fake_book.title }}』</a>
+      </p>
+    </div>
+  </div>
+  <div class="original">
+    <blockquote>
+      <p id="original-quote">{{ quote.text }}</p>
+      <cite id="original-cite">
+        <a href="{{ book.url }}" target="_blank" rel="noopener noreferrer">
+          {{ author.name }}『{{ book.title }}』
+        </a>
+      </cite>
+    </blockquote>
+  </div>
+
+  <div class="fabs">
+    <!-- <a href="https://codepen.io" target="_blank" class="fab orange" tooltip="Codepen"><i class="sec zmdi zmdi-codepen animated"></i></a>
+    <a href="https://plus.google.com" target="_blank" class="fab red" tooltip="Google Plus"><i class="sec zmdi zmdi-google-plus animated"></i></a> -->
+    <!-- <a href="https://twitter.com" target="_blank" class="fab twiiter-icon light-blue" tooltip="Twitter"><i class="sec zmdi zmdi-twitter animated"></i></a> -->
+    <!-- <a href="https://facebook.com" target="_blank" class="fab indigo" tooltip="Facebook"><i class="sec zmdi zmdi-facebook animated"></i></a> -->
+    <a target="_blank" class="fab twitter-icon" tooltip="Twitter"></a>
+ <!-- <a href="https://twitter.com" target="_blank" class="fab twiiter-icon light-blue" tooltip="Twitter"><i class="sec zmdi zmdi-twitter animated"></i></a> -->
+    <a target="_blank" class="fab waku" tooltip="Share">
+      <image class="" src="/static/image/chidori.png"></image>
+    </a>
+  </div>
+{% endblock %}
+
