@@ -8,6 +8,7 @@ Flask-Migrate==2.5.3
 flask-paginate==0.7.0
 Flask-Script==2.0.6
 future==0.18.2
+gunicorn==20.0.4
 Hamlish-Jinja==0.3.3
 idna==2.10
 itsdangerous==1.1.0

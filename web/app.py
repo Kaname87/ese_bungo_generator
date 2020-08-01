@@ -10,10 +10,10 @@ from sqlalchemy.orm import scoped_session
 from flask_paginate import Pagination, get_page_parameter
 
 # local modules
-from database import SessionLocal, engine
-import util
-import models
-import config
+from web.database import SessionLocal, engine
+from web import util
+from web import models
+from web import config
 
 PER_PAGE = 30
 def create_app():
@@ -96,7 +96,6 @@ def create_app():
 
     @app.errorhandler(404)
     def not_found(e):
-        print(e)
         return render_template('404.html')
 
     if os.environ['FLASK_ENV'] == 'production':

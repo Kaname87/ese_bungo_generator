@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath web app
+web: gunicorn 'web.app:create_app()'

@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 
 # local modules
-from database import Base
+from web.database import Base
 
 # CREATE TABLE authors (
 #   id uuid DEFAULT uuid_generate_v4(),

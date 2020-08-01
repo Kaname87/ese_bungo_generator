@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Loal
-import util
+from web import util
 util.load_env()
 
 engine = create_engine(
