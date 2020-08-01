@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>はて...?</h1>
+    <div class="fake">
+        <div class="author-wrapper">
+            <div id="fake-author">
+                <image class="profile" src="/static/image/bungo/fuyume.jpg" alt="エセ文豪近影"></image>
+            </div>
+        </div>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash">
+        {% for message in messages %}
+            <p >{{ message }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+  {% endwith %}
+{% endblock content %}

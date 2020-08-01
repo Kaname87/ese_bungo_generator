@@ -2,6 +2,7 @@
 
 {% block content %}
   <h1>原著一覧</h1>
+  {{ pagination.links }}
   <div class="original-book-list">
   {% for author in authors %}
       <div class="original-book">
@@ -16,4 +17,5 @@
       </div>
   {% endfor %}
   </div>
+  {{ pagination.links }}
 {% endblock content %}

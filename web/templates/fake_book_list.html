@@ -3,10 +3,8 @@
 {% block content %}
   <h1>{{fake_author.name}}</h1>
   <p class="original_author">
-    原著者: <a href={{ url_for('list_all_fake_books', author_name=fake_author.original_author.name)}}>{{fake_author.original_author.name}}</a>
+    原著: <a href={{ url_for('list_all_fake_books', author_name=fake_author.original_author.name)}}>{{fake_author.original_author.name}}</a>
   </p>
-
-
 
   <div class="fake-list-wrapper">
 
@@ -22,9 +20,7 @@
                     </li>
                     {% endfor %}
                 {% endfor %}
-
           </ul>
       </div>
   </div>
-
   {% endblock %}

@@ -10,7 +10,7 @@
           <ul>
               {% for fake_author in author.fake_authors %}
               <li>
-                <a href={{ url_for('list_fake_books', fake_author_id=fake_author.id)}}>{{fake_author.name}}</a>
+                <a href={{ url_for('list_fake_books', fake_author_name=fake_author.name)}}>{{fake_author.name}}</a>
               </li>
               {% endfor %}
           </ul>
