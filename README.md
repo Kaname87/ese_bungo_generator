@@ -17,3 +17,6 @@ mecab-python3
 gensim
 が必要です。
 
+# Web
+## development
+python -m web.app

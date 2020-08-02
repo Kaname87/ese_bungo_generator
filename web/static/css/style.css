@@ -1,5 +1,3 @@
-/* $sepia: #fff5e4;
-$purple: #7c4657; */
 
 html {
     /* height: 100%; */
@@ -9,7 +7,7 @@ html {
 body {
     /* height: 100%; */
     /* min-height: 100vh; */
-    background-image: url("/static/image/white_paper.jpg");
+    background-image: url("/static/image/white_paper.webp");
     color: #000000;
     font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
         "Hiragino Mincho Pro", "メイリオ";
@@ -61,8 +59,8 @@ header {
     font-size: 0.6rem;
 }
 
-.page-controller:visited {
-    cursor: pointer;
+.page-controller.deactivate{
+    cursor: none;
 }
 
 .service-name-wrapper > .page-controller {
@@ -100,7 +98,7 @@ header {
     flex-wrap: wrap;
 }
 
-#fake-author {
+.fake-author {
     flex-grow: 1;
     margin: 2% 5% 5% 5%;
     width: 70%;
@@ -409,4 +407,7 @@ header {
 }
 .pagination li{
     margin-right: 13px;
+}
+.hide {
+    display:none;
 }

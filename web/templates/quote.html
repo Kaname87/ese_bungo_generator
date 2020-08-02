@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="fake">
+    <div class="author-wrapper">
+      <!-- <div class="page-controller prev"> -->
+        {% if prev_quote_id |length %}
+          <a class="page-controller" href={{ url_for('show_fake_quote', fake_quote_id=fake_quote.id) }}></a>
+        {% else %}
+          <div class="page-controller"></div>
+        {% endif %}
+
+      <!-- </div> -->
+      <div class="fake-author hide" id="fake_author_profile">
+        <image
+          id="fake_author_profile_image"
+          class="profile"
+          src=""
+          alt="エセ文豪近影"
+          data-profile-image-idx="{{ profile_image_idx }}"
+        />
+      </div>
+        <a id="next" class="page-controller" href={{ url_for('show_next_fake_quote', fake_quote_id=fake_quote.id) }}>
+      </a>
+    </div>
+
+    <div class="novel">
+      <p id="fake-quote">{{ fake_quote.text }}</p>
+      <p id="fake-cite">
+        <a href={{ url_for('list_fake_books', fake_author_name=fake_quote.fake_book.fake_author.name) }}>{{ fake_quote.fake_book.fake_author.name }}『{{ fake_quote.fake_book.title }}』</a>
+      </p>
+    </div>
+  </div>
+  <div class="original">
+    <blockquote>
+      <p id="original-quote">{{ fake_quote.original_quote.text }}</p>
+      <cite id="original-cite">
+        <a href="{{ fake_quote.original_quote.book.url }}" target="_blank" rel="noopener noreferrer">
+          {{ fake_quote.original_quote.book.author.name }}『{{ fake_quote.original_quote.book.title }}』
+        </a>
+      </cite>
+    </blockquote>
+  </div>
+
+
+  <div class="sns">
+    <a target="_blank" id="twitter_share" class="sns-icon twitter-icon" href="https://twitter.com/intent/tweet?text={{twitter_share.text}}&hashtags=エセ文豪&url={{twitter_share.url}}"></a>
+  </div>
+{% endblock %}
+
+{% block script %}
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var profileImageList = [
+    'hayashi.jpg',
+    'fuyume.jpg',
+    'akutako.jpg',
+  ];
+  var imageDirPath = '/static/image/bungo/';
+
+  var profileImageElm = document.getElementById('fake_author_profile_image');
+
+
+  // Listner
+  profileImageElm.addEventListener('click', function(event) {
+    var target = event.target;
+    var newIdx = parseInt(target.dataset.profileImageIdx) + 1;
+    if (newIdx > profileImageList.length-1) {
+      newIdx = 0;
+    }
+    target.dataset.profileImageIdx = newIdx;
+    event.target.src = imageDirPath + profileImageList[newIdx]
+  });
+
+  profileImageElm.addEventListener('load', function(event) {
+    document.getElementById('fake_author_profile').classList.remove('hide');
+  });
+
+  // Set profile image index
+  document.getElementById('twitter_share').addEventListener('click', function(event) {
+    event.target.href += encodeURIComponent(
+      '?profile=' + profileImageElm.dataset.profileImageIdx
+    );
+  });
+
+  function initProfile() {
+    var initIdx = (
+        isNaN(profileImageElm.dataset.profileImageIdx) || (profileImageElm.dataset.profileImageIdx > profileImageList.length -1)
+      )
+      ? 0
+      : profileImageElm.dataset.profileImageIdx;
+    var initImage = profileImageList[initIdx];
+
+    profileImageElm.dataset.profileImageIdx = initIdx;
+    profileImageElm.src = imageDirPath + initImage;
+  }
+
+  initProfile();
+});
+</script>
+{% endblock %}

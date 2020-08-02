@@ -10,8 +10,8 @@ util.load_env()
 
 engine = create_engine(
     os.environ['DATABASE_URL'],
+    echo=(os.environ['FLASK_ENV'] == 'development'),
     encoding='utf-8'
-    # echo=(os.environ['FLASK_ENV'] == 'development')
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

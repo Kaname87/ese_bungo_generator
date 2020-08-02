@@ -4,18 +4,20 @@ import random
 import urllib.parse
 
 from sqlalchemy import func, exc
-from flask import Flask, request, render_template, redirect, url_for, _app_ctx_stack, abort, flash
+from flask import Flask, request, render_template, redirect, url_for, _app_ctx_stack, abort, flash, jsonify
 from flask_cors import CORS
 from sqlalchemy.orm import scoped_session
 from flask_paginate import Pagination, get_page_parameter
 
 # local modules
+
 from web.database import SessionLocal, engine
 from web import util
 from web import models
 from web import config
 
 PER_PAGE = 30
+
 def create_app():
     models.Base.metadata.create_all(bind=engine)
     util.load_env()
@@ -30,8 +32,7 @@ def create_app():
         # Pick Random Fake Quote
         fake_quote = app.session.query(models.FakeQuote).order_by(func.random()).first()
 
-        twitter_share = get_twitter_share_info(fake_quote)
-        return render_template('index.html', fake_quote=fake_quote, twitter_share=twitter_share)
+        return render_fake_quote_page(fake_quote)
 
     @app.route('/ese_meigen/<fake_quote_id>')
     def show_fake_quote(fake_quote_id):
@@ -39,12 +40,64 @@ def create_app():
         # When invalid id is passed, just redirect to random page
         if not util.is_uuid(fake_quote_id):
             return redirect(url_for('show_random_quote'))
-        fake_quote = app.session.query(models.FakeQuote).filter_by(id=fake_quote_id).first()
+        fake_quote = app.session.query(models.FakeQuote).filter(models.FakeQuote.id==fake_quote_id).first()
         if fake_quote == None:
             return redirect(url_for('show_random_quote'))
 
-        twitter_share = get_twitter_share_info(fake_quote)
-        return render_template('index.html',fake_quote=fake_quote, twitter_share=twitter_share)
+        return render_fake_quote_page(fake_quote)
+
+    # Common rendering
+    def render_fake_quote_page(fake_quote):
+        return render_template('quote.html',
+            fake_quote=fake_quote,
+            twitter_share=get_twitter_share_info(fake_quote),
+            profile_image_idx=get_profile_image_idx(),
+            prev_quote_id=request.args.get('prev_quote_id', '')
+        )
+
+    @app.route('/ese_meigen/<fake_quote_id>/next')
+    def show_next_fake_quote(fake_quote_id):
+        # When invalid id is passed, just redirect to random page
+        if not util.is_uuid(fake_quote_id):
+            return redirect(url_for('show_random_quote'))
+
+        # TODO: This next is not deterministic
+        next_fake_quote = app.session.query(models.FakeQuote).filter(models.FakeQuote.id!=fake_quote_id).first()
+
+        return redirect(url_for('show_fake_quote',
+            fake_quote_id=next_fake_quote.id,
+            prev_quote_id=fake_quote_id
+        ))
+
+    @app.route('/ese_meigen/<fake_quote_id>/next_json')
+    def show_next_fake_quote_json(fake_quote_id):
+        # When invalid id is passed, just redirect to random page
+        if not util.is_uuid(fake_quote_id):
+            return redirect(url_for('show_random_quote'))
+
+        # TODO: This next is not deterministic
+        next_fake_quote = app.session.query(models.FakeQuote).filter(models.FakeQuote.id!=fake_quote_id).first()
+        print('prev', fake_quote_id)
+        print('next', next_fake_quote.id)
+        if next_fake_quote == None:
+            return redirect(url_for('show_random_quote'))
+
+        next_fake_quote_dict = next_fake_quote.to_dict()
+        next_fake_quote_dict['fake_book'] = next_fake_quote.fake_book.to_dict()
+        next_fake_quote_dict['fake_book']['fake_author'] = next_fake_quote.fake_book.fake_author.to_dict()
+
+        next_original_quote_dict = next_fake_quote.original_quote.to_dict()
+        next_original_quote_dict['book'] = next_fake_quote.original_quote.book.to_dict()
+        next_original_quote_dict['book']['author'] = next_fake_quote.original_quote.book.author.to_dict()
+
+
+        return jsonify(
+            fake_quote=util.has_uuid_dict_to_json(next_fake_quote_dict),
+            # fake_book=next_fake_quote.fake_book.json,
+            # fake_author=next_fake_quote.fake_book.fake_author.json,
+            twitter_share=get_twitter_share_info(next_fake_quote),
+            prev_quiote_id=fake_quote_id
+        )
 
     @app.route('/bungo/list')
     def list_authors():
@@ -146,6 +199,11 @@ def create_app():
             'url': share_url,
             'text': share_text
         }
+
+    def get_profile_image_idx():
+        MAX_PROFILE_INDEX = 2
+        idx = int(request.args.get('profile', 0))
+        return MAX_PROFILE_INDEX if idx > MAX_PROFILE_INDEX else idx
 
     return app
 
