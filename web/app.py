@@ -8,6 +8,7 @@ from flask import Flask, request, render_template, redirect, url_for, _app_ctx_s
 from flask_cors import CORS
 from sqlalchemy.orm import scoped_session
 from flask_paginate import Pagination, get_page_parameter
+from flask_caching import Cache
 
 from web.database import SessionLocal, engine
 from web import util, models, config
@@ -23,6 +24,13 @@ def create_app():
     app.config.from_object(os.environ['APP_SETTINGS'])
     app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
+    cache_config = {
+        "CACHE_TYPE": "simple",
+        "CACHE_DEFAULT_TIMEOUT": 180,
+    }
+
+    cache = Cache(app, config=cache_config)
+
     @app.route('/')
     def show_random_quote():
         # Pick Random Fake Quote
@@ -30,6 +38,7 @@ def create_app():
         return render_fake_quote_page(fake_quote)
 
     @app.route('/ese_meigen/<fake_quote_id>')
+    # @cache.memoize()
     def show_fake_quote(fake_quote_id):
 
         # When invalid id is passed, just redirect to random page
@@ -96,6 +105,7 @@ def create_app():
     def list_authors():
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = PER_PAGE * (page-1)
+
         authors = app.session.query(models.Author) \
             .order_by(models.Author.name_kana) \
             .offset(offset) \
@@ -109,6 +119,7 @@ def create_app():
     def list_fake_authors():
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = PER_PAGE * (page-1)
+
         fake_authors = app.session.query(models.FakeAuthor) \
             .order_by(models.FakeAuthor.name) \
             .offset(offset) \
@@ -119,6 +130,7 @@ def create_app():
         return render_template('fake_list.html', fake_authors=fake_authors, pagination=pagination)
 
     @app.route('/bungo/<author_name>/ese_list')
+    @cache.memoize()
     def list_all_fake_books(author_name):
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = PER_PAGE * (page-1)
@@ -133,6 +145,7 @@ def create_app():
         return render_template('fake_list.html', fake_authors=author.fake_authors, pagination=pagination)
 
     @app.route('/ese_bungo/<fake_author_name>/novels')
+    @cache.memoize()
     def list_fake_books(fake_author_name):
         fake_author = app.session.query(models.FakeAuthor).filter_by(name=fake_author_name).first()
         if fake_author == None:
@@ -165,6 +178,7 @@ def create_app():
         ])
         return '{}{}'.format(name, message)
 
+    @cache.memoize()
     def get_pagenate(page, model_class, filters=None):
         msg = " " # "全{total}人中 {start} - {end}人表示中</b>"
 
@@ -178,6 +192,7 @@ def create_app():
         pagination = Pagination(page=page, display_msg=msg, per_page=PER_PAGE, total=total, record_name=record_name)
         return pagination
 
+    @cache.memoize()
     def get_twitter_share_info(fake_quote):
         MAX_LENGTH = 100
         share_url = urllib.parse.quote(
