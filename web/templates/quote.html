@@ -44,7 +44,7 @@
 
 
   <div class="sns">
-    <a target="_blank" id="twitter_share" class="sns-icon twitter-icon" href="https://twitter.com/intent/tweet?text={{twitter_share.text}}&hashtags=エセ文豪&url={{twitter_share.url}}"></a>
+    <a target="_blank" rel="noopener noreferrer" id="twitter_share" class="sns-icon twitter-icon" href="https://twitter.com/intent/tweet?text={{twitter_share.text}}&hashtags=エセ文豪&url={{twitter_share.url}}"></a>
   </div>
 {% endblock %}
 
@@ -54,9 +54,9 @@
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   var profileImageList = [
-    'hayashi.jpg',
-    'fuyume.jpg',
-    'akutako.jpg',
+    'hayashi.webp',
+    'fuyume.webp',
+    'akutako.webp',
   ];
   var imageDirPath = '/static/image/bungo/';
 
