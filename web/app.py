@@ -9,14 +9,12 @@ from flask_cors import CORS
 from sqlalchemy.orm import scoped_session
 from flask_paginate import Pagination, get_page_parameter
 
-# local modules
-
 from web.database import SessionLocal, engine
 from web import util
 from web import models
 from web import config
 
-PER_PAGE = 30
+PER_PAGE = 20
 
 def create_app():
     models.Base.metadata.create_all(bind=engine)
@@ -69,7 +67,8 @@ def create_app():
             prev_quote_id=fake_quote_id
         ))
 
-    @app.route('/ese_meigen/<fake_quote_id>/next_json')
+    #
+    # @app.route('/ese_meigen/<fake_quote_id>/next_json')
     def show_next_fake_quote_json(fake_quote_id):
         # When invalid id is passed, just redirect to random page
         if not util.is_uuid(fake_quote_id):
@@ -90,11 +89,8 @@ def create_app():
         next_original_quote_dict['book'] = next_fake_quote.original_quote.book.to_dict()
         next_original_quote_dict['book']['author'] = next_fake_quote.original_quote.book.author.to_dict()
 
-
         return jsonify(
             fake_quote=util.has_uuid_dict_to_json(next_fake_quote_dict),
-            # fake_book=next_fake_quote.fake_book.json,
-            # fake_author=next_fake_quote.fake_book.fake_author.json,
             twitter_share=get_twitter_share_info(next_fake_quote),
             prev_quiote_id=fake_quote_id
         )
@@ -110,7 +106,7 @@ def create_app():
             .all()
 
         pagination = get_pagenate(page, models.Author)
-        return render_template('list.html', authors=authors, pagination=pagination)
+        return render_template('original_author_list.html', authors=authors, pagination=pagination)
 
     @app.route('/ese_bungo/list')
     def list_fake_authors():

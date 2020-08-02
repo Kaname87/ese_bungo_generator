@@ -1,16 +1,12 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, class_mapper
 from sqlalchemy.dialects.postgresql import UUID
-# import uuid
-# import json
-# from datetime import datetime
 
-
-# local modules
 from web.database import Base
 
 class AppBase(Base):
     __abstract__ = True
+    __table_args__ = {'extend_existing': True}
 
     def to_dict(self):
         cls = self.__class__
@@ -36,7 +32,6 @@ class AppBase(Base):
 # );
 class Author(AppBase):
     __tablename__ = "authors"
-    __table_args__ = {'extend_existing': True}
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(String(), nullable=False)
@@ -61,7 +56,6 @@ class Author(AppBase):
 # );
 class Book(AppBase):
     __tablename__ = "books"
-    __table_args__ = {'extend_existing': True}
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     author_id = Column(UUID(as_uuid=True), ForeignKey('authors.id'))
@@ -117,7 +111,6 @@ class Quote(AppBase):
 # );
 class FakeAuthor(AppBase):
     __tablename__ = "fake_authors"
-    __table_args__ = {'extend_existing': True}
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     author_id = Column(UUID(as_uuid=True), ForeignKey('authors.id'))
@@ -143,7 +136,6 @@ class FakeAuthor(AppBase):
 # );
 class FakeBook(AppBase):
     __tablename__ = "fake_books"
-    __table_args__ = {'extend_existing': True}
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     book_id = Column(UUID(as_uuid=True), ForeignKey('books.id'))
@@ -178,7 +170,6 @@ class FakeBook(AppBase):
 # );
 class FakeQuote(AppBase):
     __tablename__ = "fake_quotes"
-    __table_args__ = {'extend_existing': True}
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     quote_id = Column(UUID(as_uuid=True), ForeignKey('quotes.id'))

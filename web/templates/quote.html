@@ -1,14 +1,27 @@
 {% extends 'base.html' %}
 
+{% block title %}{{fake_quote.original_quote.text}}{% endblock %}
+
+{% block header_page_controller_prev %}
+  {% if prev_quote_id |length %}
+    <a class="prev" href={{ url_for('show_fake_quote', fake_quote_id=fake_quote.id) }}>前</a>
+    {% else %}
+    <div class="prev"></div>
+  {% endif %}
+{% endblock %}
+
+{% block header_page_controller_next %}
+  <a class="next" href={{ url_for('show_next_fake_quote', fake_quote_id=fake_quote.id) }}>次</a>
+{% endblock %}
+
 {% block content %}
   <div class="fake">
     <div class="author-wrapper">
-      <!-- <div class="page-controller prev"> -->
-        {% if prev_quote_id |length %}
-          <a class="page-controller" href={{ url_for('show_fake_quote', fake_quote_id=fake_quote.id) }}></a>
-        {% else %}
-          <div class="page-controller"></div>
-        {% endif %}
+      {% if prev_quote_id |length %}
+        <a class="page-controller" href={{ url_for('show_fake_quote', fake_quote_id=fake_quote.id) }}></a>
+      {% else %}
+        <div class="page-controller"></div>
+      {% endif %}
 
       <!-- </div> -->
       <div class="fake-author hide" id="fake_author_profile">
@@ -20,13 +33,12 @@
           data-profile-image-idx="{{ profile_image_idx }}"
         />
       </div>
-        <a id="next" class="page-controller" href={{ url_for('show_next_fake_quote', fake_quote_id=fake_quote.id) }}>
-      </a>
+      <a id="next" class="page-controller" href={{ url_for('show_next_fake_quote', fake_quote_id=fake_quote.id) }}></a>
     </div>
 
     <div class="novel">
-      <p id="fake-quote">{{ fake_quote.text }}</p>
-      <p id="fake-cite">
+      <p class="fake-quote">{{ fake_quote.text }}</p>
+      <p class="fake-cite">
         <a href={{ url_for('list_fake_books', fake_author_name=fake_quote.fake_book.fake_author.name) }}>{{ fake_quote.fake_book.fake_author.name }}『{{ fake_quote.fake_book.title }}』</a>
       </p>
     </div>
@@ -41,8 +53,6 @@
       </cite>
     </blockquote>
   </div>
-
-
   <div class="sns">
     <a target="_blank" rel="noopener noreferrer" id="twitter_share" class="sns-icon twitter-icon" href="https://twitter.com/intent/tweet?text={{twitter_share.text}}&hashtags=エセ文豪&url={{twitter_share.url}}"></a>
   </div>

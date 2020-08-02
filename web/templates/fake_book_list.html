@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}{{fake_author.name}}{% endblock %}
+
 {% block content %}
   <h1>{{fake_author.name}}</h1>
   <p class="original_author">
@@ -7,14 +9,12 @@
   </p>
 
   <div class="fake-list-wrapper">
-
       <div class="fake-list">
-          <!-- <p class="fake-list-head">名言</p> -->
           <ul class="book">
               {% for fake_book in fake_author.fake_books %}
                   <li class="book-title">『{{fake_book.title}}』</li>
 
-                    {% for fake_quote in  fake_book.fake_quotes %}
+                    {% for fake_quote in fake_book.fake_quotes %}
                     <li class="quote-text">
                         <a href={{ url_for('show_fake_quote', fake_quote_id=fake_quote.id)}}>{{fake_quote.text}}</a>
                     </li>

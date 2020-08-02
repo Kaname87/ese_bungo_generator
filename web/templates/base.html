@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132694979-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "UA-132694979-1");
-    </script> -->
-
     <meta charset="utf-8" />
     <meta http-equiv="content-language" content="ja" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,452 +16,400 @@
     <meta property="og:description" content="文豪みたいな人の名言みたいな言葉。" />
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://http://esebungo.herokuapp.com/">
-    <meta property="og:image" content="https://http://esebungo.herokuapp.com/static/image/og.png">
+    <meta property="og:image" content="https://http://esebungo.herokuapp.com/static/image/og_card.webp">
 
     <title>{% block title %}{% endblock %} - エセ文豪 名言集</title>
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
 
     <style>
-        html {
-      /* height: 100%; */
-      font-size: 16px;
-  }
-
-  body {
-      /* height: 100%; */
-      /* min-height: 100vh; */
-      background-image: url("/static/image/white_paper.webp");
-      color: #000000;
-      font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
-          "Hiragino Mincho Pro", "メイリオ";
-
-      /* display: flex;
-      flex-direction: column; */
-  }
-
-  .main h1 {
-      font-weight: 100;
-      font-size: 1.8rem;
-      color: #7c4657;
-  }
-
-  body a {
-      color: #000;
-  }
-
-  header {
-      font-size: 0.7rem;
-      width: 100%;
-      margin: 4% 0 2% 0;
-  }
-
-  .service-name-wrapper {
-      display: flex;
-      justify-content: space-between;
-      vertical-align: middle;
-  }
-
-  #service-name {
-      margin: auto;
-  }
-  #service-name a {
-      text-decoration: none;
-      /* color: #7c4657; */
-      /* margin: auto; */
-  }
-
-  #page {
-      color: #000;
-      float: right;
-      margin-right: 5%;
-  }
-
-  .page-controller {
-      color: transparent;
-      width: 25%;
-      font-size: 0.6rem;
-  }
-
-  .page-controller.deactivate{
-      cursor: none;
-  }
-
-  .service-name-wrapper > .page-controller {
-      margin: auto;
-  }
-
-  .prev {
-      text-align: left;
-  }
-  .next {
-      text-align: right;
-  }
-  .service-name-wrapper .prev {
-      margin-left: 5%;
-  }
-  .service-name-wrapper .next {
-      margin-right: 5%;
-  }
-
-  .version-name {
-      font-size: 0.5rem;
-  }
-
-  .main {
-      display: flex;
-      flex-direction: column;
-      text-align: center;
-      padding-bottom: 30px;
-  }
-
-  .fake {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      flex-wrap: wrap;
-  }
-
-  .fake-author {
-      flex-grow: 1;
-      margin: 2% 5% 5% 5%;
-      width: 70%;
-  }
-
-  .profile {
-      max-width: 100%;
-      object-fit: contain;
-  }
-
-  .novel {
-      justify-content: flex-start;
-      margin: auto;
-      flex-grow: 3;
-  }
-
-  #fake-quote {
-      font-size: 1.1rem;
-      margin: 0 5%;
-  }
-
-  #fake-cite {
-      margin: 5% 10% 2% 0;
-      font-size: 0.9rem;
-      margin-left: auto;
-      text-align: right;
-  }
-  #fake-cite a{
-      text-decoration: none;
-      color: #000;
-      border-bottom: 0.05px solid black;
-  }
-
-  .author-wrapper {
-      display: flex;
-      flex-wrap: nowrap;
-      justify-content: space-between;
-  }
-
-  .author-wrapper .page-controller {
-      flex-grow: 1;
-  }
-
-  .author-wrapper .prev {
-      margin-left: 0;
-  }
-
-  .author-wrapper .next {
-      margin-right: 0;
-  }
-
-  .original {
-      margin: 2% 3%;
-  }
-
-  .original blockquote {
-      border-top: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
-      color: #666;
-      font-style: italic;
-      padding: 4% 1%;
-      text-align: center;
-  }
-
-  .original blockquote p {
-      padding: 0;
-      margin: 0 0 3% 0;
-      line-height: 1.7;
-      font-size: 0.8rem;
-  }
-
-  .original blockquote cite {
-      display: block;
-      text-align: right;
-      font-size: 0.65rem;
-  }
-
-  .original a:link,
-  .original a:visited,
-  .original a:hover,
-  .original a:active {
-      color: #666;
-  }
-
-  @media screen and (min-width: 320px) {
-      #fake-quote {
-          font-size: 1.3rem;
+      html {
+        font-size: 16px;
       }
-  }
-
-  @media screen and (min-width: 568px) {
-      header {
-          margin: 2% 0 2% 0;
+      body {
+        background-image: url("/static/image/white_paper.webp");
+        color: #000;
+        font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
+              "Hiragino Mincho Pro", "メイリオ";
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+      body a {
+          color: #000;
+      }
+      .site-font-color {
+          color: #7c4657;
+      }
+      .header {
+          font-size: 0.7rem;
+          width: 100%;
+          margin: 4% 0 2% 0;
+      }
+      .header .service-name {
+          margin: auto;
+      }
+      .header .service-name a {
+          text-decoration: none;
+      }
+      .header .service-name-wrapper {
+          display: flex;
+          justify-content: space-between;
+          vertical-align: middle;
+      }
+      .header-page-controller .prev,
+      .header-page-controller .next {
+        display: none;
       }
 
-      #service-name {
-          font-size: 0.8rem;
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        padding-bottom: 30px;
+      }
+      .main h1 {
+        font-weight: 100;
+        font-size: 1.8rem;
+        color: #7c4657;
+      }
+      .page-controller {
+          color: transparent;
+          width: 25%;
+          font-size: 0.6rem;
+      }
+
+      .prev {
+          text-align: left;
+      }
+      .next {
+          text-align: right;
+      }
+
+      .service-name-wrapper > .page-controller {
+          margin: auto;
+      }
+
+      .service-name-wrapper .prev {
+          margin-left: 5%;
+      }
+      .service-name-wrapper .next {
+          margin-right: 5%;
       }
 
       .fake {
-          flex-wrap: nowrap;
-          margin: 0 3%;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          flex-wrap: wrap;
       }
 
+      .fake-author {
+          flex-grow: 1;
+          margin: 2% 5% 5% 5%;
+          width: 70%;
+      }
+
+      .profile {
+          max-width: 100%;
+          object-fit: contain;
+      }
+
+      .novel {
+          justify-content: flex-start;
+          margin: auto;
+          flex-grow: 3;
+      }
+
+      .fake-quote {
+          font-size: 1.1rem;
+          margin: 0 5%;
+      }
+
+      .fake-cite {
+          margin: 5% 10% 2% 0;
+          font-size: 0.9rem;
+          margin-left: auto;
+          text-align: right;
+      }
+      .fake-cite a{
+          text-decoration: none;
+          color: #000;
+          border-bottom: 0.05px solid black;
+      }
       .author-wrapper {
-          max-width: 30%;
-          min-width: 30%;
+          display: flex;
+          flex-wrap: nowrap;
+          justify-content: space-between;
       }
 
       .author-wrapper .page-controller {
-          display: none;
+          flex-grow: 1;
       }
 
-      #fake-quote {
-          padding-top: 3%;
-          font-size: 1.4rem;
+      .author-wrapper .prev {
+          margin-left: 0;
       }
-      #fake-cite {
-          font-size: 1rem;
+
+      .author-wrapper .next {
+          margin-right: 0;
+      }
+
+      .original {
+          margin: 2% 3%;
       }
 
       .original blockquote {
-          padding: 3% 1%;
+          border-top: 1px solid #ccc;
+          border-bottom: 1px solid #ccc;
+          color: #666;
+          font-style: italic;
+          padding: 4% 1%;
+          text-align: center;
       }
 
       .original blockquote p {
-          font-size: 0.9rem;
+          padding: 0;
+          margin: 0 0 3% 0;
+          line-height: 1.7;
+          font-size: 0.8rem;
       }
+
       .original blockquote cite {
-          font-size: 0.7rem;
-      }
-  }
-
-  @media screen and (min-width: 1024px) {
-      #service-name {
-          font-size: 1rem;
+          display: block;
+          text-align: right;
+          font-size: 0.65rem;
       }
 
-      #fake-quote {
-          font-size: 1.7rem;
+      .original a:link,
+      .original a:visited,
+      .original a:hover,
+      .original a:active {
+          color: #666;
       }
 
-      #fake-cite {
-          font-size: 1.3rem;
+      .original-book-list {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          flex-wrap: wrap;
+          margin: 0;
       }
 
-      .original blockquote p {
+      .original-book {
+          width: 300px;
+      }
+      .original-book .author {
           font-size: 1.2rem;
+          font-weight: bold;
+          margin-bottom: 5px;
       }
-      .original blockquote cite {
-          font-size: 1rem;
+      .original-book .author a{
+          color:black;
       }
-  }
+      .original-book ul {
+        list-style-type: none;
+        margin-left: 0;
+        padding-left: 0;
+        margin-top: 2px;
+      }
 
-  .original-book-list {
-      display: flex;
-      flex-direction: row;
-      justify-content: start;
-      flex-wrap: wrap;
-      /* align-content: space-between; */
-      padding-left: 10%;
-      margin: 0;
-  }
+      .fake-list ul{
+        list-style-type: none;
+        padding: 0;
+      }
+      .fake-list {
+        text-align: left;
+        margin: 0 20px;
+      }
+      .fake-list-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .fake-list-head{
+        font-weight: bold;
+      }
+      .fake-list .book-title {
+        padding-top: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+      .fake-list .quote-text {
+        padding-bottom: 5px;
+        font-size: 0.9rem;
+      }
+      .sns {
+        bottom: 10px;
+        position: fixed;
+        margin: 1em;
+        right: 0;
+      }
+      .sns-icon {
+        display: block;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        margin: 20px auto 0;
+        cursor: pointer;
+        -webkit-transition: all .1s ease-out;
+        transition: all .1s ease-out;
+        position: relative;
+      }
 
-  .original-book {
-      /* display: flex; */
-      width: 250px;
-      /* flex-direction: column; */
-      text-align: left;
-      /* margin-right: 10px; */
-      /* justify-content: start; */
-      /* /* flex-wrap: wrap; */
-  }
-  .original-book .author {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 5px;
-  }
-  .original-book .author a{
-      /* text-decoration: none; */
-      color:black;
-  }
-  .original-book ul {
-      list-style-type: none;
-      margin-left: 0;
-      padding-left: 0;
-      margin-top: 2px;
-  /* font-weight: bold; */
-  }
+      .twitter-icon {
+        background-image: url("/static/image/twitter_icon_black.svg");
+      }
+      .twitter-icon .st1{
+        fill:#1DA1F2;
+      }
+      .twitter-icon:hover {
+        background-image: url("/static/image/twitter_icon_blue.svg");
+      }
+      .pagination {
+          margin: 10px 0;
+      }
 
-  .fake-list ul{
-      list-style-type: none;
-      padding: 0;
-  }
+      .pagination ul li{
+          display: inline-block;
+      }
+      .pagination li{
+          margin-right: 13px;
+      }
+      .hide {
+          display:none;
+      }
+      .footer {
+        display: flex;
+        flex-direction: column;
+        font-size: 0.9rem;
+      }
+      .footer ul {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding: 0;
+        list-style-type: none;
+      }
+      .footer li {
+        margin: 0.2em;
+        padding: 0.5em;
+        text-align: center;
+        margin-bottom: 5px;
+      }
+      @media screen and (min-width: 320px) {
+          .fake-quote {
+              font-size: 1.3rem;
+          }
+      }
+      @media screen and (min-width: 568px) {
+          header {
+              margin: 2% 0 2% 0;
+          }
+          .service-name {
+              font-size: 0.8rem;
+          }
 
-  .fake-list {
-      text-align: left;
-      /* width:20%; */
-      margin-left: 40px;
-  }
-  .fake-list-wrapper {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      flex-wrap: wrap;
-  }
-  .fake-list-head{
-      font-weight: bold;
-  }
-  .fake-list .book-title {
-      padding-top: 10px;
-      font-weight: bold;
-      font-size: 1rem;
-  }
-  .fake-list .quote-text {
-      padding-bottom: 5px;
-      font-size: 0.9rem;
+          .fake {
+              flex-wrap: nowrap;
+              margin: 0 3%;
+          }
+          .author-wrapper {
+              max-width: 30%;
+              min-width: 30%;
+          }
 
-      /* font-weight: bold; */
-  }
-  .share {
+          .author-wrapper .page-controller {
+              display: none;
+          }
 
-  }
-  .bottom-line {
+          .fake-quote {
+              padding-top: 3%;
+              font-size: 1.4rem;
+          }
+          .fake-cite {
+              font-size: 1rem;
+          }
 
-      margin: 30px 20px;
-  }
-  .footer {
-      /* margin-top: auto; */
-      font-size: 0.85rem;
-  }
-  .footer ul {
-      display: flex;
-      /* justify-content: space-between; */
-      margin: 0 0 0 1em;
-      padding: 0;
-      list-style-type: none;
-  }
-  .footer li {
-      margin: 0.2em;
-      padding: 0.5em;
-      text-align: center;
-      margin-bottom: 5px;
-  }
+          .original blockquote {
+              padding: 3% 1%;
+          }
 
-  .site-font-color {
-      color: #7c4657;
-  }
+          .original blockquote p {
+              font-size: 0.9rem;
+          }
+          .original blockquote cite {
+              font-size: 0.7rem;
+          }
+          .header-page-controller .prev,
+          .header-page-controller .next {
+            display: flex;
+            margin: 0 20px;
+          }
+      }
 
-  .footer a {
-      color: #7c4657;
-      /* color: #666; */
-      /* text-decoration: none; */
-  }
-  /* https://colors.muz.li/palette/f7f7f0/adada8/f0f3f7/a8aaad/f7f0f2 */
-  .color-red {
-      color: #d15830
-  }
-  .color-green {
-      color: #1f3e33
-  }
-  .color-yellow {
-      color: #c4c734
-  }
-  .color-green {
-      color: #1f3e33
-  }
-  .color-gray {
-      color: #9bada9;
-  }
-  .sns {
-    bottom: 0;
-    position: fixed;
-    margin: 1em;
-    right: 0;
-  }
+      @media screen and (min-width: 1024px) {
+          .service-name {
+              font-size: 1rem;
+          }
 
-  .sns-icon {
-    display: block;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    text-align: center;
-    color: white;
-    margin: 20px auto 0;
-    /* box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.18), 0px 4px 12px -7px rgba(0, 0, 0, 0.15); */
-    cursor: pointer;
-    -webkit-transition: all .1s ease-out;
-    transition: all .1s ease-out;
-    position: relative;
-  }
+          .fake-quote {
+              font-size: 1.7rem;
+          }
 
-  .twitter-icon {
-      background-image: url("/static/image/Twitter_Social_Icon_Square_White.svg");
-      background-color: #657786;
-  }
-  .twitter-icon:hover {
-      background-color: #1DA1F2
-  }
-  .pagination {
-      margin: 10px 0;
-  }
+          .fake-cite {
+              font-size: 1.3rem;
+          }
 
-  .pagination ul li{
-      display: inline-block;
-  }
-  .pagination li{
-      margin-right: 13px;
-  }
-  .hide {
-      display:none;
-  }
+          .original blockquote p {
+              font-size: 1.2rem;
+          }
+          .original blockquote cite {
+              font-size: 1rem;
+          }
+      }
   </style>
   </head>
-
   <body>
-    <header>
+    <header class="header">
       <div class="service-name-wrapper">
-        <div class="page-controller prev">←</div>
-        <div><span id="service-name">
-
+        <div class="header-page-controller">
+          {% block header_page_controller_prev %}{% endblock %}
+        </div>
+        <div><span class="service-name">
             <a href={{ url_for('show_random_quote') }}>
             エセ文豪名言集
             </a>
         </span></div>
-        <div class="page-controller next">
-          <span id="page"></span>
+        <div class="header-page-controller">
+            {% block header_page_controller_next %}{% endblock %}
         </div>
       </div>
     </header>
     <main class="main">
         {% block content %}{% endblock %}
     </main>
-    <footer class="footer site-font-color">
+    <footer class="footer">
         <ul>
-            <li><a href={{ url_for('list_authors') }}>原著一覧</a></li>
-            <li><a href={{ url_for('list_fake_authors') }}>エセ文豪著作一覧</a></li>
+            <li><a class="footer site-font-color" href={{ url_for('list_authors') }}>原著一覧</a></li>
+            <li><a class="footer site-font-color" href={{ url_for('list_fake_authors') }}>エセ文豪著作一覧</a></li>
         </ul>
     </footer>
   {% block script %}
   {% endblock %}
+
+
+  {% if 'esebungo.app.heroku' in request.url %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132694979-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "UA-132694979-1");
+    </script>
+  {% endif %}
   </body>
 </html>
