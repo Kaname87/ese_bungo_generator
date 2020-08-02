@@ -38,7 +38,7 @@ def create_app():
         return render_fake_quote_page(fake_quote)
 
     @app.route('/ese_meigen/<fake_quote_id>')
-    # @cache.memoize()
+
     def show_fake_quote(fake_quote_id):
 
         # When invalid id is passed, just redirect to random page
