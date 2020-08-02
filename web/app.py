@@ -10,9 +10,7 @@ from sqlalchemy.orm import scoped_session
 from flask_paginate import Pagination, get_page_parameter
 
 from web.database import SessionLocal, engine
-from web import util
-from web import models
-from web import config
+from web import util, models, config
 
 PER_PAGE = 20
 
@@ -29,7 +27,6 @@ def create_app():
     def show_random_quote():
         # Pick Random Fake Quote
         fake_quote = app.session.query(models.FakeQuote).order_by(func.random()).first()
-
         return render_fake_quote_page(fake_quote)
 
     @app.route('/ese_meigen/<fake_quote_id>')
@@ -100,7 +97,7 @@ def create_app():
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = PER_PAGE * (page-1)
         authors = app.session.query(models.Author) \
-            .order_by(models.Author.name) \
+            .order_by(models.Author.name_kana) \
             .offset(offset) \
             .limit(PER_PAGE) \
             .all()

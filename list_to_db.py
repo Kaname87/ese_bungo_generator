@@ -4,17 +4,16 @@ import psycopg2
 import util
 # from config import config
 
-
 def get_connect():
     return psycopg2.connect("dbname=ese_bungo user=kaname")
 
 
-def select_or_insert_author(cur, author_name):
+def select_or_insert_author(cur, author_name, author_name_kana, ):
     cur.execute("SELECT id from authors where name = %s", (author_name, ))
 
     if cur.rowcount == 0:
         print("Insert new author: {}".format(author_name))
-        cur.execute("INSERT INTO authors (name) VALUES (%s) RETURNING id", (author_name, ))
+        cur.execute("INSERT INTO authors (name, name_kana) VALUES (%s, %s) RETURNING id", (author_name, author_name_kana))
     # else:
     #     print("Already exiest")
 
@@ -51,17 +50,14 @@ def import_data():
     conn = None
     try:
         conn = get_connect()
-
         cur = conn.cursor()
 
-        source_dict = util.read_json_to_dict(const.ORIGINAL_NOVEL_FILE)
+        source_dict = util.read_json_to_dict(const.ORIGINAL_NOVEL_SOURCE)
         print(source_dict)
-
-        for author_name, books in source_dict.items():
+        for author_name, data in source_dict.items():
             print('Procss: {}'.format(author_name))
-
-            author_id =select_or_insert_author(cur, author_name)
-            for book in books:
+            author_id = select_or_insert_author(cur, author_name, data['author']['name_kana'])
+            for book in data['novels']:
                 book_id = select_or_insert_book(cur, author_id, book.get('title'), book.get('url'))
                 for quote_text in book['quotes']:
                     quote_id = select_or_insert_quote(cur, book_id, quote_text)
@@ -76,7 +72,6 @@ def import_data():
         if conn is not None:
             conn.close()
             print('Database connection closed.')
-
 
 if __name__ == '__main__':
     import_data()

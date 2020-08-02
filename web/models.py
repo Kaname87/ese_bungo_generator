@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship, class_mapper
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -7,6 +7,9 @@ from web.database import Base
 class AppBase(Base):
     __abstract__ = True
     __table_args__ = {'extend_existing': True}
+
+    created_at = Column(DateTime(timezone=True), default=func.now())
+    updated_at = Column(DateTime(timezone=True), default=func.now())
 
     def to_dict(self):
         cls = self.__class__
@@ -25,30 +28,38 @@ class AppBase(Base):
                 d[c.name] = v
         return d
 
+
 # CREATE TABLE authors (
-#   id uuid DEFAULT uuid_generate_v4(),
-#   name varchar(100) NOT NULL,
+#   id UUID DEFAULT uuid_generate_v4(),
+#   name VARCHAR(100) COLLATE "ja-x-icu" NOT NULL,
+#   name_kana VARCHAR(100) COLLATE "ja-x-icu" NOT NULL,
+#   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+#   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id)
 # );
 class Author(AppBase):
     __tablename__ = "authors"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
-    name = Column(String(), nullable=False)
+    name = Column(String(collation='ja-x-icu'), nullable=False)
+    name_kana = Column(String(collation='ja-x-icu'), nullable=False)
 
     # Relation
     fake_authors = relationship("FakeAuthor", backref="authors") # Has many
     books = relationship("Book", backref="authors") # Has many
 
-    def __init__(self, name):
+    def __init__(self, name, name_kana):
         self.name = name
+        self.name_kana = name_kana
 
 
 # CREATE TABLE books (
-#   id uuid DEFAULT uuid_generate_v4(),
-#   author_id uuid NOT NULL,
-#   title varchar(250) NOT NULL,
-#   url varchar(250) NOT NULL,
+#   id UUID DEFAULT uuid_generate_v4(),
+#   author_id UUID NOT NULL,
+#   title VARCHAR(250) NOT NULL,
+#   url VARCHAR(250) NOT NULL,
+#   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+#   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
 #   CONSTRAINT fk_author
 #     FOREIGN KEY(author_id)
@@ -59,7 +70,6 @@ class Book(AppBase):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     author_id = Column(UUID(as_uuid=True), ForeignKey('authors.id'))
-
     title = Column(String(), nullable=False)
     url = Column(String(), nullable=False)
 
@@ -75,9 +85,11 @@ class Book(AppBase):
 
 
 # CREATE TABLE quotes (
-#   id uuid DEFAULT uuid_generate_v4(),
-#   book_id uuid NOT NULL,
-#   text text NOT NULL,
+#   id UUID DEFAULT uuid_generate_v4(),
+#   book_id UUID NOT NULL,
+#   text TEXT NOT NULL,
+#   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+#   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
 #   CONSTRAINT fk_book
 #     FOREIGN KEY(book_id)
@@ -89,7 +101,6 @@ class Quote(AppBase):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     book_id = Column(UUID(as_uuid=True), ForeignKey('books.id'))
-
     text = Column(String(), nullable=False)
 
     # Relation
@@ -101,9 +112,11 @@ class Quote(AppBase):
 
 
 # CREATE TABLE fake_authors (
-#   id uuid DEFAULT uuid_generate_v4(),
-#   author_id uuid NOT NULL,
+#   id UUID DEFAULT uuid_generate_v4(),
+#   author_id UUID NOT NULL,
 #   name varchar(100) NOT NULL,
+#   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+#   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
 #   CONSTRAINT fk_original_author
 #     FOREIGN KEY(author_id)
@@ -126,13 +139,19 @@ class FakeAuthor(AppBase):
 
 
 # CREATE TABLE fake_books (
-#   id uuid DEFAULT uuid_generate_v4(),
-#   book_id uuid NOT NULL,
-#   title varchar(250) NOT NULL,
+#   id UUID DEFAULT uuid_generate_v4(),
+#   book_id UUID NOT NULL,
+#   fake_author_id UUID NOT NULL,
+#   title VARCHAR(250) NOT NULL,
+#   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+#   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
 #   CONSTRAINT fk_original_book
 #     FOREIGN KEY(book_id)
-#     REFERENCES books(id)
+#     REFERENCES books(id),
+#   CONSTRAINT fk_fake_author
+#     FOREIGN KEY(fake_author_id)
+#       REFERENCES fake_authors(id)
 # );
 class FakeBook(AppBase):
     __tablename__ = "fake_books"
@@ -144,9 +163,7 @@ class FakeBook(AppBase):
 
     # Relation
     original_book = relationship("Book", back_populates="fake_books") # Has One
-
     fake_author = relationship("FakeAuthor", back_populates="fake_books") # Has One
-
     fake_quotes = relationship("FakeQuote", backref="fake_books") # Has Many
 
     def __init__(self, book_id, title):
@@ -154,19 +171,20 @@ class FakeBook(AppBase):
         self.title = title
 
 
-
 # CREATE TABLE fake_quotes (
-#   id uuid DEFAULT uuid_generate_v4(),
-#   quote_id uuid NOT NULL,
-#   fake_book_id uuid NOT NULL,
-#   text text NOT NULL,
+#   id UUID DEFAULT uuid_generate_v4(),
+#   quote_id UUID NOT NULL,
+#   fake_book_id UUID NOT NULL,
+#   text TEXT NOT NULL,
+#   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+#   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
 #   CONSTRAINT fk_original_quote
 #     FOREIGN KEY(quote_id)
 #       REFERENCES quotes(id),
 #   CONSTRAINT fk_fake_book
 #     FOREIGN KEY(fake_book_id)
-#       REFERENCES fake_books(id),
+#       REFERENCES fake_books(id)
 # );
 class FakeQuote(AppBase):
     __tablename__ = "fake_quotes"
@@ -183,4 +201,3 @@ class FakeQuote(AppBase):
     def __init__(self, quote_id, text):
         self.quote_id = quote_id
         self.text = text
-

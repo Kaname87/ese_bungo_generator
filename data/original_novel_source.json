@@ -1,0 +1,328 @@
+{
+    "芥川龍之介": {
+      "author": {
+        "name_kana": "あくたがわりゅうのすけ"
+      },
+      "novels": [
+        {
+          "title": "侏儒の言葉",
+          "url": "https://www.aozora.gr.jp/cards/000879/card158.html",
+          "quotes": [
+            "人生は一箱のマッチに似ている。重大に扱うのは馬鹿馬鹿しい。重大に扱わなければ危険である。",
+            "危険思想とは常識を実行に移そうとする思想である。"
+          ]
+        },
+        {
+          "title": "河童",
+          "url": "https://www.aozora.gr.jp/cards/000879/card69.html",
+          "quotes": ["阿呆はいつも彼以外のものを阿呆であると信じている。"]
+        }
+      ]
+    },
+    "泉鏡花": {
+      "author": {
+        "name_kana": "いずみきょうか"
+      },
+      "novels": [
+        {
+          "title": "夜行巡査",
+          "url": "https://www.aozora.gr.jp/cards/000050/card897.html",
+          "quotes": [
+            "なんという木念人だろう、因業な寒鴉め、といったところで仕方もないかい。",
+            "その光は暗夜に怪獣の眼のごとし。"
+          ]
+        }
+      ]
+    },
+    "江戸川乱歩": {
+      "author": {
+        "name_kana": "えどがわらんぽ"
+      },
+      "novels": [
+        {
+          "title": "怪人二十面相",
+          "url": "https://www.aozora.gr.jp/cards/001779/card57228.html",
+          "quotes": [
+            "そのころ、東京中の町という町、家という家では、ふたり以上の人が顔をあわせさえすれば、まるでお天気のあいさつでもするように、怪人二十面相のうわさをしていました。"
+          ]
+        }
+      ]
+    },
+    "折口信夫": {
+      "author": {
+        "name_kana": "おりぐちしのぶ"
+      },
+      "novels": [
+        {
+          "title": "河童の話",
+          "url": "https://www.aozora.gr.jp/cards/000933/card18395.html",
+          "quotes": ["雪隠の下の河童の覘うものは、尻子玉であった"]
+        },
+        {
+          "title": "まれびとの歴史",
+          "url": "https://www.aozora.gr.jp/cards/000933/card47201.html",
+          "quotes": [
+            "実は まれびと は人に言う語ではなかった。神に疎くなるに連れて、おとずれ来る神に用いたものが、転用せられて来たのであった"
+          ]
+        }
+      ]
+    },
+    "梶井基次郎": {
+      "author": {
+        "name_kana": "かじいもとじろう"
+      },
+      "novels": [
+        {
+          "title": "桜の樹の下には",
+          "url": "https://www.aozora.gr.jp/cards/000074/card427.html",
+          "quotes": ["桜の樹の下には屍体が埋まっている！"]
+        },
+        {
+          "title": "檸檬",
+          "url": "https://www.aozora.gr.jp/cards/000074/card424.html",
+          "quotes": ["その檸檬の冷たさはたとえようもなくよかった。"]
+        }
+      ]
+    },
+    "北大路魯山人": {
+      "author": {
+        "name_kana": "きたおおじろさんじん"
+      },
+      "novels": [
+        {
+          "title": "出汁の取り方",
+          "url": "https://www.aozora.gr.jp/cards/001403/card49986.html",
+          "quotes": [
+            "かつおぶしはどういうふうに選択し、どういうふうにして削るか。"
+          ]
+        },
+        {
+          "title": "握り寿司の名人",
+          "url": "https://www.aozora.gr.jp/cards/001403/card49989.html",
+          "quotes": [
+            "いったい寿司のうまいまずいはなんとしても魚介原料の問題で、第一に素晴らしいまぐろが加わらなければ寿司を構成しない。"
+          ]
+        }
+      ]
+    },
+    "坂口安吾": {
+      "author": {
+        "name_kana": "さかぐちあんご"
+      },
+      "novels": [
+        {
+          "title": "不良少年とキリスト",
+          "url": "https://www.aozora.gr.jp/cards/001095/card42840.html",
+          "quotes": [
+            "もう十日、歯がいたい。",
+            "人間は生きることが、全部である。死ねば、なくなる。",
+            "生と死を論ずる宗教だの哲学などに、正義も、真理もありはせぬ。あれは、オモチャだ。"
+          ]
+        },
+        {
+          "title": "恋愛論",
+          "url": "https://www.aozora.gr.jp/cards/001095/card42851.html",
+          "quotes": [
+            "しかし恋愛は、言葉でもなければ、雰囲気でもない。ただ、好きだ、ということの一つなのだろう。"
+          ]
+        }
+      ]
+    },
+    "太宰治": {
+      "author": {
+        "name_kana": "だざいおさむ"
+      },
+      "novels": [
+        {
+          "title": "ヴィヨンの妻",
+          "url": "https://www.aozora.gr.jp/cards/000035/card2253.html",
+          "quotes": [
+            "女には、幸福も不幸も無いものです",
+            "男には、不幸だけがあるんです。いつも恐怖と、戦ってばかりいるのです",
+            "おそろしいのはね、この世の中の、どこかに神がいる、という事なんです。いるんでしょうね？"
+          ]
+        },
+        {
+          "title": "斜陽",
+          "url": "https://www.aozora.gr.jp/cards/000035/card1565.html",
+          "quotes": [
+            "おむすびが、どうしておいしいのだか、知っていますか。あれはね、人間の指で握りしめて作るからですよ"
+          ]
+        },
+        {
+          "title": "津軽",
+          "url": "https://www.aozora.gr.jp/cards/000035/card2282.html",
+          "quotes": ["大人とは、裏切られた青年の姿である。"]
+        },
+        {
+          "title": "人間失格",
+          "url": "https://www.aozora.gr.jp/cards/000035/card301.html",
+          "quotes": [
+            "恥の多い生涯を送って来ました。",
+            "猿だ。猿の笑顔だ。",
+            "世間というのは、君じゃないか",
+            "人間、失格。"
+          ]
+        },
+        {
+          "title": "富嶽百景",
+          "url": "https://www.aozora.gr.jp/cards/000035/card270.html",
+          "quotes": ["富士には月見草がよく似合う"]
+        },
+        {
+          "title": "走れメロス",
+          "url": "https://www.aozora.gr.jp/cards/000035/card1567.html",
+          "quotes": [
+            "メロスは激怒した。",
+            "万歳、王様万歳。",
+            "勇者は、ひどく赤面した。"
+          ]
+        }
+      ]
+    },
+    "田山花袋": {
+      "author": {
+        "name_kana": "たやまかたい"
+      },
+      "novels": [
+        {
+          "title": "田舎教師",
+          "url": "https://www.aozora.gr.jp/cards/000214/card1668.html",
+          "quotes": ["四里の道は長かった。"]
+        }
+      ]
+    },
+    "夏目漱石": {
+      "author": {
+        "name_kana": "なつめそうせき"
+      },
+      "novels": [
+        {
+          "title": "草枕",
+          "url": "https://www.aozora.gr.jp/cards/000148/card776.html",
+          "quotes": [
+            "智に働けば角が立つ。情に棹させば流される。意地を通せば窮屈だ。とかくに人の世は住みにくい。"
+          ]
+        },
+        {
+          "title": "こころ",
+          "url": "https://www.aozora.gr.jp/cards/000148/card773.html",
+          "quotes": ["私はその人を常に先生と呼んでいた。"]
+        },
+        {
+          "title": "三四郎",
+          "url": "https://www.aozora.gr.jp/cards/000148/card794.html",
+          "quotes": [
+            "迷子の英訳を知っていらしって",
+            "「迷える子」と美禰子が口の内で言った。三四郎はその呼吸を感ずることができた。"
+          ]
+        },
+        {
+          "title": "吾輩は猫である",
+          "url": "https://www.aozora.gr.jp/cards/000148/card789.html",
+          "quotes": ["吾輩は猫である。名前はまだない。"]
+        }
+      ]
+    },
+    "樋口一葉": {
+      "author": {
+        "name_kana": "ひぐちいちよう"
+      },
+      "novels": [
+        {
+          "title": "たけくらべ",
+          "url": "https://www.aozora.gr.jp/cards/000064/card56041.html",
+          "quotes": [
+            "解かば足にもとどくべき毛髪を、根あがりに堅くつめて前髪大きく髷おもたげの",
+            "打つや鼓のしらべ、三味の音色に事かかぬ場処も、祭りは別物、酉の市を除けては一年一度の賑わいぞかし"
+          ]
+        }
+      ]
+    },
+    "福沢諭吉": {
+      "author": {
+        "name_kana": "ふくざわゆきち"
+      },
+      "novels": [
+        {
+          "title": "学問のすすめ",
+          "url": "https://www.aozora.gr.jp/cards/000296/card47061.html",
+          "quotes": ["「天は人の上に人を造らず人の下に人を造らず」と言えり。"]
+        }
+      ]
+    },
+    "宮沢賢治": {
+      "author": {
+        "name_kana": "みやざわけんじ"
+      },
+      "novels": [
+        {
+          "title": "銀河鉄道の夜",
+          "url": "https://www.aozora.gr.jp/cards/000081/card456.html",
+          "quotes": [
+            "けれども、誰だって、ほんとうにいいことをしたら、いちばん幸せなんだねえ。"
+          ]
+        },
+        {
+          "title": "セロ弾きのゴーシュ",
+          "url": "https://www.aozora.gr.jp/cards/000081/card470.html",
+          "quotes": [
+            "なぜやめたんですか。ぼくらならどんな意気地ないやつでものどから血が出るまでは叫ぶんですよ。"
+          ]
+        }
+      ]
+    },
+    "室生犀星": {
+      "author": {
+        "name_kana": "むろうさいせい"
+      },
+      "novels": [
+        {
+          "title": "抒情小曲集",
+          "url": "https://www.aozora.gr.jp/cards/001579/card53241.html",
+          "quotes": ["ふるさとは遠きにありて思うもの そして悲しくうたうもの"]
+        }
+      ]
+    },
+    "森鴎外": {
+      "author": {
+        "name_kana": "もりおうがい"
+      },
+      "novels": [
+        {
+          "title": "寒山拾得",
+          "url": "https://www.aozora.gr.jp/cards/000129/card1071.html",
+          "quotes": ["水が来た。"]
+        }
+      ]
+    },
+    "柳田國男": {
+      "author": {
+        "name_kana": "やなぎだくにお"
+      },
+      "novels": [
+        {
+          "title": "日本の伝説",
+          "url": "https://www.aozora.gr.jp/cards/001566/card53810.html",
+          "quotes": [
+            "「甲斐ない」というのは、今日の言葉で、「だめだなあ」ということであります。",
+            "昔の言葉では、こうして久しい間、神に供えた魚などを活かして置くことを、いけにえといっておりました。"
+          ]
+        }
+      ]
+    },
+    "夢野久作": {
+      "author": {
+        "name_kana": "ゆめのきゅうさく"
+      },
+      "novels": [
+        {
+          "title": "ドグラ・マグラ",
+          "url": "https://www.aozora.gr.jp/cards/000933/card18395.html",
+          "quotes": [
+            "人間の胎児は、母の胎内に居る十箇月の間に一つの夢を見ている。"
+          ]
+        }
+      ]
+    }
+  }

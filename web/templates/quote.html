@@ -6,7 +6,7 @@
   {% if prev_quote_id |length %}
     <a class="prev" href={{ url_for('show_fake_quote', fake_quote_id=fake_quote.id) }}>前</a>
     {% else %}
-    <div class="prev"></div>
+    <div class="prev disabled">前</div>
   {% endif %}
 {% endblock %}
 

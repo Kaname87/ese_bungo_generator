@@ -504,10 +504,8 @@ def generate_fake_books_and_quotes(num=5):
     return results
 
 if __name__ == '__main__':
+    # generate_and_insert_fake_authors()
     results = generate_fake_books_and_quotes()
     print(results)
-    # insert_fake_data(results)
-
-
-    # generate_and_insert_fake_authors()
+    insert_fake_data(results)
     pass
