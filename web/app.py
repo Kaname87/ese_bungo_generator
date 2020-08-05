@@ -3,16 +3,15 @@ import sys
 import random
 import urllib.parse
 
-from sqlalchemy import func, exc
 from flask import Flask, request, render_template, redirect, url_for, _app_ctx_stack, abort, flash, jsonify
-from flask_cors import CORS
+from flask_caching import Cache
+from flask_paginate import Pagination, get_page_parameter
+from sqlalchemy import func, exc
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql import collate, asc, desc
-from flask_paginate import Pagination, get_page_parameter
-from flask_caching import Cache
 
-from web.database import SessionLocal, engine
 from web import util, models, config
+from web.database import SessionLocal, engine
 
 PER_PAGE = 20
 
@@ -21,7 +20,6 @@ def create_app():
     util.load_env()
 
     app = Flask(__name__)
-    CORS(app)
     app.config.from_object(os.environ['APP_SETTINGS'])
     app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
@@ -146,9 +144,9 @@ def create_app():
     def random_not_found_message(name):
         #　これも生成する？
         message = random.choice([
-            'なぞ聞いたことありませんね',
+            'は聞いたことがありませんね',
             'の取り扱いはありません',
-            '...？それって有名な人？'
+            '...？有名な人？'
         ])
         return '{}{}'.format(name, message)
 
