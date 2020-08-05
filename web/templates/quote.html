@@ -109,6 +109,9 @@ document.addEventListener("DOMContentLoaded", function() {
       event.target.href += ('?profile=' + profileImageElm.dataset.profileImageIdx)
     });
   }
+  document.getElementById('service_name').addEventListener('click', function(event) {
+    event.target.href += ('?profile=' + profileImageElm.dataset.profileImageIdx)
+  });
 
   function initProfile() {
     var initIdx = (
