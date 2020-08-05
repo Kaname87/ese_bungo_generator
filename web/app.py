@@ -202,7 +202,7 @@ def create_app():
         )
         text = '{}\n\n{}『{}』'.format(fake_quote.text, fake_quote.fake_book.fake_author.name, fake_quote.fake_book.title)
         if len(text) >= MAX_LENGTH:
-            text  = text[:MAX_LENGTH] + '...\n'
+            text  = text[:MAX_LENGTH] + '...'
 
         share_text = urllib.parse.quote(text)
         return {
