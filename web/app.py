@@ -25,12 +25,7 @@ def create_app():
     app.config.from_object(os.environ['APP_SETTINGS'])
     app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 
-    cache_config = {
-        "CACHE_TYPE": "simple",
-        "CACHE_DEFAULT_TIMEOUT": 1,
-    }
-
-    cache = Cache(app, config=cache_config)
+    cache = Cache(app)
 
     @app.route('/')
     def show_random_quote():
