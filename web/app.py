@@ -7,6 +7,7 @@ from sqlalchemy import func, exc
 from flask import Flask, request, render_template, redirect, url_for, _app_ctx_stack, abort, flash, jsonify
 from flask_cors import CORS
 from sqlalchemy.orm import scoped_session
+from sqlalchemy.sql import collate, asc, desc
 from flask_paginate import Pagination, get_page_parameter
 from flask_caching import Cache
 
@@ -26,7 +27,7 @@ def create_app():
 
     cache_config = {
         "CACHE_TYPE": "simple",
-        "CACHE_DEFAULT_TIMEOUT": 180,
+        "CACHE_DEFAULT_TIMEOUT": 1,
     }
 
     cache = Cache(app, config=cache_config)
@@ -38,9 +39,8 @@ def create_app():
         return render_fake_quote_page(fake_quote)
 
     @app.route('/ese_meigen/<fake_quote_id>')
-
+    @cache.cached(query_string=True)
     def show_fake_quote(fake_quote_id):
-
         # When invalid id is passed, just redirect to random page
         if not util.is_uuid(fake_quote_id):
             return redirect(url_for('show_random_quote'))
@@ -50,30 +50,7 @@ def create_app():
 
         return render_fake_quote_page(fake_quote)
 
-    # Common rendering
-    def render_fake_quote_page(fake_quote):
-        return render_template('quote.html',
-            fake_quote=fake_quote,
-            twitter_share=get_twitter_share_info(fake_quote),
-            profile_image_idx=get_profile_image_idx(),
-            prev_quote_id=request.args.get('prev_quote_id', '')
-        )
 
-    @app.route('/ese_meigen/<fake_quote_id>/next')
-    def show_next_fake_quote(fake_quote_id):
-        # When invalid id is passed, just redirect to random page
-        if not util.is_uuid(fake_quote_id):
-            return redirect(url_for('show_random_quote'))
-
-        # TODO: This next is not deterministic
-        next_fake_quote = app.session.query(models.FakeQuote).filter(models.FakeQuote.id!=fake_quote_id).first()
-
-        return redirect(url_for('show_fake_quote',
-            fake_quote_id=next_fake_quote.id,
-            prev_quote_id=fake_quote_id
-        ))
-
-    #
     # @app.route('/ese_meigen/<fake_quote_id>/next_json')
     def show_next_fake_quote_json(fake_quote_id):
         # When invalid id is passed, just redirect to random page
@@ -102,6 +79,7 @@ def create_app():
         )
 
     @app.route('/bungo/list')
+    @cache.cached(query_string=True)
     def list_authors():
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = PER_PAGE * (page-1)
@@ -116,6 +94,7 @@ def create_app():
         return render_template('original_author_list.html', authors=authors, pagination=pagination)
 
     @app.route('/ese_bungo/list')
+    @cache.cached(query_string=True)
     def list_fake_authors():
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = PER_PAGE * (page-1)
@@ -130,7 +109,7 @@ def create_app():
         return render_template('fake_list.html', fake_authors=fake_authors, pagination=pagination)
 
     @app.route('/bungo/<author_name>/ese_list')
-    @cache.memoize()
+    @cache.cached(query_string=True)
     def list_all_fake_books(author_name):
         page = request.args.get(get_page_parameter(), type=int, default=1)
         offset = PER_PAGE * (page-1)
@@ -145,7 +124,7 @@ def create_app():
         return render_template('fake_list.html', fake_authors=author.fake_authors, pagination=pagination)
 
     @app.route('/ese_bungo/<fake_author_name>/novels')
-    @cache.memoize()
+    @cache.cached(query_string=True)
     def list_fake_books(fake_author_name):
         fake_author = app.session.query(models.FakeAuthor).filter_by(name=fake_author_name).first()
         if fake_author == None:
@@ -192,7 +171,37 @@ def create_app():
         pagination = Pagination(page=page, display_msg=msg, per_page=PER_PAGE, total=total, record_name=record_name)
         return pagination
 
-    @cache.memoize()
+    # Common rendering function
+    def render_fake_quote_page(fake_quote):
+        prev_fake_quote_id = get_prev_fake_quote(fake_quote)
+        next_fake_quote_id = get_next_fake_quote(fake_quote)
+
+        return render_template('quote.html',
+            fake_quote=fake_quote,
+            twitter_share=get_twitter_share_info(fake_quote),
+            profile_image_idx=get_profile_image_idx(),
+            prev_fake_quote_id=prev_fake_quote_id,
+            next_fake_quote_id=next_fake_quote_id,
+        )
+
+    def get_next_fake_quote(current_fake_quote):
+        next_quote = app.session.query(models.FakeQuote) \
+            .filter(models.FakeQuote.id!=current_fake_quote.id) \
+            .filter(collate(models.FakeQuote.text, 'ja-x-icu') > collate(current_fake_quote.text, 'ja-x-icu')) \
+            .order_by(asc(collate(models.FakeQuote.text, 'ja-x-icu'))) \
+            .first()
+
+        return next_quote.id if next_quote is not None else None
+
+    def get_prev_fake_quote(current_fake_quote):
+        prev_quote = app.session.query(models.FakeQuote) \
+            .filter(models.FakeQuote.id!=current_fake_quote.id) \
+            .filter(collate(models.FakeQuote.text, 'ja-x-icu') < collate(current_fake_quote.text, 'ja-x-icu')) \
+            .order_by(desc(collate(models.FakeQuote.text, 'ja-x-icu'))) \
+            .first()
+
+        return prev_quote.id if prev_quote is not None else None
+
     def get_twitter_share_info(fake_quote):
         MAX_LENGTH = 100
         share_url = urllib.parse.quote(
@@ -210,7 +219,11 @@ def create_app():
 
     def get_profile_image_idx():
         MAX_PROFILE_INDEX = 2
-        idx = int(request.args.get('profile', 0))
+        request_profile = request.args.get('profile', 0)
+        try:
+            idx = int(request_profile)
+        except ValueError:
+            idx = 0
         return MAX_PROFILE_INDEX if idx > MAX_PROFILE_INDEX else idx
 
     return app

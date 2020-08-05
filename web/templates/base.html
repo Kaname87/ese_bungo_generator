@@ -6,19 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="keywords" content="文豪,名言,エセ,似非,Word2Vec" />
-    <meta name="description" content="Word2Vecを用いて、文豪の名言の類義語からランダムに生成された言葉" />
+    <meta name="description" content="文豪の名作を元にWord2Vecで判定した類義語からランダムに生成された作品集" />
 
     <link rel="icon" type="image/png" href="/static/image/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/static/image/apple-touch-icon.png">
 
     <!-- og -->
-    <meta property="og:title" content="エセ文豪名言集">
-    <meta property="og:description" content="Word2Vecを用いて、文豪の名言の類義語からランダムに生成された言葉" />
+    <meta property="og:title" content="エセ文豪名作集">
+    <meta property="og:description" content="文豪の名作を元にWord2Vecで判定した類義語からランダムに生成された作品集" />
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://esebungo.herokuapp.com/">
     <meta property="og:image" content="https://esebungo.herokuapp.com/static/image/og.jpg">
 
-    <title>{% block title %}{% endblock %} - エセ文豪名言集</title>
+    <title>{% block title %}{% endblock %} - エセ文豪名作集</title>
 
     <style>
       html {
@@ -79,26 +79,8 @@
           color: transparent;
           width: 25%;
           font-size: 0.6rem;
+          color:  #f8f6f5;
       }
-
-      .prev {
-          text-align: left;
-      }
-      .next {
-          text-align: right;
-      }
-
-      .service-name-wrapper > .page-controller {
-          margin: auto;
-      }
-
-      .service-name-wrapper .prev {
-          margin-left: 5%;
-      }
-      .service-name-wrapper .next {
-          margin-right: 5%;
-      }
-
       .fake {
           display: flex;
           flex-direction: row;
@@ -197,12 +179,12 @@
           flex-wrap: wrap;
           margin: 0;
       }
-
       .original-book {
-          width: 300px;
+          width: 155px;
+          font-size: 0.85rem;
       }
       .original-book .author {
-          font-size: 1.2rem;
+          font-size: 1.0rem;
           font-weight: bold;
           margin-bottom: 5px;
       }
@@ -250,8 +232,8 @@
       }
       .sns-icon {
         display: block;
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         text-align: center;
         margin: 20px auto 0;
         cursor: pointer;
@@ -261,6 +243,7 @@
       }
 
       .twitter-icon {
+        font-size: 0.1px;
         background-image: url("/static/image/twitter_icon_black.svg");
       }
       .twitter-icon .st1{
@@ -312,7 +295,17 @@
           .service-name {
               font-size: 0.8rem;
           }
-
+          .original-book {
+            width: 300px;
+            font-size: 1rem;
+          }
+          .original-book .author {
+            font-size: 1.2rem;
+          }
+          .sns-icon {
+            width: 50px;
+            height: 50px;
+          }
           .fake {
               flex-wrap: nowrap;
               margin: 0 3%;
@@ -381,7 +374,7 @@
         </div>
         <div><span class="service-name">
             <a href={{ url_for('show_random_quote') }}>
-            エセ文豪名言集
+            エセ文豪名作集
             </a>
         </span></div>
         <div class="header-page-controller">

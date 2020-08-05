@@ -392,6 +392,7 @@ header {
 }
 
 .twitter-icon {
+    font-size: 1px;
     background-image: url("/static/image/Twitter_Social_Icon_Square_White.svg");
     background-color: #657786;
 }
