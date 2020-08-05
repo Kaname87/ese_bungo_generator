@@ -7,6 +7,12 @@ import util
 import const
 
 
+def read_json_to_dict(file_path):
+    res = {}
+    with open(file_path) as f:
+        res = json.loads(f.read())
+    return res
+
 # from web.database import SessionLocal, engine
 # from web import models
 def get_connect():
@@ -131,6 +137,30 @@ def crate_target_word_dict_similar_char(model, tagger, name_char_topn, noun_topn
             print('Database connection closed.')
 
 
+def crate_target_word_dict_similar_char_tmp(model, tagger, name_char_topn, noun_topn):
+    '''
+    変換元小説情報から、
+    変換対象になる名前の文字と類似文字の辞書、
+    変換対象になる名詞と類似名詞の辞書
+    を作成する
+    '''
+    similar_name_char_dict = {}
+
+
+    source_dict= read_json_to_dict(const.ORIGINAL_NOVEL_SOURCE_TMP)
+
+    for author_name, data in source_dict.items():
+        print('Procss: {}'.format(author_name))
+        # Author
+
+        author_char_list = list(author_name)
+        author_results = create_similar_noun_dict(
+            model, tagger, author_char_list, name_char_topn)
+        similar_name_char_dict.update(author_results)
+
+    return similar_name_char_dict
+
+
 def crate_target_word_dict_similar_noun(model, tagger, name_char_topn, noun_topn):
     '''
     変換元小説情報から、
@@ -141,7 +171,7 @@ def crate_target_word_dict_similar_noun(model, tagger, name_char_topn, noun_topn
 
     similar_noun_dict = {}
 
-    target_list = []
+    # target_list = []
     conn = None
     try:
         conn = get_connect()
@@ -184,29 +214,38 @@ def crate_target_word_dict_similar_noun(model, tagger, name_char_topn, noun_topn
         if conn is not None:
             conn.close()
             print('Database connection closed.')
-    # books = session.query(models.Book).all()
-    # for book in books:
 
-    # for author, novel_list in dictdump.items():
-    #     # Author
-    #     author_char_list = list(author)
-    #     author_results = create_similar_noun_dict(
-    #         model, tagger, author_char_list, name_char_topn)
-    #     similar_name_char_dict.update(author_results)
 
-    #     for novel in novel_list:
-    #         # 名詞のリストをつくるのに、title, quotes の区別不要なので、マージ
-    #         target_list = [novel['title']] + novel['quotes']
+def crate_target_word_dict_similar_noun_tmp(model, tagger, name_char_topn, noun_topn):
+    '''
+    変換元小説情報から、
+    変換対象になる名前の文字と類似文字の辞書、
+    変換対象になる名詞と類似名詞の辞書
+    を作成する
+    '''
 
-    #         for target in target_list:
-    #             tab_divided_word_token_list = tagger.parse(target).split('\n')
-    #             noun_list = create_noun_list(tab_divided_word_token_list)
-    #             noun_results = create_similar_noun_dict(
-    #                 model, tagger, noun_list, noun_topn)
-    #             similar_noun_dict.update(noun_results)
+    similar_noun_dict = {}
 
-    # return similar_name_char_dict, similar_noun_dict
+    source_dict= read_json_to_dict(const.ORIGINAL_NOVEL_SOURCE_TMP)
 
+    for _, data in source_dict.items():
+        # Book
+       for book in data['novels']:
+            print('Procss Novel: {}'.format(book['title']))
+            tab_divided_word_token_list = tagger.parse(book['title']).split('\n')
+            noun_list = create_noun_list(tab_divided_word_token_list)
+            noun_results = create_similar_noun_dict(
+                model, tagger, noun_list, noun_topn)
+            similar_noun_dict.update(noun_results)
+
+            for quote_text in book['quotes']:
+                tab_divided_word_token_list = tagger.parse(quote_text).split('\n')
+                noun_list = create_noun_list(tab_divided_word_token_list)
+                noun_results = create_similar_noun_dict(
+                    model, tagger, noun_list, noun_topn)
+                similar_noun_dict.update(noun_results)
+
+    return similar_noun_dict
 
 def write_to_json(filepath, result_dict):
     result_json = json.dumps(result_dict, ensure_ascii=False)
@@ -233,6 +272,28 @@ def output_word_list(name_char_topn, noun_topn):
 
     write_to_json(const.NAME_CHARCTER_LIST_FILE, name_char_dict)
     write_to_json(const.SIMILAR_NOUN_LIST_FILE, noun_dict)
+
+
+
+def output_word_list_tmp(name_char_topn, noun_topn):
+    '''
+    JSON出力
+    '''
+    # name_char_topn, noun_topn は類似度のチューニング用
+    model = util.load_model(const.WORD2VEC_MODEL_PATH)
+    tagger = util.create_tagger()
+
+    name_char_dict = crate_target_word_dict_similar_char_tmp(
+        model, tagger, name_char_topn, noun_topn)
+
+    noun_dict = crate_target_word_dict_similar_noun_tmp(
+        model, tagger, name_char_topn, noun_topn)
+
+    # name_char_dict, noun_dict = crate_target_word_dict(
+    #     model, tagger, name_char_topn, noun_topn)
+
+    write_to_json(const.NAME_CHARCTER_LIST_FILE_TMP, name_char_dict)
+    write_to_json(const.SIMILAR_NOUN_LIST_FILE_TMP, noun_dict)
 
 
 def out_put_for_demosite(name_char_topn=7, noun_topn=8):
@@ -264,22 +325,6 @@ if __name__ == "__main__":
     # for author in authors:
     #     print(list(author.name))
     output_word_list(7, 8)
+    # output_word_list(8, 9)
+    # output_word_list_tmp(7, 8)
 
-    # conn = None
-    # try:
-    #     conn = get_connect()
-    #     cur = conn.cursor()
-
-    #     # Book
-    #     cur.execute("SELECT books.title, quotes.text from books inner join quotes on books.id = quotes.book_id ")
-    #     books = cur.fetchall()
-    #     # print('authos')
-    #     print(books)
-    #     for book in books:
-    #         print(book)
-
-    #     conn.close()
-    # except (Exception, psycopg2.DatabaseError) as error:
-    #     conn.rollback()
-    #     print(error)
-    # print('Done')

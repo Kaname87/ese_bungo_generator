@@ -43,21 +43,28 @@ def create_replace_char_idx_list(name):
     return replace_char_idx_list
 
 
-def generate_fake_name(author_name):
+def generate_fake_name(author_name, is_tmp=False):
     '''
     名前の文字を置き換えて、新しい文字を生成
     名前の全ての文字を置き換えるのではなく、一部のみを置き換える。
     全部を置き換えると、元ネタと離れすぎるため
     '''
-    name_char_dict = read_json_to_dict(const.NAME_CHARCTER_LIST_FILE)
+    name_char_list = const.NAME_CHARCTER_LIST_FILE
+    if is_tmp:
+        name_char_list = const.NAME_CHARCTER_LIST_FILE_TMP
+    name_char_dict = read_json_to_dict(name_char_list)
     # 置き換え対象の文字のindexを取得
     replace_char_idx_list = create_replace_char_idx_list(author_name)
 
     replaced_name = ''
     for idx, name_char in enumerate(author_name):
         if idx in replace_char_idx_list:
-            similar_char_list = name_char_dict[name_char]
-            replaced_name += random.choice(similar_char_list)
+            try:
+                similar_char_list = name_char_dict[name_char]
+                replaced_name += random.choice(similar_char_list)
+            except KeyError as e:
+                print(e)
+                replaced_name += name_char
         else:
             # 置き換え対処じゃないのはそのまま追加
             replaced_name += name_char
@@ -164,7 +171,7 @@ def random_generate_ese_bungo_one():
     return original, generated
 
 
-def generate_ese_bungo_all(num=1):
+def generate_ese_bungo_all(num=1, is_tmp=True):
     '''
     元データにある文言をnum分だけ変換
     '''
@@ -318,6 +325,10 @@ def get_all_authors(cur):
     cur.execute('SELECT id, name FROM authors')
     return cur.fetchall()
 
+def get_author(cur, author_id):
+    cur.execute('SELECT id, name FROM authors where id = %s', (author_id, ))
+    return cur.fetchall()
+
 def get_all_books(cur):
     cur.execute('SELECT id, title, url FROM books')
     return cur.fetchall()
@@ -445,8 +456,53 @@ def generate_and_insert_fake_authors(num=10):
             conn.rollback()
             print(error)
 
+def generate_fake_author_tmp(num=10):
+    source_dict= read_json_to_dict(const.ORIGINAL_NOVEL_SOURCE_TMP)
 
-def generate_fake_books_and_quotes(num=5):
+    for author_name, data in source_dict.items():
+        print('-----------')
+        print(author_name)
+        for _ in range(num):
+            generated_name = generate_fake_name(author_name, is_tmp=True)
+            print(generated_name)
+
+def generate_fake_books_and_quotes_tmp(num=5):
+    tagger = util.create_tagger()
+    noun_list_dict = read_json_to_dict(const.SIMILAR_NOUN_LIST_FILE_TMP)
+
+    source_dict= read_json_to_dict(const.ORIGINAL_NOVEL_SOURCE_TMP)
+    results = []
+
+    for author_name, data in source_dict.items():
+        print('-----------')
+        print(author_name)
+        for book in data['novels']:
+            title = book['title']
+            for quote_text in book['quotes']:
+                for _ in range(num):
+                    # 1つの作品（タイトル＋クオート）の中で、おなじ単語は同じように変換するようにused_wordに保持。
+                    # 『走れメロス』の「メロスは激怒した。」のようにタイトル中の単語が本文中で使われてる時、
+                    # 別々に変換すると面白みが減るため
+                    used_word = {}
+
+                    fake_quote_text, used_word = replace_noun_by_similar_word(
+                        quote_text, noun_list_dict, tagger, used_word)
+
+                    fake_title, used_word = replace_noun_by_similar_word(
+                        title, noun_list_dict, tagger, used_word)
+
+                    generated_data = {
+                        # 'author_id': author_id,
+                        'fake_name': generate_fake_name(author_name, is_tmp=True),
+                        # 'book_id': book_id,
+                        'fake_title' : fake_title,
+                        # 'quote_id': quote_id,
+                        'fake_text': fake_quote_text,
+                    }
+                    results.append(generated_data)
+    return results
+
+def generate_fake_books_and_quotes(num=5, author_id=None):
 
     '''
     元データにある文言をnum分だけ変換
@@ -461,7 +517,13 @@ def generate_fake_books_and_quotes(num=5):
         cur = conn.cursor()
 
         # Author
-        authors = get_all_authors(cur)
+        authors = []
+        if author_id is None:
+            authors = get_all_authors(cur)
+        else:
+            authors = get_author(cur, author_id)
+            print(authors)
+
         for author in authors:
             author_id = author[0]
             author_name = author[1]
@@ -504,8 +566,9 @@ def generate_fake_books_and_quotes(num=5):
     return results
 
 if __name__ == '__main__':
-    # generate_and_insert_fake_authors()
-    results = generate_fake_books_and_quotes()
-    print(results)
+    # results = generate_fake_books_and_quotes_tmp()
+    # for r in results:
+    #     print(r)
+    results = generate_fake_books_and_quotes(3)
     insert_fake_data(results)
     pass

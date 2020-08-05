@@ -4,3 +4,8 @@ tmp
 __pycache__
 word2vec
 .DS_Store
+
+
+/data/original_novel_source_tmp.json
+/data/name_char_list_tmp.json
+/data/similar_noun_list_tmp.json

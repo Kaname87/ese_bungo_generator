@@ -45,14 +45,13 @@ def select_or_insert_quote(cur, book_id, text):
 
     return cur.fetchone()[0]
 
-def import_data():
-
+def import_data(src = const.ORIGINAL_NOVEL_SOURCE):
     conn = None
     try:
         conn = get_connect()
         cur = conn.cursor()
 
-        source_dict = util.read_json_to_dict(const.ORIGINAL_NOVEL_SOURCE)
+        source_dict = util.read_json_to_dict(src)
         print(source_dict)
         for author_name, data in source_dict.items():
             print('Procss: {}'.format(author_name))
@@ -74,4 +73,6 @@ def import_data():
             print('Database connection closed.')
 
 if __name__ == '__main__':
+    # import_data()
+    # print(11111)
     import_data()
