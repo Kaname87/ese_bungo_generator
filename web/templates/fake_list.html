@@ -4,6 +4,11 @@
 
 {% block content %}
   <h1>エセ文豪著作一覧</h1>
+  {% if original_author_name %}
+  <p class="original_author">
+    原著: {{original_author_name}}</a>
+  </p>
+  {% endif %}
   {{ pagination.links }}
   <div class="original-book-list">
   {% for fake_author in fake_authors %}

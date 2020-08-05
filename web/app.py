@@ -31,7 +31,7 @@ def create_app():
         fake_quote = app.session.query(models.FakeQuote).order_by(func.random()).first()
         return render_fake_quote_page(fake_quote)
 
-    @app.route('/ese_meigen/<fake_quote_id>')
+    @app.route('/meisaku/<fake_quote_id>')
     @cache.cached(query_string=True)
     def show_fake_quote(fake_quote_id):
         # When invalid id is passed, just redirect to random page
@@ -43,7 +43,7 @@ def create_app():
 
         return render_fake_quote_page(fake_quote)
 
-
+    # Unused function. Might prepare JSON API for Ajax
     # @app.route('/ese_meigen/<fake_quote_id>/next_json')
     def show_next_fake_quote_json(fake_quote_id):
         # When invalid id is passed, just redirect to random page
@@ -71,7 +71,7 @@ def create_app():
             prev_quiote_id=fake_quote_id
         )
 
-    @app.route('/bungo/list')
+    @app.route('/original_authors')
     @cache.cached(query_string=True)
     def list_authors():
         page = request.args.get(get_page_parameter(), type=int, default=1)
@@ -86,7 +86,7 @@ def create_app():
         pagination = get_pagenate(page, models.Author)
         return render_template('original_author_list.html', authors=authors, pagination=pagination)
 
-    @app.route('/ese_bungo/list')
+    @app.route('/fake_authors')
     @cache.cached(query_string=True)
     def list_fake_authors():
         page = request.args.get(get_page_parameter(), type=int, default=1)
@@ -101,7 +101,7 @@ def create_app():
         pagination = get_pagenate(page, models.FakeAuthor)
         return render_template('fake_list.html', fake_authors=fake_authors, pagination=pagination)
 
-    @app.route('/bungo/<author_name>/ese_list')
+    @app.route('/original_authors/<author_name>/fake_authors')
     @cache.cached(query_string=True)
     def list_all_fake_books(author_name):
         page = request.args.get(get_page_parameter(), type=int, default=1)
@@ -114,9 +114,9 @@ def create_app():
 
         query_filter = (models.FakeAuthor.author_id==author.id)
         pagination = get_pagenate(page, models.FakeAuthor, query_filter)
-        return render_template('fake_list.html', fake_authors=author.fake_authors, pagination=pagination)
+        return render_template('fake_list.html', fake_authors=author.fake_authors, original_author_name=author_name, pagination=pagination)
 
-    @app.route('/ese_bungo/<fake_author_name>/novels')
+    @app.route('/fake_authors/<fake_author_name>/books')
     @cache.cached(query_string=True)
     def list_fake_books(fake_author_name):
         fake_author = app.session.query(models.FakeAuthor).filter_by(name=fake_author_name).first()
