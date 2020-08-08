@@ -26,6 +26,8 @@
       }
       body {
         background-image: url("/static/image/whitepaper.jpg");
+         /* */
+        /* background: #f9f8f3; */
         color: #000;
         font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
               "Hiragino Mincho Pro", "メイリオ";
@@ -162,7 +164,7 @@
       .original blockquote cite {
           display: block;
           text-align: right;
-          font-size: 0.65rem;
+          font-size: 0.7rem;
       }
 
       .original a:link,
@@ -170,6 +172,15 @@
       .original a:hover,
       .original a:active {
           color: #666;
+      }
+      .original-quote {
+        text-decoration: none;
+      }
+      .original-cite {
+        margin-top: 20px;
+      }
+      .original-cite a:first-child {
+        margin-right: 3px;
       }
 
       .original-book-list {
@@ -195,17 +206,70 @@
         list-style-type: none;
         margin-left: 0;
         padding-left: 0;
-        margin-top: 2px;
+        margin-top: 4px;
+      }
+      .original-book li {
+        margin-bottom: 4px;
+      }
+      .original-book .have-more {
+        font-size: 0.75rem;
+        /* font-weight: bold; */
+        /* color: #666; */
       }
 
+      .original-book-list-small {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        /* justify-content: space-around; */
+        flex-wrap: wrap;
+        margin: 0 8%;
+        font-size: 0.9rem;
+        color: #666;
+        border-bottom: 1px solid #ccc;
+      }
+      .original-book-small {
+        padding: 0;
+        margin: 0 0 3% 0;
+        line-height: 1.7;
+        font-size: 0.85rem;
+        color: #666;
+        /* margin-right: 20px; */
+      }
+      .original-book-small:not(:last-child) {
+        margin-right: 20px;
+      }
+      .original-quote-small p{
+         padding: 0;
+          margin: 0 0 3% 0;
+          line-height: 1.7;
+        font-size: 0.8rem;
+        color: #666;
+    }
+    .original-quote-small blockquote {
+        /* border-top: 1px solid #ccc; */
+        border-bottom: 1px solid #ccc;
+        font-size: 0.9rem;
+        color: #666;
+        /* font-style: italic; */
+        /* padding: 4% 1%; */
+        text-align: center;
+      }
+
+      .fake-list {
+        text-align: left;
+        margin: 0 8%;
+      }
       .fake-list ul{
         list-style-type: none;
         padding: 0;
+        margin-bottom: 30px 20px;
       }
-      .fake-list {
-        text-align: left;
-        margin: 0 20px;
+      .fake-list a{
+        list-style-type: none;
+        padding: 0;
       }
+
       .fake-list-wrapper {
         display: flex;
         flex-direction: row;
@@ -219,9 +283,11 @@
         padding-top: 10px;
         font-weight: bold;
         font-size: 1rem;
+        margin-bottom: 0;
       }
       .fake-list .quote-text {
-        padding-bottom: 5px;
+        margin-top: 5px;
+        padding-bottom: 15px;
         font-size: 0.9rem;
       }
       .sns {
@@ -387,8 +453,8 @@
     </main>
     <footer class="footer">
         <ul>
-            <li><a class="footer site-font-color" href={{ url_for('list_authors') }}>原著一覧</a></li>
-            <li><a class="footer site-font-color" href={{ url_for('list_fake_authors') }}>エセ文豪著作一覧</a></li>
+            <li><a class="footer site-font-color" href={{ url_for('list_authors') }}>原作一覧</a></li>
+            <li><a class="footer site-font-color" href={{ url_for('list_fake_authors') }}>エセ文豪一覧</a></li>
         </ul>
     </footer>
   {% block script %}

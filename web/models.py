@@ -52,11 +52,10 @@ class Author(AppBase):
         self.name = name
         self.name_kana = name_kana
 
-
 # CREATE TABLE books (
 #   id UUID DEFAULT uuid_generate_v4(),
 #   author_id UUID NOT NULL,
-#   title VARCHAR(250) NOT NULL,
+#   title VARCHAR(250) COLLATE "ja-x-icu" NOT NULL,
 #   url VARCHAR(250) NOT NULL,
 #   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -70,7 +69,7 @@ class Book(AppBase):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     author_id = Column(UUID(as_uuid=True), ForeignKey('authors.id'))
-    title = Column(String(), nullable=False)
+    title = Column(String(collation='ja-x-icu'), nullable=False)
     url = Column(String(), nullable=False)
 
     # Relation
@@ -87,7 +86,7 @@ class Book(AppBase):
 # CREATE TABLE quotes (
 #   id UUID DEFAULT uuid_generate_v4(),
 #   book_id UUID NOT NULL,
-#   text TEXT NOT NULL,
+#   text TEXT COLLATE "ja-x-icu" NOT NULL,
 #   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
@@ -101,7 +100,7 @@ class Quote(AppBase):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     book_id = Column(UUID(as_uuid=True), ForeignKey('books.id'))
-    text = Column(String(), nullable=False)
+    text = Column(String(collation='ja-x-icu'), nullable=False)
 
     # Relation
     book = relationship("Book", back_populates="quotes")  # Has One
@@ -114,7 +113,7 @@ class Quote(AppBase):
 # CREATE TABLE fake_authors (
 #   id UUID DEFAULT uuid_generate_v4(),
 #   author_id UUID NOT NULL,
-#   name varchar(100) NOT NULL,
+#   name varchar(100) COLLATE "ja-x-icu" NOT NULL,
 #   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
@@ -127,7 +126,7 @@ class FakeAuthor(AppBase):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     author_id = Column(UUID(as_uuid=True), ForeignKey('authors.id'))
-    name = Column(String(), nullable=False)
+    name = Column(String(collation='ja-x-icu'), nullable=False)
 
     # Relation
     original_author = relationship("Author", back_populates="fake_authors") # Has One
@@ -142,7 +141,7 @@ class FakeAuthor(AppBase):
 #   id UUID DEFAULT uuid_generate_v4(),
 #   book_id UUID NOT NULL,
 #   fake_author_id UUID NOT NULL,
-#   title VARCHAR(250) NOT NULL,
+#   title COLLATE "ja-x-icu" VARCHAR(250) NOT NULL,
 #   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
@@ -159,7 +158,7 @@ class FakeBook(AppBase):
     id = Column(UUID(as_uuid=True), primary_key=True)
     book_id = Column(UUID(as_uuid=True), ForeignKey('books.id'))
     fake_author_id = Column(UUID(as_uuid=True), ForeignKey('fake_authors.id'))
-    title = Column(String(), nullable=False)
+    title = Column(String(collation='ja-x-icu'), nullable=False)
 
     # Relation
     original_book = relationship("Book", back_populates="fake_books") # Has One
@@ -175,7 +174,7 @@ class FakeBook(AppBase):
 #   id UUID DEFAULT uuid_generate_v4(),
 #   quote_id UUID NOT NULL,
 #   fake_book_id UUID NOT NULL,
-#   text TEXT NOT NULL,
+#   text TEXT COLLATE "ja-x-icu" NOT NULL,
 #   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
@@ -192,7 +191,7 @@ class FakeQuote(AppBase):
     id = Column(UUID(as_uuid=True), primary_key=True)
     quote_id = Column(UUID(as_uuid=True), ForeignKey('quotes.id'))
     fake_book_id = Column(UUID(as_uuid=True), ForeignKey('fake_books.id'))
-    text = Column(String(), nullable=False)
+    text = Column(String(collation='ja-x-icu'), nullable=False)
 
     # Relation
     original_quote = relationship("Quote", back_populates="fake_quotes") # Has One

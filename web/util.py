@@ -1,19 +1,22 @@
 import os
 import json
+import datetime
 from uuid import UUID
 from dotenv import load_dotenv
 
-
-
-class UUIDEncoder(json.JSONEncoder):
+class AppModelEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, UUID):
-            # if the obj is uuid, we simply return the value of uuid
             return obj.hex
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()
         return json.JSONEncoder.default(self, obj)
 
-def has_uuid_dict_to_json(dict):
-    return json.dumps(dict, cls=UUIDEncoder)
+def model_to_json(model):
+    return model_dict_to_json(model.to_dict())
+
+def model_dict_to_json(dict):
+    return json.dumps(dict, cls=AppModelEncoder)
 
 def load_env():
     dotenv_path = os.path.dirname(__file__) + '/.env'

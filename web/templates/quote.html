@@ -47,17 +47,23 @@
     <div class="novel">
       <p class="fake-quote">{{ fake_quote.text }}</p>
       <p class="fake-cite">
-        <a href={{ url_for('list_fake_books', fake_author_name=fake_quote.fake_book.fake_author.name) }}>{{ fake_quote.fake_book.fake_author.name }}『{{ fake_quote.fake_book.title }}』</a>
+        <a href={{ url_for('list_fake_books', fake_author_name=fake_quote.fake_book.fake_author.name) }}>{{ fake_quote.fake_book.fake_author.name }}</a>『{{ fake_quote.fake_book.title }}』
       </p>
     </div>
   </div>
   <div class="original">
     <blockquote>
-      <p id="original-quote">{{ fake_quote.original_quote.text }}</p>
-      <cite id="original-cite">
-        <a href="{{ fake_quote.original_quote.book.url }}" target="_blank" rel="noopener noreferrer">
-          {{ fake_quote.original_quote.book.author.name }}『{{ fake_quote.original_quote.book.title }}』
+      <a class="original-quote" href="{{ fake_quote.original_quote.book.url }}" target="_blank" rel="noopener noreferrer">
+        {{ fake_quote.original_quote.text }}
       </a>
+
+      <!-- <p id="original-quote">{{ fake_quote.original_quote.text }}</p> -->
+
+      <cite class="original-cite">
+        <a href={{ url_for('list_all_fake_books', author_name=fake_quote.original_quote.book.author.name) }}>
+          {{ fake_quote.original_quote.book.author.name }}
+        </a>
+        <a href={{ url_for('list_fake_books_by_book' ,book_id=fake_quote.original_quote.book.id) }}>『{{fake_quote.original_quote.book.title}}』</a>
       </cite>
     </blockquote>
   </div>
