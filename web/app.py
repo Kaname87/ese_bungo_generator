@@ -60,11 +60,15 @@ def create_app():
             # next_fake_quote_id=next_fake_quote_id,
         )
 
-
+    @app.route('/fake_quotes/random/')
     def show_random_quote():
         # Pick Random Fake Quote
         fake_quote = app.session.query(models.FakeQuote).order_by(func.random()).first()
-        return render_fake_quote_page(fake_quote)
+        # return render_fake_quote_page(fake_quote)
+        return redirect(url_for('show_fake_quote',
+            fake_quote_id=fake_quote.id,
+            profile=request.args.get('profile', 0)
+        ))
 
     @app.route('/fake_quotes/<fake_quote_id>')
     @cache.cached(query_string=True)
