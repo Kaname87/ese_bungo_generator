@@ -449,6 +449,51 @@
               font-size: 1rem;
           }
       }
+
+
+    @-webkit-keyframes bounceIn {
+      0% {
+        -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+      }
+      20% {
+        -webkit-transform: scale3d(0.9, 0.9, 0.9);
+                transform: scale3d(0.9, 0.9, 0.9);
+      }
+      70% {
+        -webkit-transform: scale3d(1.15, 1.15, 1.15);
+                transform: scale3d(1.15, 1.15, 1.15);
+      }
+      100% {
+        -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+      }
+    }
+
+    @keyframes bounceIn {
+      0% {
+        -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+      }
+      20% {
+        -webkit-transform: scale3d(0.9, 0.9, 0.9);
+                transform: scale3d(0.9, 0.9, 0.9);
+      }
+      70% {
+        -webkit-transform: scale3d(1.15, 1.15, 1.15);
+                transform: scale3d(1.15, 1.15, 1.15);
+      }
+      100% {
+        -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+      }
+    }
+    .sns-icon:hover {
+      -webkit-animation: bounceIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+          animation: bounceIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  }
+
+
   </style>
   </head>
   <body>

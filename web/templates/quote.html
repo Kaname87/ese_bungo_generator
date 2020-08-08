@@ -4,44 +4,31 @@
 
 {% block header_page_controller_prev %}
   {% if prev_fake_quote_id is not none %}
-    <a class="prev-next prev" href={{ url_for('show_fake_quote', fake_quote_id=prev_fake_quote_id) }}>前</a>
+    <a class="prev-next prev" href={{ url_for('show_fake_quote', fake_quote_id=prev_fake_quote_id) }}>乱</a>
     {% else %}
     <div class="prev disabled">前</div>
   {% endif %}
 {% endblock %}
 
 {% block header_page_controller_next %}
-  {% if next_fake_quote_id is not none %}
-    <a class="prev-next next" href={{ url_for('show_fake_quote', fake_quote_id=next_fake_quote_id) }}>次</a>
-    {% else %}
-  <div class="next disabled">次</div>
-  {% endif %}
+    <a class="prev-next next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
 {% endblock %}
 
 {% block content %}
   <div class="fake">
     <div class="author-wrapper">
-      {% if prev_fake_quote_id is not none %}
-        <a class="page-controller prev-next" href={{ url_for('show_fake_quote', fake_quote_id=prev_fake_quote_id)}}>前</a>
-      {% else %}
-        <div class="page-controller"></div>
-      {% endif %}
+      <a class="page-controller prev-next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
 
-      <!-- </div> -->
       <div class="fake-author hide" id="fake_author_profile">
-        <image
-          id="fake_author_profile_image"
-          class="profile"
-          src=""
-          alt="エセ文豪近影"
-          data-profile-image-idx="{{ profile_image_idx }}"
-        />
+          <img
+            id="fake_author_profile_image"
+            class="profile"
+            src=""
+            alt="エセ文豪近影"
+            data-profile-image-idx="{{ profile_image_idx }}"
+          />
       </div>
-      {% if next_fake_quote_id is not none %}
-        <a class="page-controller prev-next" href={{ url_for('show_fake_quote', fake_quote_id=next_fake_quote_id)}}>次</a>
-      {% else %}
-        <div class="page-controller"></div>
-      {% endif %}
+      <a class="page-controller prev-next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
     </div>
 
     <div class="novel">
@@ -115,9 +102,6 @@ document.addEventListener("DOMContentLoaded", function() {
       event.target.href += ('?profile=' + profileImageElm.dataset.profileImageIdx)
     });
   }
-  document.getElementById('service_name').addEventListener('click', function(event) {
-    event.target.href += ('?profile=' + profileImageElm.dataset.profileImageIdx)
-  });
 
   function initProfile() {
     var initIdx = (

@@ -6,27 +6,11 @@
 {% block content %}
   <div class="fake">
     <div class="author-wrapper">
-      {% if prev_fake_quote_id is not none %}
-        <a class="page-controller prev-next" href={{ url_for('show_fake_quote', fake_quote_id=prev_fake_quote_id)}}>前</a>
-      {% else %}
-        <div class="page-controller"></div>
-      {% endif %}
-
-      <!-- </div> -->
-      <div class="fake-author hide" id="fake_author_profile">
-        <image
-          id="fake_author_profile_image"
-          class="profile"
-          src=""
-          alt="エセ文豪近影"
-          data-profile-image-idx="{{ profile_image_idx }}"
-        />
+      <a class="page-controller prev-next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
+      <div class="fake-author" id="fake_author_profile">
+        <img id="fake_author_profile_image" class="profile" src="/static/image/bungo/hayashi.jpg" alt="エセ文豪近影" data-profile-image-idx="0" />
       </div>
-      {% if next_fake_quote_id is not none %}
-        <a class="page-controller prev-next" href={{ url_for('show_fake_quote', fake_quote_id=next_fake_quote_id)}}>次</a>
-      {% else %}
-        <div class="page-controller"></div>
-      {% endif %}
+      <a class="page-controller prev-next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
     </div>
 
     <div class="novel">
@@ -42,7 +26,6 @@
         {{ fake_quote.original_quote.text }}
       </a>
 
-      <!-- <p id="original-quote">{{ fake_quote.original_quote.text }}</p> -->
 
       <cite class="original-cite">
         <a href={{ url_for('list_all_fake_books', author_name=fake_quote.original_quote.book.author.name) }}>
@@ -53,39 +36,14 @@
     </blockquote>
   </div>
 
-  <section>
-    <h4>その他の原作</h4>
-    <div class="original-book-list">
-        {% for author in authors %}
-            <div class="original-book">
-              <p class="author">
-                  <a href={{ url_for('list_all_fake_books' ,author_name=author.name) }}>{{author.name}}</a>
-              </p>
-              <ul>
-                  {% for book in author.books %}
-                  <li>
-                      <a href={{ url_for('list_quotes_by_book' ,book_id=book.id) }}>『{{book.title}}』</a>
-                  </li>
-                  {% endfor %}
-                  {% if author.book_count > 3 %}
-                    <li class="have-more">他</li>
-                  {% endif %}
-              </ul>
-            </div>
-        {% endfor %}
-        </div>
-
-    <a class="" href={{ url_for('list_authors') }}>原作一覧</a>
-　</section>
-
-<section style="font-size: 0.7rem; margin: 30px 10%; padding-bottom: 30px; color:#7c4657; border:0.5px solid #7c4657;">
+  <section style="font-size: 0.8rem; margin: 30px 10%; padding-bottom: 30px; color:#7c4657; border:0.5px solid #7c4657;">
     <h4>序文</h4>
       文豪の作品の名文を元に生成された名文集です。<br>
       文章中に使用された名詞に類似する名詞をランダムに置き換えることで文章を生成しています。
       <br>
       <br>
-    単語の類似度の判定はWord2Vecを使用し、モデルには東北大学 乾・岡崎研究室の<a href="http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/">学習済みモデル</a>を使用しています。
-    生成元の作品は全て青空文庫から引用しています。
+    単語の類似度の判定はWord2Vecを使用し、モデルには東北大学 乾・岡崎研究室の<a href="http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/" target="_blank" rel="noopener noreferrer">学習済みモデル</a>を使用しています。
+    生成元の作品は全て<a href="https://www.aozora.gr.jp/index.html" target="_blank" rel="noopener noreferrer">青空文庫</a>からの引用です。
   </section>
 {% endblock %}
 
