@@ -12,13 +12,13 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/static/image/apple-touch-icon.png">
 
     <!-- og -->
-    <meta property="og:title" content="エセ文豪名作集">
+    <meta property="og:title" content="エセ文豪文庫">
     <meta property="og:description" content="文豪の名作を元にWord2Vecで判定した類義語からランダムに生成された作品" />
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://esebungo.herokuapp.com/">
     <meta property="og:image" content="https://esebungo.herokuapp.com/static/image/og.jpg">
 
-    <title>{% block title %}{% endblock %} - エセ文豪名作集</title>
+    <title>{% block title %}{% endblock %} - エセ文豪文庫</title>
 
     <style>
       html {
@@ -228,6 +228,22 @@
         color: #666;
         border-bottom: 1px solid #ccc;
       }
+
+      .original-book-list-with {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        /* justify-content: space-around; */
+        flex-wrap: wrap;
+        margin: 0 8%;
+        font-size: 1rem;
+        color: #666;
+        /* border-bottom: 1px solid #ccc; */
+      }
+      .original-quote-li {
+        margin-bottom: 30px;
+      }
+
       .original-book-small {
         padding: 0;
         margin: 0 0 3% 0;
@@ -255,6 +271,9 @@
         /* padding: 4% 1%; */
         text-align: center;
       }
+      .original-text-color {
+        color: #666;
+      }
 
       .fake-list {
         text-align: left;
@@ -263,7 +282,7 @@
       .fake-list ul{
         list-style-type: none;
         padding: 0;
-        margin-bottom: 30px 20px;
+        margin-bottom: 20px;
       }
       .fake-list a{
         list-style-type: none;
@@ -439,8 +458,8 @@
           {% block header_page_controller_prev %}{% endblock %}
         </div>
         <div><span class="service-name">
-            <a id="service_name" href={{ url_for('show_random_quote') }}>
-            エセ文豪名作集
+            <a id="service_name" href={{ url_for('show_top') }}>
+            エセ文豪文庫
             </a>
         </span></div>
         <div class="header-page-controller">

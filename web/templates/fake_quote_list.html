@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}原作:{{quote.title}}{% endblock %}
+
+{% block content %}
+    <h1>エセ文豪著作一覧 </h1>
+    <p class="original_author original-text-color">
+    原作: <a class="original-text-color" href={{ url_for('list_all_fake_books', author_name=quote.book.author.name)}}>{{quote.book.author.name}}</a>
+    <a class="original-text-color" href={{ url_for('list_quotes_by_book' ,book_id=quote.book.id) }}>『{{quote.book.title}}』</a>
+    </p>
+
+
+    <div class="original-quote-small original-text-color">
+        <blockquote >
+            <p>{{quote.text}}<p>
+        </blockquote>
+    </div>
+
+    {{ pagination.links }}
+    <div class="fake-list-wrapper">
+        <div class="fake-list">
+            <ul class="book">
+                {% for fake_quote in fake_quotes %}
+                <li>
+                    <p class="book-title">{{fake_quote.fake_book.fake_author.name}}『{{fake_quote.fake_book.title}}』</p>
+                    <p class="quote-text">
+                        <a href={{ url_for('show_fake_quote', fake_quote_id=fake_quote.id)}}>{{fake_quote.text}}</a>
+                    </p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {{ pagination.links }}
+{% endblock %}

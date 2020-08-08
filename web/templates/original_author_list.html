@@ -14,7 +14,7 @@
         <ul>
             {% for book in author.books %}
             <li>
-                <a href={{ url_for('list_fake_books_by_book' ,book_id=book.id) }}>『{{book.title}}』</a>
+                <a href={{ url_for('list_quotes_by_book' ,book_id=book.id) }}>『{{book.title}}』</a>
             </li>
             {% endfor %}
             {% if author.book_count > 3 %}

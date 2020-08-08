@@ -2,21 +2,6 @@
 
 {% block title %}{{fake_quote.original_quote.text}}{% endblock %}
 
-{% block header_page_controller_prev %}
-  {% if prev_fake_quote_id is not none %}
-    <a class="prev-next prev" href={{ url_for('show_fake_quote', fake_quote_id=prev_fake_quote_id) }}>前</a>
-    {% else %}
-    <div class="prev disabled">前</div>
-  {% endif %}
-{% endblock %}
-
-{% block header_page_controller_next %}
-  {% if next_fake_quote_id is not none %}
-    <a class="prev-next next" href={{ url_for('show_fake_quote', fake_quote_id=next_fake_quote_id) }}>次</a>
-    {% else %}
-  <div class="next disabled">次</div>
-  {% endif %}
-{% endblock %}
 
 {% block content %}
   <div class="fake">
@@ -67,14 +52,46 @@
       </cite>
     </blockquote>
   </div>
-  <div class="sns">
-    <a target="_blank" rel="noopener noreferrer" id="twitter_share" class="sns-icon twitter-icon" href="https://twitter.com/intent/tweet?text={{twitter_share.text}}&hashtags=エセ文豪&url={{twitter_share.url}}">Twitter</a>
-  </div>
+
+  <section>
+    <h4>その他の原作</h4>
+    <div class="original-book-list">
+        {% for author in authors %}
+            <div class="original-book">
+              <p class="author">
+                  <a href={{ url_for('list_all_fake_books' ,author_name=author.name) }}>{{author.name}}</a>
+              </p>
+              <ul>
+                  {% for book in author.books %}
+                  <li>
+                      <a href={{ url_for('list_quotes_by_book' ,book_id=book.id) }}>『{{book.title}}』</a>
+                  </li>
+                  {% endfor %}
+                  {% if author.book_count > 3 %}
+                    <li class="have-more">他</li>
+                  {% endif %}
+              </ul>
+            </div>
+        {% endfor %}
+        </div>
+
+    <a class="" href={{ url_for('list_authors') }}>原作一覧</a>
+　</section>
+
+<section style="font-size: 0.7rem; margin: 30px 10%; padding-bottom: 30px; color:#7c4657; border:0.5px solid #7c4657;">
+    <h4>序文</h4>
+      文豪の作品の名文を元に生成された名文集です。<br>
+      文章中に使用された名詞に類似する名詞をランダムに置き換えることで文章を生成しています。
+      <br>
+      <br>
+    単語の類似度の判定はWord2Vecを使用し、モデルには東北大学 乾・岡崎研究室の<a href="http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/">学習済みモデル</a>を使用しています。
+    生成元の作品は全て青空文庫から引用しています。
+  </section>
 {% endblock %}
 
 {% block script %}
 
-
+<!--
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   var profileImageList = [
@@ -133,5 +150,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
   initProfile();
 });
-</script>
+</script> -->
 {% endblock %}

@@ -4,8 +4,8 @@
 
 {% block content %}
   <h1>{{fake_author.name}} 著作一覧</h1>
-  <p class="original_author">
-    原著: <a href={{ url_for('list_all_fake_books', author_name=fake_author.original_author.name)}}>{{fake_author.original_author.name}}</a>
+  <p class="original_author original-text-color">
+    原著: <a class="original-text-color" href={{ url_for('list_all_fake_books', author_name=fake_author.original_author.name)}}>{{fake_author.original_author.name}}</a>
   </p>
 
   {{ pagination.links }}

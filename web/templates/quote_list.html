@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}原作:{{book.name}}{% endblock %}
+
+{% block content %}
+    <h1>原作引用元一覧 </h1>
+    <!-- <p class="original_author">
+    原作: <a href={{ url_for('list_all_fake_books', author_name=book.author.name)}}>{{book.author.name}}</a>
+    </p> -->
+
+
+    <p class="original_author">
+        <a class="original-text-color" href={{ url_for('list_all_fake_books', author_name=book.author.name)}}>{{book.author.name}}</a>
+      </p>
+
+
+      <div class="original-book-list-with">
+        『{{book.title}}』
+
+
+        <a class="" href="{{ book.url }}" target="_blank" rel="noopener noreferrer">
+            引用元作品へ
+        </a>
+    　</div>
+
+
+    {{ pagination.links }}
+    <div class="fake-list-wrapper">
+        <div class="fake-list">
+            <ul class="original-quote-small">
+                {% for quote in quotes %}
+                <li class="original-quote-li">
+                    <a class="original-text-color" href={{ url_for('list_fake_quotes_by_quote', quote_id=quote.id)}}>{{quote.text}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {{ pagination.links }}
+{% endblock %}
