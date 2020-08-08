@@ -163,6 +163,25 @@ def out_put_for_twitter(name_char_topn=8, noun_topn=9):
     output_word_list(name_char_topn, noun_topn)
 
 
+def tmp(target, noun_topn=9):
+
+    model = util.load_model(const.WORD2VEC_MODEL_PATH)
+    tagger = util.create_tagger()
+
+    similar_noun_dict = {}
+
+    tab_divided_word_token_list = tagger.parse(target).split('\n')
+    noun_list = create_noun_list(tab_divided_word_token_list)
+    noun_results = create_similar_noun_dict(
+        model, tagger, noun_list, noun_topn)
+    similar_noun_dict.update(noun_results)
+
+    return similar_noun_dict
+
+
 if __name__ == "__main__":
-    out_put_for_twitter()
+    # out_put_for_twitter()
+
+    print(tmp('青空文庫'))
+
     print('Done')
