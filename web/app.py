@@ -12,6 +12,7 @@ from sqlalchemy.orm import scoped_session, contains_eager
 
 from web import util, models, config
 from web.database import SessionLocal, engine
+from web.models import *
 
 PER_PAGE = 12
 CHILDREN_LIMIT = 3
@@ -19,51 +20,48 @@ CHILDREN_LIMIT = 3
 TOP_QUOTE_ID = '2d12dcf4-3bae-418b-8005-aa550c76730c'
 
 def create_app():
-    models.Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     util.load_env()
 
     app = Flask(__name__)
     app.config.from_object(os.environ['APP_SETTINGS'])
     app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
+    app.json_encoder = util.AppModelEncoder
 
     cache = Cache(app)
 
     @app.route('/')
     def show_top():
         TOP_AUTHORS_LIMIT = 4
-        fake_quote = app.session.query(models.FakeQuote).filter_by(id=TOP_QUOTE_ID).first()
+        fake_quote = app.session.query(FakeQuote).filter_by(id=TOP_QUOTE_ID).first()
 
-        authors = app.session.query(models.Author) \
+        authors = app.session.query(Author) \
             .order_by(func.random()) \
             .limit(TOP_AUTHORS_LIMIT) \
             .all()
 
         for author in authors:
-            books = app.session.query(models.Book) \
-                .filter(models.Book.author_id==author.id) \
-                .order_by(models.Book.title) \
+            books = app.session.query(Book) \
+                .filter(Book.author_id==author.id) \
+                .order_by(Book.title) \
                 .limit(CHILDREN_LIMIT) \
                 .all()
             setattr(author, 'books', books)
 
-            book_count = app.session.query(models.Book) \
-                .filter(models.Book.author_id==author.id) \
+            book_count = app.session.query(Book) \
+                .filter(Book.author_id==author.id) \
                 .count()
             setattr(author, 'book_count', book_count)
 
         return render_template('top.html',
             fake_quote=fake_quote,
             authors=authors
-            # twitter_share=get_twitter_share_info(fake_quote),
-            # profile_image_idx=get_profile_image_idx(),
-            # prev_fake_quote_id=prev_fake_quote_id,
-            # next_fake_quote_id=next_fake_quote_id,
         )
 
     @app.route('/fake_quotes/random/')
     def show_random_quote():
         # Pick Random Fake Quote
-        fake_quote = app.session.query(models.FakeQuote).order_by(func.random()).first()
+        fake_quote = app.session.query(FakeQuote).order_by(func.random()).first()
         # return render_fake_quote_page(fake_quote)
         return redirect(url_for('show_fake_quote',
             fake_quote_id=fake_quote.id,
@@ -77,7 +75,7 @@ def create_app():
         if not util.is_uuid(fake_quote_id):
             return redirect(url_for('show_random_quote'))
 
-        fake_quote = app.session.query(models.FakeQuote).filter(models.FakeQuote.id==fake_quote_id).first()
+        fake_quote = app.session.query(FakeQuote).filter(FakeQuote.id==fake_quote_id).first()
         if fake_quote == None:
             return redirect(url_for('show_random_quote'))
 
@@ -89,27 +87,27 @@ def create_app():
         page = get_page()
         offset = get_offset(page)
 
-        authors = app.session.query(models.Author) \
-            .order_by(models.Author.name_kana) \
+        authors = app.session.query(Author) \
+            .order_by(Author.name_kana) \
             .offset(offset) \
             .limit(PER_PAGE) \
             .all()
 
         for author in authors:
-            books = app.session.query(models.Book) \
-                .filter(models.Book.author_id==author.id) \
-                .order_by(models.Book.title) \
+            books = app.session.query(Book) \
+                .filter(Book.author_id==author.id) \
+                .order_by(Book.title) \
                 .limit(CHILDREN_LIMIT) \
                 .all()
             setattr(author, 'books', books)
 
-            book_count = app.session.query(models.Book) \
-                .filter(models.Book.author_id==author.id) \
+            book_count = app.session.query(Book) \
+                .filter(Book.author_id==author.id) \
                 .count()
             setattr(author, 'book_count', book_count)
 
 
-        pagination = get_pagenate(page, models.Author)
+        pagination = get_pagenate(page, Author)
         return render_template('original_author_list.html', authors=authors, pagination=pagination)
 
     @app.route('/fake_authors')
@@ -118,8 +116,8 @@ def create_app():
         page = get_page()
         offset = get_offset(page)
 
-        fake_authors = app.session.query(models.FakeAuthor) \
-            .order_by(models.FakeAuthor.name) \
+        fake_authors = app.session.query(FakeAuthor) \
+            .order_by(FakeAuthor.name) \
             .offset(offset) \
             .limit(PER_PAGE) \
             .all()
@@ -127,19 +125,19 @@ def create_app():
 
     def render_fake_author_book_list(page, author, fake_authors, query_filter=None):
         for fake_author in fake_authors:
-            fake_books = app.session.query(models.FakeBook) \
-                .filter(models.FakeBook.fake_author_id==fake_author.id) \
-                .order_by(models.FakeBook.title) \
+            fake_books = app.session.query(FakeBook) \
+                .filter(FakeBook.fake_author_id==fake_author.id) \
+                .order_by(FakeBook.title) \
                 .limit(CHILDREN_LIMIT) \
                 .all()
             setattr(fake_author, 'fake_books', fake_books)
 
-            fake_book_count = app.session.query(models.FakeBook) \
-                .filter(models.FakeBook.fake_author_id==fake_author.id) \
+            fake_book_count = app.session.query(FakeBook) \
+                .filter(FakeBook.fake_author_id==fake_author.id) \
                 .count()
             setattr(fake_author, 'fake_book_count', fake_book_count)
 
-        pagination = get_pagenate(page, models.FakeAuthor, query_filter)
+        pagination = get_pagenate(page, FakeAuthor, query_filter)
         return render_template('fake_list.html', fake_authors=fake_authors, author=author, pagination=pagination)
 
 
@@ -152,22 +150,22 @@ def create_app():
         if not util.is_uuid(quote_id):
             return redirect(url_for('show_random_quote'))
 
-        quote = app.session.query(models.Quote) \
-            .filter(models.Quote.id==quote_id) \
+        quote = app.session.query(Quote) \
+            .filter(Quote.id==quote_id) \
             .first()
 
         if quote == None:
             return redirect(url_for('show_random_quote'))
 
-        query_filter = (models.FakeQuote.quote_id==quote_id)
-        fake_quotes = app.session.query(models.FakeQuote) \
+        query_filter = (FakeQuote.quote_id==quote_id)
+        fake_quotes = app.session.query(FakeQuote) \
             .filter(query_filter) \
-            .order_by(models.FakeQuote.text) \
+            .order_by(FakeQuote.text) \
             .offset(offset) \
             .limit(PER_PAGE) \
             .all()
 
-        pagination = get_pagenate(page, models.FakeQuote, query_filter)
+        pagination = get_pagenate(page, FakeQuote, query_filter)
 
         return render_template('fake_quote_list.html', quote=quote, fake_quotes=fake_quotes, pagination=pagination)
 
@@ -177,42 +175,42 @@ def create_app():
         page = get_page()
         offset = get_offset(page)
 
-        author = app.session.query(models.Author).filter_by(name=author_name).first()
+        author = app.session.query(Author).filter_by(name=author_name).first()
         if author == None:
             flash(random_not_found_message(author_name))
             return abort(404)
 
-        fake_authors = app.session.query(models.FakeAuthor) \
-            .filter(models.FakeAuthor.author_id==author.id) \
-            .order_by(models.FakeAuthor.name) \
+        fake_authors = app.session.query(FakeAuthor) \
+            .filter(FakeAuthor.author_id==author.id) \
+            .order_by(FakeAuthor.name) \
             .offset(offset) \
             .limit(PER_PAGE) \
             .all()
 
-        query_filter = (models.FakeAuthor.author_id==author.id)
+        query_filter = (FakeAuthor.author_id==author.id)
         return render_fake_author_book_list(page, author, fake_authors, query_filter)
 
     @app.route('/fake_authors/<fake_author_name>/fake_books')
     @cache.cached(query_string=True)
     def list_fake_books(fake_author_name):
-        fake_author = app.session.query(models.FakeAuthor).filter_by(name=fake_author_name).first()
+        fake_author = app.session.query(FakeAuthor).filter_by(name=fake_author_name).first()
         if fake_author == None:
             flash(random_not_found_message(fake_author_name))
             return abort(404)
 
         page = page = get_page()
         offset = get_offset(page)
-        query_filter = (models.FakeBook.fake_author_id==fake_author.id)
+        query_filter = (FakeBook.fake_author_id==fake_author.id)
 
-        # .order_by(asc(collate(models.FakeBook.title, 'ja-x-icu'))) \
-        fake_books = app.session.query(models.FakeBook) \
+        # .order_by(asc(collate(FakeBook.title, 'ja-x-icu'))) \
+        fake_books = app.session.query(FakeBook) \
             .filter(query_filter) \
-            .order_by(models.FakeBook.title) \
+            .order_by(FakeBook.title) \
             .offset(offset) \
             .limit(PER_PAGE) \
             .all()
 
-        pagination = get_pagenate(page, models.FakeBook, query_filter)
+        pagination = get_pagenate(page, FakeBook, query_filter)
         return render_template('fake_book_list.html', fake_author=fake_author, fake_books=fake_books, pagination=pagination)
 
 
@@ -223,7 +221,7 @@ def create_app():
         if not util.is_uuid(book_id):
             return redirect(url_for('show_random_quote'))
 
-        book = app.session.query(models.Book) \
+        book = app.session.query(Book) \
             .filter_by(id=book_id).first()
 
         if book == None:
@@ -231,21 +229,21 @@ def create_app():
 
         page = page = get_page()
         offset = get_offset(page)
-        query_filter = (models.Quote.book_id==book_id)
+        query_filter = (Quote.book_id==book_id)
 
-        quotes = app.session.query(models.Quote) \
+        quotes = app.session.query(Quote) \
             .filter(query_filter) \
-            .order_by(models.Quote.text) \
+            .order_by(Quote.text) \
             .offset(offset) \
             .limit(PER_PAGE) \
             .all()
 
-        pagination = get_pagenate(page, models.Quote, query_filter)
+        pagination = get_pagenate(page, Quote, query_filter)
         return render_template('quote_list.html', book=book, quotes=quotes, pagination=pagination)
 
-    @app.errorhandler(404)
-    def not_found(e):
-        return render_template('404.html')
+    # @app.errorhandler(404)
+    # def not_found(e):
+    #     return render_template('404.html')
 
     if os.environ['FLASK_ENV'] == 'production':
         @app.errorhandler(Exception)
@@ -304,23 +302,23 @@ def create_app():
             next_fake_quote_id=next_fake_quote_id,
         )
 
-    def get_next_fake_quote(current_fake_quote):
-        next_quote = app.session.query(models.FakeQuote) \
-            .filter(models.FakeQuote.id!=current_fake_quote.id) \
-            .filter(models.FakeQuote.text > current_fake_quote.text) \
-            .order_by(models.FakeQuote.text) \
-            .first()
+    # def get_next_fake_quote(current_fake_quote):
+    #     next_quote = app.session.query(FakeQuote) \
+    #         .filter(FakeQuote.id!=current_fake_quote.id) \
+    #         .filter(FakeQuote.text > current_fake_quote.text) \
+    #         .order_by(FakeQuote.text) \
+    #         .first()
 
-        return next_quote.id if next_quote is not None else None
+    #     return next_quote.id if next_quote is not None else None
 
-    def get_prev_fake_quote(current_fake_quote):
-        prev_quote = app.session.query(models.FakeQuote) \
-            .filter(models.FakeQuote.id!=current_fake_quote.id) \
-            .filter(models.FakeQuote.text < current_fake_quote.text) \
-            .order_by(models.FakeQuote.text) \
-            .first()
+    # def get_prev_fake_quote(current_fake_quote):
+    #     prev_quote = app.session.query(FakeQuote) \
+    #         .filter(FakeQuote.id!=current_fake_quote.id) \
+    #         .filter(FakeQuote.text < current_fake_quote.text) \
+    #         .order_by(FakeQuote.text) \
+    #         .first()
 
-        return prev_quote.id if prev_quote is not None else None
+    #     return prev_quote.id if prev_quote is not None else None
 
     def get_twitter_share_info(fake_quote):
         MAX_LENGTH = 100
@@ -347,78 +345,158 @@ def create_app():
         return MAX_PROFILE_INDEX if idx > MAX_PROFILE_INDEX else idx
 
 
-
-
+    #####################
     # JSON API
-    # @app.route('/ese_meigen/<fake_quote_id>/next_json')
-    def show_next_fake_quote_json(fake_quote_id):
-        # When invalid id is passed, just redirect to random page
-        if not util.is_uuid(fake_quote_id):
-            return redirect(url_for('show_random_quote'))
-
-        res = app.session.query(
-            models.FakeQuote,
-            models.FakeBook,
-            models.FakeAuthor,
-            models.Quote,
-            models.Book,
-            models.Author
-        ) \
-        .join(models.FakeQuote.fake_book) \
-        .join(models.FakeBook.fake_author) \
-        .join(models.FakeQuote.original_quote) \
-        .join(models.FakeBook.original_book) \
-        .join(models.FakeAuthor.original_author) \
-        .filter(models.FakeQuote.id!=fake_quote_id) \
-        .first()
-
-        fq, fb, fa, oq, ob, oa = res
-
+    #####################
+    @app.route('/api/fake_quotes/random')
+    def api_random_fake_quotes():
+        fake_quote = app.session.query(FakeQuote).order_by(func.random()).first()
         return jsonify(
-            test=1,
-            fake_quote1=util.model_to_json(fa)
-            # fake_quote2=util.model_dict_to_json(next_fake_quote2.to_dict())
+            fake_quote=fake_quote.to_dict()
         )
 
+    @app.route('/api/fake_quotes/id_list')
+    def api_fake_quotes_id_list():
+        return json_res_id_list(FakeQuote, FakeQuote.text)
+
+    @app.route('/api/authors/list')
+    def api_authors_list():
+        return jsonify(get_model_dict_list(Author, Author.name_kana))
 
 
-    # Unused function. Might prepare JSON API for Ajax
-    # @app.route('/ese_meigen/<fake_quote_id>/next_json')
-    def show_next_fake_quote_json(fake_quote_id):
-        # When invalid id is passed, just redirect to random page
+    @app.route('/api/authors/id_list')
+    def api_authors_id_list():
+        return json_res_id_list(Author, Author.name_kana)
+
+    @app.route('/api/fake_authors/id_list')
+    def api_fake_authors_id_list():
+        return json_res_id_list(FakeAuthor, FakeAuthor.name_kana)
+
+    def json_res_list(model, order_field, filters=None, only_id=False):
+        return jsonify(get_model_dict_list(model, order_field, filters, only_id))
+    def get_model_dict_list(model, order_field, filters=None, only_id=False):
+        offset = int(request.args.get('offset', 0))
+        limit = int(request.args.get('limit', 10))
+        query = app.session.query(model)
+        if filters is not None:
+            query = query.filter(filters)
+
+        m_list = query.order_by(order_field) \
+            .limit(limit) \
+            .offset(offset) \
+            .all()
+
+        next_offset = offset + limit
+        if m_list != None and len(m_list) < limit:
+            next_offset = -1
+
+        result_list = []
+        if only_id:
+            result_list = [m.to_dict()['id'] for m in m_list]
+        else:
+            result_list = [m.to_dict() for m in m_list]
+
+        return {
+            'result_list': result_list,
+            'total': total_count(model, filters),
+            'next_offset': next_offset
+        }
+
+    @cache.memoize()
+    def total_count(model, filters):
+        query = app.session.query(model)
+        if filters is not None:
+            query = query.filter(filters)
+        return query.count()
+
+    def json_res_id_list(model, order_field):
+        offset = int(request.args.get('offset', 0))
+        limit = int(request.args.get('limit', 10))
+        m_list = app.session.query(model) \
+            .order_by(order_field) \
+            .limit(limit) \
+            .offset(offset) \
+            .all()
+
+        next_offset = offset + limit
+        if m_list != None and len(m_list) < limit:
+            next_offset = -1
+
+        id_list = [m.to_dict()['id'] for m in m_list]
+        return jsonify(
+            id_list=id_list,
+            next_offset=next_offset
+        )
+
+    @app.route('/api/fake_quotes/<fake_quote_id>')
+    def api_fake_quote_by_id(fake_quote_id):
+        print(fake_quote_id)
+        print("fake_quote_id")
         if not util.is_uuid(fake_quote_id):
-            return redirect(url_for('show_random_quote'))
+            print('Not')
 
-        # TODO: This next is not deterministic
-        next_fake_quote = app.session.query(models.FakeQuote) \
-        .join(models.FakeBook) \
-        .filter(models.FakeQuote.id!=fake_quote_id) \
-        .first()
+            return abort(404)
 
-        # next_fake_quote = app.session.query(models.FakeQuote) \
-        # .filter(models.FakeQuote.id!=fake_quote_id) \
-        # .first()
-        print('next_fake_quote')
-        print(next_fake_quote)
+        fake_quote = app.session.query(FakeQuote).filter(FakeQuote.id==fake_quote_id).first()
+        print("fake_quote")
+        print(fake_quote)
+        if fake_quote == None:
+            return abort(404)
+        quote = fake_quote.original_quote
+        return jsonify(
+            fake_quote=fake_quote.to_dict(),
+            fake_book=fake_quote.fake_book.to_dict(),
+            fake_author=fake_quote.fake_book.fake_author.to_dict(),
 
-        print('prev', fake_quote_id)
-        print('next', next_fake_quote.id)
-        if next_fake_quote == None:
-            return redirect(url_for('show_random_quote'))
+            quote=quote.to_dict(),
+            book=quote.book.to_dict(),
+            author=quote.book.author.to_dict()
+        )
 
-        next_fake_quote_dict = next_fake_quote.to_dict()
-        next_fake_quote_dict['fake_book'] = next_fake_quote.fake_book.to_dict()
-        next_fake_quote_dict['fake_book']['fake_author'] = next_fake_quote.fake_book.fake_author.to_dict()
+    @app.route('/api/authors/<author_id>')
+    def api_author_by_id(author_id):
+        print(author_id)
+        print("author_id")
+        if not util.is_uuid(author_id):
+            print('Not')
 
-        next_original_quote_dict = next_fake_quote.original_quote.to_dict()
-        next_original_quote_dict['book'] = next_fake_quote.original_quote.book.to_dict()
-        next_original_quote_dict['book']['author'] = next_fake_quote.original_quote.book.author.to_dict()
+            return abort(404)
+
+        author = app.session.query(Author).filter(Author.id==author_id).first()
+        print("author")
+        print(author)
+        if author == None:
+            return abort(404)
 
         return jsonify(
-            fake_quote=util.model_dict_to_json(next_fake_quote_dict),
-            twitter_share=get_twitter_share_info(next_fake_quote),
-            prev_quiote_id=fake_quote_id
+            author=author.to_dict()
+            # books=author.books.to_dict()
         )
+
+    @app.route('/api/authors/<author_id>/fake_authors/list')
+    def api_books_by_author_id(author_id):
+        if not util.is_uuid(author_id):
+            print('Not')
+            return abort(404)
+
+        author = app.session.query(Author).filter(Author.id==author_id).first()
+        print("author")
+        print(author)
+        if author == None:
+            return abort(404)
+
+        # Use pager per FakeAuthor
+        filters = (FakeAuthor.author_id==author_id)
+        fake_author_list_result = get_model_dict_list(FakeAuthor, FakeAuthor.name, filters)
+
+        return jsonify(
+            author=author.to_dict(),
+            book_list=[book.to_dict() for book in author.books],
+            fake_author_list=fake_author_list_result['result_list'],
+            fake_author_total=fake_author_list_result['total'],
+            fake_author_next_offset=fake_author_list_result['next_offset']
+        )
+
 
     return app
 

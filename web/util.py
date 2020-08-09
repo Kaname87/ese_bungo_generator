@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 class AppModelEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, UUID):
-            return obj.hex
+            return str(obj)
         if isinstance(obj, (datetime.date, datetime.datetime)):
             return obj.isoformat()
         return json.JSONEncoder.default(self, obj)
