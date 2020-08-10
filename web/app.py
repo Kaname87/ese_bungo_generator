@@ -355,22 +355,109 @@ def create_app():
             fake_quote=fake_quote.to_dict()
         )
 
-    @app.route('/api/fake_quotes/id_list')
-    def api_fake_quotes_id_list():
-        return json_res_id_list(FakeQuote, FakeQuote.text)
-
-    @app.route('/api/authors/list')
-    def api_authors_list():
-        return jsonify(get_model_dict_list(Author, Author.name_kana))
-
-
+    # Id List
     @app.route('/api/authors/id_list')
+    @cache.cached(query_string=True)
     def api_authors_id_list():
         return json_res_id_list(Author, Author.name_kana)
 
+    @app.route('/api/books/id_list')
+    @cache.cached(query_string=True)
+    def api_books_id_list():
+        return json_res_id_list(Book, Book.title)
+
+    @app.route('/api/quotes/id_list')
+    @cache.cached(query_string=True)
+    def api_quotes_id_list():
+        return json_res_id_list(Quote, Quote.text)
+
     @app.route('/api/fake_authors/id_list')
+    @cache.cached(query_string=True)
     def api_fake_authors_id_list():
-        return json_res_id_list(FakeAuthor, FakeAuthor.name_kana)
+        return json_res_id_list(FakeAuthor, FakeAuthor.name)
+
+    @app.route('/api/fake_books/id_list')
+    @cache.cached(query_string=True)
+    def api_fake_books_id_list():
+        return json_res_id_list(FakeBook, FakeBook.title)
+
+    @app.route('/api/fake_quotes/id_list')
+    @cache.cached(query_string=True)
+    def api_fake_quotes_id_list():
+        return json_res_id_list(FakeQuote, FakeQuote.text)
+
+    # List
+    @app.route('/api/authors/list')
+    @cache.cached(query_string=True)
+    def api_authors_list():
+        return jsonify(get_model_dict_list(Author, Author.name_kana))
+
+    @app.route('/api/fake_authors/list')
+    @cache.cached(query_string=True)
+    def api_fake_authors_list():
+        return jsonify(get_model_dict_list(FakeAuthor, FakeAuthor.name))
+
+    # Get by ID
+    @app.route('/api/fake_quotes/<fake_quote_id>')
+
+    def api_fake_quote_by_id(fake_quote_id):
+        print(fake_quote_id)
+        print("fake_quote_id")
+        if not util.is_uuid(fake_quote_id):
+            print('Not')
+
+            return abort(404)
+
+        fake_quote = app.session.query(FakeQuote).filter(FakeQuote.id==fake_quote_id).first()
+        print("fake_quote")
+        print(fake_quote)
+        if fake_quote == None:
+            return abort(404)
+        quote = fake_quote.original_quote
+        return jsonify(
+            fake_quote=fake_quote.to_dict(),
+            fake_book=fake_quote.fake_book.to_dict(),
+            fake_author=fake_quote.fake_book.fake_author.to_dict(),
+
+            quote=quote.to_dict(),
+            book=quote.book.to_dict(),
+            author=quote.book.author.to_dict()
+        )
+
+    @app.route('/api/authors/<author_id>')
+    def api_author_by_id(author_id):
+        print(author_id)
+        print("author_id")
+        if not util.is_uuid(author_id):
+            print('Not')
+            return abort(404)
+
+        author = app.session.query(Author).filter(Author.id==author_id).first()
+        print("author")
+        print(author)
+        if author == None:
+            return abort(404)
+
+        return jsonify(
+            author=author.to_dict()
+        )
+
+    # // For testing
+    @app.route('/api/quotes/<quote_id>')
+    def api_quote_by_id(quote_id):
+        if not util.is_uuid(quote_id):
+            print('Not')
+            return abort(404)
+
+        quote = app.session.query(Quote).filter(Quote.id==quote_id).first()
+
+        if quote == None:
+            return abort(404)
+
+        return jsonify(
+            quote=quote.to_dict()
+        )
+
 
     def json_res_list(model, order_field, filters=None, only_id=False):
         return jsonify(get_model_dict_list(model, order_field, filters, only_id))
@@ -386,7 +473,8 @@ def create_app():
             .offset(offset) \
             .all()
 
-        next_offset = offset + limit
+        # next_offset = offset + limit
+        next_offset = -1
         if m_list != None and len(m_list) < limit:
             next_offset = -1
 
@@ -418,7 +506,8 @@ def create_app():
             .offset(offset) \
             .all()
 
-        next_offset = offset + limit
+        # next_offset = offset + limit
+        next_offset = -1
         if m_list != None and len(m_list) < limit:
             next_offset = -1
 
@@ -428,53 +517,11 @@ def create_app():
             next_offset=next_offset
         )
 
-    @app.route('/api/fake_quotes/<fake_quote_id>')
-    def api_fake_quote_by_id(fake_quote_id):
-        print(fake_quote_id)
-        print("fake_quote_id")
-        if not util.is_uuid(fake_quote_id):
-            print('Not')
-
-            return abort(404)
-
-        fake_quote = app.session.query(FakeQuote).filter(FakeQuote.id==fake_quote_id).first()
-        print("fake_quote")
-        print(fake_quote)
-        if fake_quote == None:
-            return abort(404)
-        quote = fake_quote.original_quote
-        return jsonify(
-            fake_quote=fake_quote.to_dict(),
-            fake_book=fake_quote.fake_book.to_dict(),
-            fake_author=fake_quote.fake_book.fake_author.to_dict(),
-
-            quote=quote.to_dict(),
-            book=quote.book.to_dict(),
-            author=quote.book.author.to_dict()
-        )
-
-    @app.route('/api/authors/<author_id>')
-    def api_author_by_id(author_id):
-        print(author_id)
-        print("author_id")
-        if not util.is_uuid(author_id):
-            print('Not')
-
-            return abort(404)
-
-        author = app.session.query(Author).filter(Author.id==author_id).first()
-        print("author")
-        print(author)
-        if author == None:
-            return abort(404)
-
-        return jsonify(
-            author=author.to_dict()
-            # books=author.books.to_dict()
-        )
-
+    # ###########
+    # Children List
     @app.route('/api/authors/<author_id>/fake_authors/list')
-    def api_books_by_author_id(author_id):
+    @cache.cached(query_string=True)
+    def api_fake_authors_by_author_id(author_id):
         if not util.is_uuid(author_id):
             print('Not')
             return abort(404)
@@ -492,11 +539,109 @@ def create_app():
         return jsonify(
             author=author.to_dict(),
             book_list=[book.to_dict() for book in author.books],
-            fake_author_list=fake_author_list_result['result_list'],
-            fake_author_total=fake_author_list_result['total'],
-            fake_author_next_offset=fake_author_list_result['next_offset']
+            # fake_author_list=fake_author_list_result['result_list'],
+            # fake_author_total=fake_author_list_result['total'],
+            # fake_author_next_offset=fake_author_list_result['next_offset']
+
+            children_list=fake_author_list_result['result_list'],
+            children_total=fake_author_list_result['total'],
+            children_next_offset=fake_author_list_result['next_offset']
+        )
+# /api/fake_authors/204499f0-b836-4d79-9644-e9454b8f0fb2/fake_books/lis
+    @app.route('/api/fake_authors/<fake_author_id>/fake_books/list')
+    @cache.cached(query_string=True)
+    def api_fake_authors_by_fake_author_id(fake_author_id):
+        if not util.is_uuid(fake_author_id):
+            print('Not')
+            return abort(404)
+
+        fake_author = app.session.query(FakeAuthor).filter(FakeAuthor.id==fake_author_id).first()
+        if fake_author == None:
+            return abort(404)
+
+        # Use pager per FakeBook
+        filters = (FakeBook.fake_author_id==fake_author_id)
+        fake_book_list_result = get_model_dict_list(FakeBook, FakeBook.title, filters)
+
+        return jsonify(
+            fake_author=fake_author.to_dict(),
+            # book_list=[book.to_dict() for book in author.books],
+            # fake_author_list=fake_author_list_result['result_list'],
+            # fake_author_total=fake_author_list_result['total'],
+            # fake_author_next_offset=fake_author_list_result['next_offset']
+
+            children_list=fake_book_list_result['result_list'],
+            children_total=fake_book_list_result['total'],
+            children_next_offset=fake_book_list_result['next_offset']
         )
 
+    @app.route('/api/books/<book_id>/quotes/list')
+    @cache.cached(query_string=True)
+    def api_quotes_by_book_id(book_id):
+        if not util.is_uuid(book_id):
+            return abort(404)
+
+        book = app.session.query(Book).filter(Book.id==book_id).first()
+        if book == None:
+            return abort(404)
+
+        # Use pager per Quote
+        filters = (Quote.book_id==book_id)
+        children_list_result = get_model_dict_list(Quote, Quote.text, filters)
+
+        return jsonify(
+            book=book.to_dict(),
+            children_list=children_list_result['result_list'],
+            children_total=children_list_result['total'],
+            children_next_offset=children_list_result['next_offset']
+        )
+
+    # /http://127.0.0.1:5000/api/quotes/8e7cdd6a-0cf9-446a-9529-57efc7b742fb/fake_quotes/list?offset=0&limit=100
+    @app.route('/api/quotes/<quote_id>/fake_quotes/list')
+    @cache.cached(query_string=True)
+    def api_fake_quotes_by_quote_id(quote_id):
+        if not util.is_uuid(quote_id):
+            return abort(404)
+
+        quote = app.session.query(Quote).filter(Quote.id==quote_id).first()
+
+        if quote == None:
+            return abort(404)
+
+        # Use pager per FakeQuote
+        filters = (FakeQuote.quote_id==quote_id)
+        children_list_result = get_model_dict_list(FakeQuote, FakeQuote.text, filters)
+
+        return jsonify(
+            quote=quote.to_dict(),
+
+            children_list=children_list_result['result_list'],
+            children_total=children_list_result['total'],
+            children_next_offset=children_list_result['next_offset']
+        )
+
+    @app.route('/api/fake_books/<fake_book_id>/fake_quotes/list')
+    @cache.cached(query_string=True)
+    def api_fake_quotes_by_fake_book_id(fake_book_id):
+        if not util.is_uuid(fake_book_id):
+            return abort(404)
+
+        fake_book = app.session.query(FakeBook).filter(FakeBook.id==fake_book_id).first()
+
+        if fake_book == None:
+            return abort(404)
+
+        # Use pager per FakeQuote
+        filters = (FakeQuote.fake_book_id==fake_book_id)
+        children_list_result = get_model_dict_list(FakeQuote, FakeQuote.text, filters)
+
+        return jsonify(
+            fake_book=fake_book.to_dict(),
+
+            children_list=children_list_result['result_list'],
+            children_total=children_list_result['total'],
+            children_next_offset=children_list_result['next_offset']
+        )
 
     return app
 

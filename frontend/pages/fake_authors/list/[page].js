@@ -4,53 +4,53 @@ import Layout from "../../../components/layout";
 import Pager from "../../../components/pager"
 // import { listContentFiles, readContentFiles } from "../../lib/content-loader"
 
-import { getAuthorIdList, getAuthorList } from '../../../lib/api'
+import { getFakeAuthorIdList, getFakeAuthorList } from '../../../lib/api'
 import {  getPagePaths } from '../../../lib/util'
 import { COUNT_PER_PAGE  }  from "../../../config/const";
 
-export default function AuthorList({ authorList=[], page, total, perPage }) {
+export default function FakeAuthorList({ fakeAuthorList, page, total, perPage }) {
   return (
     <Layout>
-      <h1>文豪一覧</h1>
-test
-      {authorList.map((author) => <div
-        key={author.id}
+      <h1>エセ文豪一覧</h1>
+test2
+      {fakeAuthorList.map((fakeAuthor) => <div
+        key={fakeAuthor.id}
         className="post-teaser"
       >
         {/* <h2><Link href="/posts/[id]" as={`/posts/${post.slug}`}><a>{post.title}</a></Link></h2> */}
         <div>
             <Link
-                href="/authors/[id]/fake_authors/list/[page]"
-                as={`/authors/${author.id}/fake_authors/list/1`}
+                href="/fake_authors/[id]/fake_books/list/[page]"
+                as={`/fake_authors/${fakeAuthor.id}/fake_books/list/1`}
             >
-                <a>{author.name}</a>
+                <a>{fakeAuthor.name}</a>
             </Link>
         </div>
       </div>)}
       <Pager
         page={page} total={total} perPage={perPage}
-        href="/authors/list/[page]"
-        asCallback={(page) => `/authors/list/${page}`}
+        href="/fake_authors/list/[page]"
+        asCallback={(page) => `/fake_authors/list/${page}`}
       />
     </Layout>
   )
 }
 
 export async function getStaticPaths() {
-    return await getPagePaths(getAuthorIdList)
+    return await getPagePaths(getFakeAuthorIdList)
 }
 
 export async function getStaticProps({ params }) {
   const page = parseInt(params.page, 10)
   const offset = COUNT_PER_PAGE * (page-1)
 
-  const {result_list: authorList, total } = await getAuthorList(offset, COUNT_PER_PAGE)
+  const {result_list: fakeAuthorList, total } = await getFakeAuthorList(offset, COUNT_PER_PAGE)
 
-//   console.log(authorList)
+//   console.log(fakeAuthorList)
 
   return {
     props: {
-      authorList,
+      fakeAuthorList,
       page,
       total,
       perPage: COUNT_PER_PAGE,

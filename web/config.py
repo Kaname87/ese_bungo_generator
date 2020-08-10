@@ -7,7 +7,7 @@ class Config(object):
     SECRET_KEY = os.environ['SECRET_KEY']
     # Cache
     CACHE_TYPE = 'simple'
-    CACHE_DEFAULT_TIMEOUT = 10
+    CACHE_DEFAULT_TIMEOUT = 200
 
 class ProductionConfig(Config):
     DEBUG = False

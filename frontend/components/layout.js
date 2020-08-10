@@ -49,11 +49,15 @@ export default function Layout({ children, home }) {
       <footer class="footer">
         <ul>
             <li>
-            <Link href="/authors/list/[page]" as="/authors/list/1" >
-            <a>原作一覧</a>
-            </Link>
+              <Link href="/authors/list/[page]" as="/authors/list/1" >
+                <a>原作一覧</a>
+              </Link>
             </li>
-            <li><a class="footer site-font-color" href="/fake_authors">エセ文豪一覧</a></li>
+            <li>
+              <Link href="/fake_authors/list/[page]" as="/fake_authors/list/1" >
+                <a>エセ文豪一覧</a>
+              </Link>
+            </li>
         </ul>
     </footer>
 
