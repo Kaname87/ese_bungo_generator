@@ -1,0 +1,13 @@
+@import '../styles/vars';
+// .quoteList a {
+//     color: $original-info-color;
+//     font-style: $original-info-font-style;
+// }
+
+.quote a {
+    color: $original-info-color;
+    font-style: $original-info-font-style;
+}
+.quote {
+    padding-bottom: 20px;
+}

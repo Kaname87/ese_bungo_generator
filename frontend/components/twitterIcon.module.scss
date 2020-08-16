@@ -1,0 +1,99 @@
+$tablet-width: 768px;
+$desktop-width: 1024px;
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+.sns {
+  bottom: 10px;
+  position: fixed;
+  margin: 1em;
+  right: 0;
+}
+
+@-webkit-keyframes bounceIn {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  20% {
+    -webkit-transform: scale3d(0.9, 0.9, 0.9);
+    transform: scale3d(0.9, 0.9, 0.9);
+  }
+  70% {
+    -webkit-transform: scale3d(1.15, 1.15, 1.15);
+    transform: scale3d(1.15, 1.15, 1.15);
+  }
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  20% {
+    -webkit-transform: scale3d(0.9, 0.9, 0.9);
+    transform: scale3d(0.9, 0.9, 0.9);
+  }
+  70% {
+    -webkit-transform: scale3d(1.15, 1.15, 1.15);
+    transform: scale3d(1.15, 1.15, 1.15);
+  }
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.twitterIcon {
+  display: block;
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  margin: 20px auto 0;
+  cursor: pointer;
+  -webkit-transition: all 0.1s ease-out;
+  transition: all 0.1s ease-out;
+  position: relative;
+
+  font-size: 0.1px;
+  background-image: url("/images/twitter_icon_black.svg");
+
+  &:active {
+    background-image: url("/images/twitter_icon_blue.svg");
+    -webkit-animation: bounceIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1)
+      forwards;
+    animation: bounceIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  }
+
+  @include tablet {
+    width: 55px;
+    height: 55px;
+    margin: 20px 20px 0;
+  }
+  @include desktop {
+    width: 55px;
+    height: 55px;
+    margin: 20px 30px 0;
+  }
+
+  &:hover {
+    @include desktop {
+      background-image: url("/images/twitter_icon_blue.svg");
+      -webkit-animation: bounceIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1)
+        forwards;
+      animation: bounceIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    }
+  }
+}

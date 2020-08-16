@@ -1,0 +1,20 @@
+@import '../styles/utils';
+
+.random {
+    flex-grow: 1;
+    color: transparent;
+    width: 25%;
+    font-size: 0.6rem;
+    color: #f8f6f5;
+
+    @include tablet {
+        display: none;
+        // max-width: 30%;
+        // min-width: 30%;
+    }
+    @include desktop {
+        display: none;
+        // max-width: 30%;
+        // min-width: 30%;
+    }
+}

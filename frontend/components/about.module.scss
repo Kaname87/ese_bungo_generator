@@ -1,0 +1,16 @@
+@import '../styles/vars';
+@import "../styles/utils";
+.about {
+    font-size: 0.8rem;
+    margin: 30px 10%;
+
+    color: $important-color;
+    border:0.5px solid $important-color;
+
+    text-align: center;
+    padding: 0 10px 15px;
+
+    @include desktop {
+        padding: 0 10px 20px;
+    }
+}

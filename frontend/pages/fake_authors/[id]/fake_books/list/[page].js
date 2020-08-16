@@ -1,75 +1,82 @@
-import Link from "next/link"
 import Layout from "../../../../../components/layout";
-import Pager from "../../../../../components/pager"
 
+import CommonBookList from "../../../../../components/commonBookList";
+
+import PagerWrapper from "../../../../../components/pagerWrapper";
 import {
-    getFakeAuthorIdList,
-    getFakeBookListByFakeAuthorId,
- } from '../../../../../lib/api';
-import { getAllChildrenPagePaths } from '../../../../../lib/util';
-
-import { COUNT_PER_PAGE  }  from "../../../../../config/const";
+  getFakeAuthorIdList,
+  getFakeBookListByFakeAuthorId,
+  getRandomFakeQuoteIdList,
+} from "../../../../../lib/api";
+import { getAllChildrenPagePaths } from "../../../../../lib/util";
+import OriginalAuthor from "../../../../../components/originalAuthor";
+import { COUNT_PER_PAGE } from "../../../../../config/const";
 
 export default function AuthorFakeBookList({
+  data: {
+    author,
+    //  bookList,
     fakeAuthor,
     fakeBookList,
-    page, total, perPage }) {
+    total,
+    randomIdList,
+  },
+  page,
+  perPage,
+}) {
+  const pageTitle = fakeAuthor.name;
   return (
-    <Layout>
-      <h1>エセ文豪作品一覧</h1>
-      <p>{fakeAuthor.name}</p>
-      {fakeBookList.map((fakeBook) => <div
-        key={fakeBook.id}
-        className="post-teaser"
-      >
-        {/* <h2><Link href="/posts/[id]" as={`/posts/${post.slug}`}><a>{post.title}</a></Link></h2> */}
-        <div>
-        <Link href="/fake_books/[id]/fake_quotes/list/[page]" as={`/fake_books/${fakeBook.id}/fake_quotes/list/1`}>
-            <a>{fakeBook.title}</a></Link>
-        </div>
-      </div>)}
+    <Layout pageTitle={pageTitle} randomIdList={randomIdList}>
+      <h1>{pageTitle}</h1>
 
-        <hr/>
-        <hr/>
-      <Pager
-        page={page} total={total} perPage={perPage}
+      <PagerWrapper
+        page={page}
+        total={total}
+        perPage={perPage}
         href="/fake_authors/[id]/fake_books/list/[page]"
-        asCallback={(page) => `/fake_authors/${fakeAuthor.id}/fake_books/list/${page}`}
-      />
+        asCallback={(page) =>
+          `/fake_authors/${fakeAuthor.id}/fake_books/list/${page}`
+        }
+      >
+        <CommonBookList targetBookList={fakeBookList} isFake />
+      </PagerWrapper>
+      <OriginalAuthor author={author} />
     </Layout>
-  )
+  );
 }
-
 
 export async function getStaticPaths() {
   return await getAllChildrenPagePaths(
-        getFakeAuthorIdList,
-        getFakeBookListByFakeAuthorId
-    )
+    getFakeAuthorIdList,
+    getFakeBookListByFakeAuthorId
+  );
 }
 
-
 export async function getStaticProps({ params }) {
-  const page = parseInt(params.page, 10)
-  const offset = COUNT_PER_PAGE * (page-1)
+  const page = parseInt(params.page, 10);
+  const offset = COUNT_PER_PAGE * (page - 1);
 
-  const res = await getFakeBookListByFakeAuthorId(params.id, offset, COUNT_PER_PAGE)
-//   console.log({res})
   const {
+    author,
+    book_list: bookList,
     fake_author: fakeAuthor,
-    // book_list: bookList,
     children_list: fakeBookList,
-    children_total: total
-} = res
+    children_total: total,
+  } = await getFakeBookListByFakeAuthorId(params.id, offset, COUNT_PER_PAGE);
 
-
+  const randomData = await getRandomFakeQuoteIdList();
   return {
     props: {
-      fakeAuthor,
-      fakeBookList,
+      data: {
+        author,
+        bookList,
+        fakeAuthor,
+        fakeBookList,
+        total,
+        randomIdList: randomData.id_list,
+      },
       page,
-      total,
       perPage: COUNT_PER_PAGE,
-    }
-  }
+    },
+  };
 }

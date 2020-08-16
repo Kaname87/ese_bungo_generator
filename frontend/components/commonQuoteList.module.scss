@@ -1,0 +1,42 @@
+@import '../styles/utils';
+
+.targetList {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    // margin: 0 10%;
+    margin-left: 5%;
+    margin-right: 5%;
+    // @include tablet {
+    //     margin-left: 10%;
+    //     margin-right: 10%;
+    // }
+    // @include desktop {
+    //     margin-left: 10%;
+    //     margin-right: 10%;
+    // }
+
+
+    // margin-right: 7%;
+}
+.quote {
+    max-width: 400px;
+    min-width: 400px;
+    // margin-bottom: 20px;
+    margin-bottom: 7%;
+    @include tablet {
+        margin-bottom: 5%;
+        max-width: 550px;
+        min-width: 550px;
+        // margin-left: 5%;
+        // margin-right: 5%;
+    }
+    @include desktop {
+        max-width: 900px;
+        min-width: 900px;
+        // margin-left: 5%;
+        // margin-right: 5%;
+        margin-bottom: 3%;
+    }
+}

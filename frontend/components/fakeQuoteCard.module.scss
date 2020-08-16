@@ -1,0 +1,191 @@
+@import '../styles/utils';
+
+.fake {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    // margin: 0 1%;
+
+    @include tablet {
+        flex-wrap: nowrap;
+        margin: 0 5%;
+    }
+    @include desktop {
+        flex-wrap: nowrap;
+        margin: 0 5%;
+        // flex-direction: column;
+    }
+}
+
+
+.fakeAuthorWrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    // @include tablet {
+    //     max-width: 30%;
+    //     min-width: 30%;
+    // }
+    @include tablet {
+        min-width: 40%;
+        max-width: 40%;
+        // max-width: 30%;
+        // min-width: 30%;
+    }
+    @include desktop {
+        min-width: 40%;
+        max-width: 40%;
+        // max-width: 30%;
+        // min-width: 30%;
+    }
+    // @include desktop {
+    //     max-width: 30%;
+    //     min-width: 30%;
+    // }
+    // .page-controller {
+    //     flex-grow: 1;
+    //     @include tablet {
+    //         display: none;
+    //     }
+    // }
+
+    // .prev {
+    //     margin-left: 0;
+    // }
+    // .next {
+    //     margin-right: 0;
+    // }
+}
+
+.fakeAuthor {
+    flex-grow: 1;
+    margin: 2% 5% 5% 5%;
+    // width: 90%;
+}
+
+.profile {
+    min-width: 100%;
+    object-fit: contain;
+}
+
+.novel {
+    justify-content: flex-start;
+    margin: auto;
+    flex-grow: 3;
+}
+.fakeQuote {
+    font-size: 1.2rem;
+    margin: 0 5%;
+    @include tablet {
+        padding: 3%;
+        font-size: 1.3rem;
+    }
+    @include desktop {
+        padding: 3%;
+        font-size: 1.3rem;
+    }
+}
+
+.fakeCite {
+    margin: 5% 10% 2% 0;
+    font-size: 0.95rem;
+    margin-left: auto;
+    text-align: right;
+
+    @include tablet {
+        margin: 5% 0 2% 0;
+        font-size: 1.1rem;
+    }
+    @include desktop {
+        margin: 5% 0 2% 0;
+        font-size: 1.1rem;
+    }
+    a {
+        text-decoration: none;
+        color: #000;
+        border-bottom: 0.05px solid black;
+    }
+}
+.fakeAuthorName {
+    margin-right: 5px;
+}
+
+.originalInfo {
+    margin: 2% 3%;
+    padding: 0 2%;
+    blockquote {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        color: $original-info-color;
+        font-style: $original-info-font-style;
+        // padding: 4% 1%;
+        text-align: center;
+        padding: 3% 3%;
+        // @include tablet {
+        //     padding: 3% 1%;
+        // }
+
+        p, a {
+            padding: 0;
+            margin: 0 0 3% 0;
+            line-height: 1.7;
+
+            @include tablet {
+                // font-size: 1.1rem;
+            }
+            @include desktop {
+                // font-size: 1.2rem;
+            }
+        }
+
+        cite {
+            display: block;
+            text-align: right;
+            font-size: 0.9rem;
+
+            @include tablet {
+                font-size: 0.9rem;
+            }
+            @include desktop {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    a {
+        &:link,
+        &:visited,
+        &:hover,
+        &:active {
+            color: #666;
+        }
+    }
+}
+
+.originalQuote {
+    font-size: 1rem;
+    text-decoration: none;
+    @include tablet {
+        font-size: 1.1rem;
+    }
+    @include desktop {
+        font-size: 1.2rem;
+    }
+}
+.originalCite {
+    margin-top: 20px;
+    font-size: 1rem;
+    a {
+        &:first-child {
+            margin-right: 3px;
+        }
+    }
+    @include tablet {
+        font-size: 1.1rem;
+    }
+    @include desktop {
+        font-size: 1.2rem;
+    }
+}

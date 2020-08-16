@@ -1,52 +1,51 @@
 import Layout from '../../components/layout';
 import FakeQuoteCard from '../../components/fakeQuoteCard';
 
-import { getFakeQuote, getFakeQuoteIdList } from '../../lib/api'
+import {
+  getFakeQuote,
+  getFakeQuoteIdList,
+  getRandomFakeQuoteIdList,
+} from '../../lib/api'
 import { getIdPaths } from '../../lib/util'
 
-export default function Quote({
-  fakeQuote,
-  fakeBook,
-  fakeAuthor,
-  quote,
-  book,
-  author,
+export default function FakeQuote({
+  data: {
+    fakeQuoteData,
+    randomIdList,
+  }
 }) {
+
   return (
-    <Layout>
+    // Check if this affect to pageload
+    <Layout pageTitle={fakeQuoteData.fakeQuote.text} randomIdList={randomIdList}>
       <FakeQuoteCard
-        fakeQuote={fakeQuote}
-        fakeBook={fakeBook}
-        fakeAuthor={fakeAuthor}
-        quote={quote}
-        book={book}
-        author={author}
+        fakeQuoteData={fakeQuoteData}
       />
     </Layout>
   )
 }
+
+// http://localhost:3000/fake_quotes/98b382c5-8ef9-4e78-ac77-c7d05fe20fb1
 
 export async function getStaticPaths() {
   return await getIdPaths(getFakeQuoteIdList)
 }
 
 export async function getStaticProps({ params }) {
-  const {
-    fake_quote:fakeQuote,
-    fake_book:fakeBook,
-    fake_author:fakeAuthor,
-    quote,
-    book,
-    author,
-   } = await getFakeQuote(params.id)
+  const fkQuoteData = await getFakeQuote(params.id)
+  const randomData = await getRandomFakeQuoteIdList(params.id)
+  const randomIdList = randomData.id_list
+  const fakeQuoteData = {
+    ...fkQuoteData,
+    randomIdList,
+  }
+
   return {
     props: {
-      fakeQuote,
-      fakeBook,
-      fakeAuthor,
-      quote,
-      book,
-      author,
+      data:{
+        fakeQuoteData,
+        randomIdList,
+      }
     }
   }
 }

@@ -5,6 +5,40 @@ const API_BASE = 'http://127.0.0.1:5000/api';
 
 export async function getFakeQuote(id) {
     const res = await fetch(`${API_BASE}/fake_quotes/${id}`)
+    //
+    const {
+        fake_quote:fakeQuote,
+        fake_book:fakeBook,
+        fake_author:fakeAuthor,
+        quote,
+        book,
+        author,
+    } = await res.json()
+    return {
+        fakeQuote,
+        fakeBook,
+        fakeAuthor,
+        quote,
+        book,
+        author,
+    }
+}
+
+export async function getRandomFakeQuote(id=null) {
+    let randomApi = `${API_BASE}/fake_quotes/random`
+    if (id) {
+        randomApi += `?fake_quote_id=${id}`
+    }
+    const res = await fetch(randomApi)
+    return res.json()
+}
+
+export async function getRandomFakeQuoteIdList(id=null) {
+    let randomApi = `${API_BASE}/fake_quotes/random_id_list`
+    if (id) {
+        randomApi += `?fake_quote_id=${id}`
+    }
+    const res = await fetch(randomApi)
     return res.json()
 }
 
@@ -21,6 +55,11 @@ export async function getFakeAuthor(id) {
 //  List by parent
 export async function getFakeAuthorListByAuthorId(authorId, offset=0, limit=100) {
     const res = await fetch(`${API_BASE}/authors/${authorId}/fake_authors/list?offset=${offset}&limit=${limit}`)
+    return res.json()
+}
+
+export async function getBookListByAuthorId(authorId, offset=0, limit=100) {
+    const res = await fetch(`${API_BASE}/authors/${authorId}/books/list?offset=${offset}&limit=${limit}`)
     return res.json()
 }
 
@@ -88,10 +127,23 @@ export async function getFakeQuoteIdList(offset=0, limit=100) {
 // LIST
 export async function getAuthorList(offset=0, limit=100) {
     const res = await fetch(listApi('authors', offset, limit))
-    return res.json()
+    const {
+        result_list:authorList,
+        total,
+    } = await res.json()
+
+    return {
+        authorList,
+        total,
+    }
 }
 
 export async function getFakeAuthorList(offset=0, limit=100) {
     const res = await fetch(listApi('fake_authors', offset, limit))
+    return res.json()
+}
+
+export async function getFakeQuoteList(offset=0, limit=100) {
+    const res = await fetch(listApi('fake_quotes', offset, limit))
     return res.json()
 }

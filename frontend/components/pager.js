@@ -1,88 +1,73 @@
-import Link from "next/link"
+import Link from "next/link";
+import styles from "./pager.module.scss";
 const Pager = (props) => {
-  const { total, page, perPage, href, asCallback } = props
+  const { total, page, perPage, href, asCallback } = props;
 
   const prevPage = page > 1 ? page - 1 : -1;
 
-  const lastPage = Math.ceil(total / perPage)
+  const lastPage = Math.ceil(total / perPage);
 
   if (lastPage == 1) {
-      return (<></>)
+    return null;
   }
 
   const isFirstPage = page === 1;
   const isLastPage = page === lastPage;
 
-  let nextPage = Number.MAX_SAFE_INTEGER
+  let nextPage = Number.MAX_SAFE_INTEGER;
   if (page < lastPage) {
-    nextPage = page + 1
+    nextPage = page + 1;
   }
 
+  const renderPagerItem = (href, page) => (
+    <span className={styles.pagerItem}>
+      <Link href={href} as={asCallback(page)}>
+        <a>{page}</a>
+      </Link>
+    </span>
+  );
+  if (total == 1) {
+    null;
+  }
 
   return (
-    <div className="pager">
-        <span className="pager-item">
-            {!isFirstPage ? (
-                <Link href={href} as={asCallback(1)}>
-                    <a>«</a>
-                </Link>
-                ) : `«`}
-        </span>
+    <div className={styles.pager}>
+      <span className={styles.pagerItem}>
+        {!isFirstPage ? (
+          <Link href={href} as={asCallback(1)}>
+            <a>«</a>
+          </Link>
+        ) : (
+          `«`
+        )}
+      </span>
 
-        <span className="pager-item">
-            {(prevPage-1) > 0 ? (
-            <Link href={href} as={asCallback(prevPage-1)}>
-                <a>{prevPage-1}</a>
-            </Link>
-            ) : ``}
-        </span>
+      {prevPage - 2 > 0 && <span className={styles.pagerItem}>...</span>}
 
-        <span className="pager-item">
-            {prevPage > 0 ? (
-            <Link href={href} as={asCallback(prevPage)}>
-                <a>{prevPage}</a>
-            </Link>
-            ) : ``}
-        </span>
+      {prevPage - 1 > 0 && renderPagerItem(href, prevPage - 1)}
 
-        <span className="pager-item">{page}</span>
+      {prevPage > 0 && renderPagerItem(href, prevPage)}
 
-        <span className="pager-item">
-            {nextPage <= lastPage ? (
-            <Link href={href} as={asCallback(nextPage)}>
-                <a>{nextPage}</a>
-            </Link>
-            ) : ``}
-        </span>
+      <span className={styles.pagerItem}>{page}</span>
 
-        <span className="pager-item">
-            {nextPage +1 <= lastPage ? (
-            <Link href={href} as={asCallback(nextPage +1)}>
-                <a>{nextPage +1}</a>
-            </Link>
-            ) : ``}
-        </span>
+      {nextPage <= lastPage && renderPagerItem(href, nextPage)}
 
-        <span className="pager-item">
-            {!isLastPage ? (
-            <Link href={href} as={asCallback(lastPage)}>
-                <a>»</a>
-            </Link>
-            ) : `»`}
-        </span>
+      {nextPage + 1 <= lastPage && renderPagerItem(href, nextPage + 1)}
 
-      <style jsx>{`
-        .pager {
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          flew-wrap: nowrap;
-        }
-        .pager-item {
-          margin: 0 1em;
-        }
-      `}</style>
+      {nextPage + 2 <= lastPage && (
+        <span className={styles.pagerItem}>...</span>
+      )}
+
+      <span className={styles.pagerItem}>
+        {!isLastPage ? (
+          <Link href={href} as={asCallback(lastPage)}>
+            <a>»</a>
+          </Link>
+        ) : (
+          `»`
+        )}
+      </span>
     </div>
-  )
-}
-export default Pager
+  );
+};
+export default Pager;

@@ -1,20 +1,26 @@
+import { useState } from "react";
+import { PROFILE_IMAGE_LIST } from "../config/const";
 
-import Head from 'next/head'
-import styles from './layout.module.css'
-import utilStyles from '../styles/utils.module.css'
-import Link from 'next/link'
+import styles from "./profile.module.scss";
 
-const name = 'Your Name'
-export const siteTitle = 'Next.js Sample Website'
+const setNextIdx = async (idx, setFunc) => {
+  let nextIdx = idx + 1;
+  if (nextIdx > PROFILE_IMAGE_LIST.length - 1) {
+    nextIdx = 0;
+  }
+  setFunc(nextIdx);
+};
 
 export default function Profile({ profileIdx = 0, alt }) {
-    return (
-        <div class="fake-author hide">
-            <img
-                src="/images/hayashi.jpg"
-                // className={`${styles.headerHomeImage} ${utilStyles.borderCircle}`}
-                alt={alt}
-            />
-        </div>
-    );
-};
+  const [imageIdx, setImageIdx] = useState(profileIdx);
+
+  return (
+    <div className={styles.fakeAuthor}>
+      <img
+        src={PROFILE_IMAGE_LIST[imageIdx]}
+        onClick={async () => await setNextIdx(imageIdx, setImageIdx)}
+        alt={alt}
+      />
+    </div>
+  );
+}
