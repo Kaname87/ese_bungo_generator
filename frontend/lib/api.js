@@ -1,10 +1,7 @@
 import fetch from 'node-fetch'
-
-const API_BASE = 'http://127.0.0.1:5000/api';
-
-
+import { API_BASE_URL } from "../config/const"
 export async function getFakeQuote(id) {
-    const res = await fetch(`${API_BASE}/fake_quotes/${id}`)
+    const res = await fetch(`${API_BASE_URL}/fake_quotes/${id}`)
     //
     const {
         fake_quote:fakeQuote,
@@ -25,7 +22,7 @@ export async function getFakeQuote(id) {
 }
 
 export async function getRandomFakeQuote(id=null) {
-    let randomApi = `${API_BASE}/fake_quotes/random`
+    let randomApi = `${API_BASE_URL}/fake_quotes/random`
     if (id) {
         randomApi += `?fake_quote_id=${id}`
     }
@@ -34,7 +31,7 @@ export async function getRandomFakeQuote(id=null) {
 }
 
 export async function getRandomFakeQuoteIdList(id=null) {
-    let randomApi = `${API_BASE}/fake_quotes/random_id_list`
+    let randomApi = `${API_BASE_URL}/fake_quotes/random_id_list`
     if (id) {
         randomApi += `?fake_quote_id=${id}`
     }
@@ -43,53 +40,53 @@ export async function getRandomFakeQuoteIdList(id=null) {
 }
 
 export async function getAuthor(id) {
-    const res = await fetch(`${API_BASE}/authors/${id}`)
+    const res = await fetch(`${API_BASE_URL}/authors/${id}`)
     return res.json()
 }
 
 export async function getFakeAuthor(id) {
-    const res = await fetch(`${API_BASE}/fake_authors/${id}`)
+    const res = await fetch(`${API_BASE_URL}/fake_authors/${id}`)
     return res.json()
 }
 
 //  List by parent
 export async function getFakeAuthorListByAuthorId(authorId, offset=0, limit=100) {
-    const res = await fetch(`${API_BASE}/authors/${authorId}/fake_authors/list?offset=${offset}&limit=${limit}`)
+    const res = await fetch(`${API_BASE_URL}/authors/${authorId}/fake_authors/list?offset=${offset}&limit=${limit}`)
     return res.json()
 }
 
 export async function getBookListByAuthorId(authorId, offset=0, limit=100) {
-    const res = await fetch(`${API_BASE}/authors/${authorId}/books/list?offset=${offset}&limit=${limit}`)
+    const res = await fetch(`${API_BASE_URL}/authors/${authorId}/books/list?offset=${offset}&limit=${limit}`)
     return res.json()
 }
 
 export async function getQuoteListByBookId(bookId, offset=0, limit=100) {
-    const res = await fetch(`${API_BASE}/books/${bookId}/quotes/list?offset=${offset}&limit=${limit}`)
+    const res = await fetch(`${API_BASE_URL}/books/${bookId}/quotes/list?offset=${offset}&limit=${limit}`)
     return res.json()
 }
 
 export async function getFakeBookListByFakeAuthorId(fakeAuthorId, offset=0, limit=100) {
-   const res = await fetch(`${API_BASE}/fake_authors/${fakeAuthorId}/fake_books/list?offset=${offset}&limit=${limit}`)
+   const res = await fetch(`${API_BASE_URL}/fake_authors/${fakeAuthorId}/fake_books/list?offset=${offset}&limit=${limit}`)
    return res.json()
 }
 
 export async function getFakeQuoteListByQuoteId(quoteId, offset=0, limit=100) {
-    const res = await fetch(`${API_BASE}/quotes/${quoteId}/fake_quotes/list?offset=${offset}&limit=${limit}`)
+    const res = await fetch(`${API_BASE_URL}/quotes/${quoteId}/fake_quotes/list?offset=${offset}&limit=${limit}`)
     return res.json()
 }
 export async function getFakeQuoteListByFakeBookId(fakeBookId, offset=0, limit=100) {
-    const res = await fetch(`${API_BASE}/fake_books/${fakeBookId}/fake_quotes/list?offset=${offset}&limit=${limit}`)
+    const res = await fetch(`${API_BASE_URL}/fake_books/${fakeBookId}/fake_quotes/list?offset=${offset}&limit=${limit}`)
     return res.json()
 }
 
 
 // All ID
 function idListApi(resource, offset=0, limit=100) {
-    return `${API_BASE}/${resource}/id_list?offset=${offset}&limit=${limit}`
+    return `${API_BASE_URL}/${resource}/id_list?offset=${offset}&limit=${limit}`
 }
 
 function listApi(resource, offset=0, limit=100) {
-    return `${API_BASE}/${resource}/list?offset=${offset}&limit=${limit}`
+    return `${API_BASE_URL}/${resource}/list?offset=${offset}&limit=${limit}`
 }
 
 // ID LIST

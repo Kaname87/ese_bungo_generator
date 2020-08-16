@@ -1,14 +1,13 @@
 import styles from "./twitterIcon.module.scss";
+import { SITE_URL } from "../config/const";
 
-// TOOD env url
-const baseUrl = "http://localhost:3000";
 const getShareLink = (
   fakeAuthor,
   fakeBook,
   fakeQuote,
   hashtag = "エセ文豪"
 ) => {
-  const url = encodeURIComponent(`${baseUrl}/fake_quotes/${fakeQuote.id}`);
+  const url = encodeURIComponent(`${SITE_URL}/fake_quotes/${fakeQuote.id}`);
   const shareText = getShareText(fakeAuthor, fakeBook, fakeQuote);
   return `https://twitter.com/intent/tweet?text=${shareText}&hashtags=${hashtag}&url=${url}`;
 };

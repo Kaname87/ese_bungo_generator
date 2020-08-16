@@ -3,6 +3,8 @@ export const COUNT_PER_PAGE = 10;
 export const CHILDREN_MAX_DISPLAY = 3;
 
 export const SITE_NAME = 'エセ文豪文庫'
+export const SITE_URL = `${process.env.SITE_URL}`
+export const API_BASE_URL = `${process.env.API_BASE_URL}`
 
 export const PROFILE_IMAGE_LIST = [
     "/images/profile/hayashi.jpg",
@@ -10,8 +12,7 @@ export const PROFILE_IMAGE_LIST = [
     "/images/profile/akutako.jpg",
 ]
 
-// TODO make this server ver
-export const TOP_PAGE_FAKE_QUOTE_ID = '2d12dcf4-3bae-418b-8005-aa550c76730c'
+export const TOP_PAGE_FAKE_QUOTE_ID = `${process.env.TOP_PAGE_FAKE_QUOTE_ID}`
 
 export const NOT_FOUND_DATA = {
   fakeQuote: {

@@ -9,8 +9,10 @@ import { TOP_PAGE_FAKE_QUOTE_ID } from "../config/const";
 export default function Home({ data }) {
   return (
     <Layout pageTitle="表紙" randomIdList={data.randomIdList}>
+
       <FakeQuoteCard fakeQuoteData={data} />
       <About />
+
     </Layout>
   );
 }
@@ -18,7 +20,6 @@ export default function Home({ data }) {
 export async function getStaticProps() {
   const fkQuoteData = await getFakeQuote(TOP_PAGE_FAKE_QUOTE_ID);
   const randomData = await getRandomFakeQuoteIdList(TOP_PAGE_FAKE_QUOTE_ID);
-
   const data = {
     ...fkQuoteData,
     randomIdList: randomData.id_list,
