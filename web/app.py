@@ -610,7 +610,8 @@ def create_app():
             next_offset = -1
 
         # Tmp Code for local
-        next_offset = -1 # TODO: Make this as default for local
+        if os.environ['FLASK_ENV'] != 'production':
+            next_offset = -1 # TODO: Make this as default for local
 
         return next_offset
 
