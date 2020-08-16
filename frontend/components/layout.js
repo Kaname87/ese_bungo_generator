@@ -30,6 +30,19 @@ export default function Layout({ children, pageTitle='', randomIdList=[] }) {
         <link rel="icon" href="/images/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
 
+        {/* <!-- Global site tag (gtag.js) - Google Analytics --> */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132694979-1"></script>
+        <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag() {
+                  dataLayer.push(arguments);
+                }
+                gtag("js", new Date());
+                gtag("config", "UA-132694979-1");`
+            }}
+          />
       </Head>
       <Header />
       <main className={styles.main}>{children}</main>
