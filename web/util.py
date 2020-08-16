@@ -28,3 +28,15 @@ def is_uuid(uuid_string, version=4):
     except ValueError:
         return False
     return True
+
+def singular(noun):
+    # 小文字のみ、そして最後sのパターンのみ
+    if len(noun) > 1 and noun[-1] == 's':
+        return noun[:-1]
+    return noun
+
+def singular_table_name(model):
+    return singular(model.__tablename__)
+
+def fk_column_name(foreign_model):
+    return singular_table_name(foreign_model) + '_id'
