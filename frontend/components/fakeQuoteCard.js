@@ -109,11 +109,13 @@ export default function fakeQuoteCard({ fakeQuoteData, isError = false }) {
           </cite>
         </blockquote>
       </div>
-      <TwitterIcon
-        fakeAuthor={fakeAuthor}
-        fakeBook={fakeBook}
-        fakeQuote={fakeQuote}
-      />
+      {!isError && (
+        <TwitterIcon
+          fakeAuthor={fakeAuthor}
+          fakeBook={fakeBook}
+          fakeQuote={fakeQuote}
+        />
+      )}
     </section>
   );
 }
