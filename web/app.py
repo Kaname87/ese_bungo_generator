@@ -30,216 +30,216 @@ def create_app():
 
     cache = Cache(app)
 
-    @app.route('/')
-    def show_top():
-        TOP_AUTHORS_LIMIT = 4
-        fake_quote = app.session.query(FakeQuote).filter_by(id=TOP_QUOTE_ID).first()
+    if os.environ['FLASK_ENV'] != 'production':
+        @app.route('/')
+        def show_top():
+            TOP_AUTHORS_LIMIT = 4
+            fake_quote = app.session.query(FakeQuote).filter_by(id=TOP_QUOTE_ID).first()
 
-        authors = app.session.query(Author) \
-            .order_by(func.random()) \
-            .limit(TOP_AUTHORS_LIMIT) \
-            .all()
-
-        for author in authors:
-            books = app.session.query(Book) \
-                .filter(Book.author_id==author.id) \
-                .order_by(Book.title) \
-                .limit(CHILDREN_LIMIT) \
+            authors = app.session.query(Author) \
+                .order_by(func.random()) \
+                .limit(TOP_AUTHORS_LIMIT) \
                 .all()
-            setattr(author, 'books', books)
 
-            book_count = app.session.query(Book) \
-                .filter(Book.author_id==author.id) \
-                .count()
-            setattr(author, 'book_count', book_count)
+            for author in authors:
+                books = app.session.query(Book) \
+                    .filter(Book.author_id==author.id) \
+                    .order_by(Book.title) \
+                    .limit(CHILDREN_LIMIT) \
+                    .all()
+                setattr(author, 'books', books)
 
-        return render_template('top.html',
-            fake_quote=fake_quote,
-            authors=authors
-        )
+                book_count = app.session.query(Book) \
+                    .filter(Book.author_id==author.id) \
+                    .count()
+                setattr(author, 'book_count', book_count)
 
-    @app.route('/fake_quotes/random/')
-    def show_random_quote():
-        # Pick Random Fake Quote
-        fake_quote = app.session.query(FakeQuote).order_by(func.random()).first()
-        # return render_fake_quote_page(fake_quote)
-        return redirect(url_for('show_fake_quote',
-            fake_quote_id=fake_quote.id,
-            profile=request.args.get('profile', 0)
-        ))
+            return render_template('top.html',
+                fake_quote=fake_quote,
+                authors=authors
+            )
 
-    @app.route('/fake_quotes/<fake_quote_id>')
-    @cache.cached(query_string=True)
-    def show_fake_quote(fake_quote_id):
-        # When invalid id is passed, just redirect to random page
-        if not util.is_uuid(fake_quote_id):
-            return redirect(url_for('show_random_quote'))
+        @app.route('/fake_quotes/random/')
+        def show_random_quote():
+            # Pick Random Fake Quote
+            fake_quote = app.session.query(FakeQuote).order_by(func.random()).first()
+            # return render_fake_quote_page(fake_quote)
+            return redirect(url_for('show_fake_quote',
+                fake_quote_id=fake_quote.id,
+                profile=request.args.get('profile', 0)
+            ))
 
-        fake_quote = app.session.query(FakeQuote).filter(FakeQuote.id==fake_quote_id).first()
-        if fake_quote == None:
-            return redirect(url_for('show_random_quote'))
+        @app.route('/fake_quotes/<fake_quote_id>')
+        @cache.cached(query_string=True)
+        def show_fake_quote(fake_quote_id):
+            # When invalid id is passed, just redirect to random page
+            if not util.is_uuid(fake_quote_id):
+                return redirect(url_for('show_random_quote'))
 
-        return render_fake_quote_page(fake_quote)
+            fake_quote = app.session.query(FakeQuote).filter(FakeQuote.id==fake_quote_id).first()
+            if fake_quote == None:
+                return redirect(url_for('show_random_quote'))
 
-    @app.route('/original_authors')
-    @cache.cached(query_string=True)
-    def list_authors():
-        page = get_page()
-        offset = get_offset(page)
+            return render_fake_quote_page(fake_quote)
 
-        authors = app.session.query(Author) \
-            .order_by(Author.name_kana) \
-            .offset(offset) \
-            .limit(PER_PAGE) \
-            .all()
+        @app.route('/original_authors')
+        @cache.cached(query_string=True)
+        def list_authors():
+            page = get_page()
+            offset = get_offset(page)
 
-        for author in authors:
-            books = app.session.query(Book) \
-                .filter(Book.author_id==author.id) \
-                .order_by(Book.title) \
-                .limit(CHILDREN_LIMIT) \
+            authors = app.session.query(Author) \
+                .order_by(Author.name_kana) \
+                .offset(offset) \
+                .limit(PER_PAGE) \
                 .all()
-            setattr(author, 'books', books)
 
-            book_count = app.session.query(Book) \
-                .filter(Book.author_id==author.id) \
-                .count()
-            setattr(author, 'book_count', book_count)
+            for author in authors:
+                books = app.session.query(Book) \
+                    .filter(Book.author_id==author.id) \
+                    .order_by(Book.title) \
+                    .limit(CHILDREN_LIMIT) \
+                    .all()
+                setattr(author, 'books', books)
+
+                book_count = app.session.query(Book) \
+                    .filter(Book.author_id==author.id) \
+                    .count()
+                setattr(author, 'book_count', book_count)
 
 
-        pagination = get_pagenate(page, Author)
-        return render_template('original_author_list.html', authors=authors, pagination=pagination)
+            pagination = get_pagenate(page, Author)
+            return render_template('original_author_list.html', authors=authors, pagination=pagination)
 
-    @app.route('/fake_authors')
-    @cache.cached(query_string=True)
-    def list_fake_authors():
-        page = get_page()
-        offset = get_offset(page)
+        @app.route('/fake_authors')
+        @cache.cached(query_string=True)
+        def list_fake_authors():
+            page = get_page()
+            offset = get_offset(page)
 
-        fake_authors = app.session.query(FakeAuthor) \
-            .order_by(FakeAuthor.name) \
-            .offset(offset) \
-            .limit(PER_PAGE) \
-            .all()
-        return render_fake_author_book_list(page, '', fake_authors)
+            fake_authors = app.session.query(FakeAuthor) \
+                .order_by(FakeAuthor.name) \
+                .offset(offset) \
+                .limit(PER_PAGE) \
+                .all()
+            return render_fake_author_book_list(page, '', fake_authors)
 
-    def render_fake_author_book_list(page, author, fake_authors, query_filter=None):
-        for fake_author in fake_authors:
+        def render_fake_author_book_list(page, author, fake_authors, query_filter=None):
+            for fake_author in fake_authors:
+                fake_books = app.session.query(FakeBook) \
+                    .filter(FakeBook.fake_author_id==fake_author.id) \
+                    .order_by(FakeBook.title) \
+                    .limit(CHILDREN_LIMIT) \
+                    .all()
+                setattr(fake_author, 'fake_books', fake_books)
+
+                fake_book_count = app.session.query(FakeBook) \
+                    .filter(FakeBook.fake_author_id==fake_author.id) \
+                    .count()
+                setattr(fake_author, 'fake_book_count', fake_book_count)
+
+            pagination = get_pagenate(page, FakeAuthor, query_filter)
+            return render_template('fake_list.html', fake_authors=fake_authors, author=author, pagination=pagination)
+
+
+        @app.route('/original_quotes/<quote_id>/fake_quotes')
+        def list_fake_quotes_by_quote(quote_id):
+            page = get_page()
+            offset = get_offset(page)
+
+            # When invalid id is passed, just redirect to random page
+            if not util.is_uuid(quote_id):
+                return redirect(url_for('show_random_quote'))
+
+            quote = app.session.query(Quote) \
+                .filter(Quote.id==quote_id) \
+                .first()
+
+            if quote == None:
+                return redirect(url_for('show_random_quote'))
+
+            query_filter = (FakeQuote.quote_id==quote_id)
+            fake_quotes = app.session.query(FakeQuote) \
+                .filter(query_filter) \
+                .order_by(FakeQuote.text) \
+                .offset(offset) \
+                .limit(PER_PAGE) \
+                .all()
+
+            pagination = get_pagenate(page, FakeQuote, query_filter)
+
+            return render_template('fake_quote_list.html', quote=quote, fake_quotes=fake_quotes, pagination=pagination)
+
+        @app.route('/original_authors/<author_name>/fake_authors')
+        @cache.cached(query_string=True)
+        def list_all_fake_books(author_name):
+            page = get_page()
+            offset = get_offset(page)
+
+            author = app.session.query(Author).filter_by(name=author_name).first()
+            if author == None:
+                flash(random_not_found_message(author_name))
+                return abort(404)
+
+            fake_authors = app.session.query(FakeAuthor) \
+                .filter(FakeAuthor.author_id==author.id) \
+                .order_by(FakeAuthor.name) \
+                .offset(offset) \
+                .limit(PER_PAGE) \
+                .all()
+
+            query_filter = (FakeAuthor.author_id==author.id)
+            return render_fake_author_book_list(page, author, fake_authors, query_filter)
+
+        @app.route('/fake_authors/<fake_author_name>/fake_books')
+        @cache.cached(query_string=True)
+        def list_fake_books(fake_author_name):
+            fake_author = app.session.query(FakeAuthor).filter_by(name=fake_author_name).first()
+            if fake_author == None:
+                flash(random_not_found_message(fake_author_name))
+                return abort(404)
+
+            page = page = get_page()
+            offset = get_offset(page)
+            query_filter = (FakeBook.fake_author_id==fake_author.id)
+
+            # .order_by(asc(collate(FakeBook.title, 'ja-x-icu'))) \
             fake_books = app.session.query(FakeBook) \
-                .filter(FakeBook.fake_author_id==fake_author.id) \
+                .filter(query_filter) \
                 .order_by(FakeBook.title) \
-                .limit(CHILDREN_LIMIT) \
+                .offset(offset) \
+                .limit(PER_PAGE) \
                 .all()
-            setattr(fake_author, 'fake_books', fake_books)
 
-            fake_book_count = app.session.query(FakeBook) \
-                .filter(FakeBook.fake_author_id==fake_author.id) \
-                .count()
-            setattr(fake_author, 'fake_book_count', fake_book_count)
-
-        pagination = get_pagenate(page, FakeAuthor, query_filter)
-        return render_template('fake_list.html', fake_authors=fake_authors, author=author, pagination=pagination)
+            pagination = get_pagenate(page, FakeBook, query_filter)
+            return render_template('fake_book_list.html', fake_author=fake_author, fake_books=fake_books, pagination=pagination)
 
 
-    @app.route('/original_quotes/<quote_id>/fake_quotes')
-    def list_fake_quotes_by_quote(quote_id):
-        page = get_page()
-        offset = get_offset(page)
+        @app.route('/books/<book_id>/quotes')
+        @cache.cached(query_string=True)
+        def list_quotes_by_book(book_id):
+            if not util.is_uuid(book_id):
+                return redirect(url_for('show_random_quote'))
 
-        # When invalid id is passed, just redirect to random page
-        if not util.is_uuid(quote_id):
-            return redirect(url_for('show_random_quote'))
+            book = app.session.query(Book) \
+                .filter_by(id=book_id).first()
 
-        quote = app.session.query(Quote) \
-            .filter(Quote.id==quote_id) \
-            .first()
+            if book == None:
+                return redirect(url_for('show_random_quote'))
 
-        if quote == None:
-            return redirect(url_for('show_random_quote'))
+            page = page = get_page()
+            offset = get_offset(page)
+            query_filter = (Quote.book_id==book_id)
 
-        query_filter = (FakeQuote.quote_id==quote_id)
-        fake_quotes = app.session.query(FakeQuote) \
-            .filter(query_filter) \
-            .order_by(FakeQuote.text) \
-            .offset(offset) \
-            .limit(PER_PAGE) \
-            .all()
+            quotes = app.session.query(Quote) \
+                .filter(query_filter) \
+                .order_by(Quote.text) \
+                .offset(offset) \
+                .limit(PER_PAGE) \
+                .all()
 
-        pagination = get_pagenate(page, FakeQuote, query_filter)
-
-        return render_template('fake_quote_list.html', quote=quote, fake_quotes=fake_quotes, pagination=pagination)
-
-    @app.route('/original_authors/<author_name>/fake_authors')
-    @cache.cached(query_string=True)
-    def list_all_fake_books(author_name):
-        page = get_page()
-        offset = get_offset(page)
-
-        author = app.session.query(Author).filter_by(name=author_name).first()
-        if author == None:
-            flash(random_not_found_message(author_name))
-            return abort(404)
-
-        fake_authors = app.session.query(FakeAuthor) \
-            .filter(FakeAuthor.author_id==author.id) \
-            .order_by(FakeAuthor.name) \
-            .offset(offset) \
-            .limit(PER_PAGE) \
-            .all()
-
-        query_filter = (FakeAuthor.author_id==author.id)
-        return render_fake_author_book_list(page, author, fake_authors, query_filter)
-
-    @app.route('/fake_authors/<fake_author_name>/fake_books')
-    @cache.cached(query_string=True)
-    def list_fake_books(fake_author_name):
-        fake_author = app.session.query(FakeAuthor).filter_by(name=fake_author_name).first()
-        if fake_author == None:
-            flash(random_not_found_message(fake_author_name))
-            return abort(404)
-
-        page = page = get_page()
-        offset = get_offset(page)
-        query_filter = (FakeBook.fake_author_id==fake_author.id)
-
-        # .order_by(asc(collate(FakeBook.title, 'ja-x-icu'))) \
-        fake_books = app.session.query(FakeBook) \
-            .filter(query_filter) \
-            .order_by(FakeBook.title) \
-            .offset(offset) \
-            .limit(PER_PAGE) \
-            .all()
-
-        pagination = get_pagenate(page, FakeBook, query_filter)
-        return render_template('fake_book_list.html', fake_author=fake_author, fake_books=fake_books, pagination=pagination)
-
-
-# http://127.0.0.1:5000/books/74969e90-f19b-4d48-8857-e8cc94496c0c/fake_books
-    @app.route('/books/<book_id>/quotes')
-    @cache.cached(query_string=True)
-    def list_quotes_by_book(book_id):
-        if not util.is_uuid(book_id):
-            return redirect(url_for('show_random_quote'))
-
-        book = app.session.query(Book) \
-            .filter_by(id=book_id).first()
-
-        if book == None:
-            return redirect(url_for('show_random_quote'))
-
-        page = page = get_page()
-        offset = get_offset(page)
-        query_filter = (Quote.book_id==book_id)
-
-        quotes = app.session.query(Quote) \
-            .filter(query_filter) \
-            .order_by(Quote.text) \
-            .offset(offset) \
-            .limit(PER_PAGE) \
-            .all()
-
-        pagination = get_pagenate(page, Quote, query_filter)
-        return render_template('quote_list.html', book=book, quotes=quotes, pagination=pagination)
+            pagination = get_pagenate(page, Quote, query_filter)
+            return render_template('quote_list.html', book=book, quotes=quotes, pagination=pagination)
 
     # @app.errorhandler(404)
     # def not_found(e):
@@ -363,32 +363,6 @@ def create_app():
         return api_fake_quote_by_id(str(fake_quote.id))
 
 
-    # @app.route('/api/fake_quotes/random/id_list')
-    # def api_random_fake_quotes_id_list():
-    #     query = app.session.query(FakeQuote.id)
-
-    #     # If fake_quote_id is passed, get another one
-    #     fake_quote_id = request.args.get('fake_quote_id', None)
-    #     if fake_quote_id is not None and util.is_uuid(fake_quote_id):
-    #         query = query.filter(FakeQuote.id!=fake_quote_id)
-
-    #     fake_quote = query.order_by(func.random()).first()
-    #     print('fake_quote')
-    #     print(fake_quote.id)
-    #     return api_fake_quote_by_id(str(fake_quote.id))
-
-
-    #     return jsonify(
-    #         fake_quote=fake_quote.to_dict()
-    # )
-
-        # @app.route('/api/fake_quotes/<fake_quote_id>/random')
-    # def api_another_random_fake_quotes(fake_quote_id):
-        # fake_quote = app.session.query(FakeQuote) \
-        #     .filter(FakeQuote.id!=fake_quote_id) \
-        #     .order_by(func.random()).first()
-        # return api_fake_quote_by_id(str(fake_quote.id))
-
     # Id List
     @app.route('/api/authors/id_list')
     @cache.cached(query_string=True)
@@ -489,11 +463,6 @@ def create_app():
 
         m_list = app.session.query(
                 FakeQuote
-                # FakeBook,
-                # FakeAuthor,
-                # Quote,
-                # Book,
-                # Author
             ) \
             .join(FakeBook, FakeQuote.fake_book_id==FakeBook.id) \
             .join(FakeAuthor, FakeBook.fake_author_id==FakeAuthor.id) \
@@ -511,18 +480,6 @@ def create_app():
             .limit(limit) \
             .offset(offset) \
             .all()
-
-        # result_list = []
-        # for fq, fb, fa, q, b, a in query_list:
-        #     result = {}
-        #     result['fake_quote'] = fq.to_dict()
-        #     result['fake_book'] = fb.to_dict()
-        #     result['fake_author'] = fa.to_dict()
-        #     result['quote'] = q.to_dict()
-        #     result['book'] = b.to_dict()
-        #     result['author'] = a.to_dict()
-
-        #     result_list.append(result)
 
         data = {
             'id_list': [m.to_dict()['id'] for m in m_list],
@@ -671,7 +628,7 @@ def create_app():
             next_offset = -1
 
         # Tmp Code for local
-        # next_offset = -1 # TODO: Make this as default for local
+        next_offset = -1 # TODO: Make this as default for local
 
         return next_offset
 
@@ -821,9 +778,12 @@ def create_app():
     @app.after_request
     def add_header(response):
         # TODO
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        return response
+        if os.environ['FLASK_ENV'] == 'production':
+            response.headers.add("Access-Control-Allow-Origin", "https://esebungo.vercel.app")
+        else:
+            response.headers.add("Access-Control-Allow-Origin", "*")
 
+        return response
 
     return app
 
