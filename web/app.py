@@ -753,11 +753,7 @@ def create_app():
 
     @app.after_request
     def add_header(response):
-        # TODO
-        if os.environ['FLASK_ENV'] == 'production':
-            response.headers.add("Access-Control-Allow-Origin", "https://esebungo.vercel.app")
-        else:
-            response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Origin", "*")
 
         return response
 
@@ -766,4 +762,3 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     app.run()
-
