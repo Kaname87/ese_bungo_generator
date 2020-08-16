@@ -70,7 +70,6 @@ def create_app():
             ))
 
         @app.route('/fake_quotes/<fake_quote_id>')
-        @cache.cached(query_string=True)
         def show_fake_quote(fake_quote_id):
             # When invalid id is passed, just redirect to random page
             if not util.is_uuid(fake_quote_id):
@@ -83,7 +82,6 @@ def create_app():
             return render_fake_quote_page(fake_quote)
 
         @app.route('/original_authors')
-        @cache.cached(query_string=True)
         def list_authors():
             page = get_page()
             offset = get_offset(page)
@@ -112,7 +110,6 @@ def create_app():
             return render_template('original_author_list.html', authors=authors, pagination=pagination)
 
         @app.route('/fake_authors')
-        @cache.cached(query_string=True)
         def list_fake_authors():
             page = get_page()
             offset = get_offset(page)
@@ -171,7 +168,6 @@ def create_app():
             return render_template('fake_quote_list.html', quote=quote, fake_quotes=fake_quotes, pagination=pagination)
 
         @app.route('/original_authors/<author_name>/fake_authors')
-        @cache.cached(query_string=True)
         def list_all_fake_books(author_name):
             page = get_page()
             offset = get_offset(page)
@@ -192,7 +188,6 @@ def create_app():
             return render_fake_author_book_list(page, author, fake_authors, query_filter)
 
         @app.route('/fake_authors/<fake_author_name>/fake_books')
-        @cache.cached(query_string=True)
         def list_fake_books(fake_author_name):
             fake_author = app.session.query(FakeAuthor).filter_by(name=fake_author_name).first()
             if fake_author == None:
@@ -216,7 +211,6 @@ def create_app():
 
 
         @app.route('/books/<book_id>/quotes')
-        @cache.cached(query_string=True)
         def list_quotes_by_book(book_id):
             if not util.is_uuid(book_id):
                 return redirect(url_for('show_random_quote'))
@@ -365,33 +359,27 @@ def create_app():
 
     # Id List
     @app.route('/api/authors/id_list')
-    @cache.cached(query_string=True)
     def api_authors_id_list():
         return json_res_id_list(Author, Author.name_kana)
 
     @app.route('/api/books/id_list')
-    @cache.cached(query_string=True)
     def api_books_id_list():
         return json_res_id_list(Book, Book.title)
 
     @app.route('/api/quotes/id_list')
-    @cache.cached(query_string=True)
     def api_quotes_id_list():
         return json_res_id_list(Quote, Quote.text)
 
     @app.route('/api/fake_authors/id_list')
-    @cache.cached(query_string=True)
     def api_fake_authors_id_list():
         return api_fake_authors_list()
         # return json_res_id_list(FakeAuthor, FakeAuthor.name)
 
     @app.route('/api/fake_books/id_list')
-    @cache.cached(query_string=True)
     def api_fake_books_id_list():
         return json_res_id_list(FakeBook, FakeBook.title)
 
     @app.route('/api/fake_quotes/id_list')
-    @cache.cached(query_string=True)
     def api_fake_quotes_id_list():
         return api_fake_quotes_list()
         # return json_res_id_list(FakeQuote, FakeQuote.text)
@@ -416,7 +404,6 @@ def create_app():
 
     # List
     @app.route('/api/authors/list')
-    @cache.cached(query_string=True)
     def api_authors_list():
         # return jsonify(get_model_dict_list(Author, Author.name_kana))
         authors_result = get_model_dict_list(Author, Author.name_kana)
@@ -425,7 +412,6 @@ def create_app():
 
 
     @app.route('/api/fake_authors/list')
-    @cache.cached(query_string=True)
     def api_fake_authors_list():
         fake_authors_result = get_model_dict_list(FakeAuthor, FakeAuthor.name)
 
@@ -455,7 +441,6 @@ def create_app():
         return jsonify(result)
 
     @app.route('/api/fake_quotes/list')
-    @cache.cached(query_string=True)
     def api_fake_quotes_list():
 
         offset = int(request.args.get('offset', 0))
@@ -512,7 +497,7 @@ def create_app():
 
     # Get by Fake Quote ID. Get all related info
     @app.route('/api/fake_quotes/<fake_quote_id>')
-    # @cache.cached(query_string=True)
+
     def api_fake_quote_by_id(fake_quote_id):
         # print(fake_quote_id)
         # print("fake_quote_id")
@@ -635,7 +620,6 @@ def create_app():
     # ###########
     # Children List
     @app.route('/api/authors/<author_id>/books/list')
-    @cache.cached(query_string=True)
     def api_books_by_author_id(author_id):
         result = children_by_parent_id(Author, author_id, Book, Book.title)
 
@@ -657,7 +641,6 @@ def create_app():
 
     # http://localhost:5000/api/authors/8995788f-77f5-4f5e-a1c3-9dcb9283eac2/fake_authors/list
     @app.route('/api/authors/<author_id>/fake_authors/list')
-    @cache.cached(query_string=True)
     def api_fake_authors_by_author_id(author_id):
         result = children_by_parent_id(Author, author_id, FakeAuthor, FakeAuthor.name)
 
@@ -679,7 +662,6 @@ def create_app():
 
     # /api/fake_authors/204499f0-b836-4d79-9644-e9454b8f0fb2/fake_books/lis
     @app.route('/api/fake_authors/<fake_author_id>/fake_books/list')
-    @cache.cached(query_string=True)
     def api_fake_books_by_fake_author_id(fake_author_id):
         result = children_by_parent_id(FakeAuthor, fake_author_id, FakeBook, FakeBook.title)
 
@@ -694,7 +676,6 @@ def create_app():
         return jsonify(result)
 
     @app.route('/api/books/<book_id>/quotes/list')
-    @cache.cached(query_string=True)
     def api_quotes_by_book_id(book_id):
         result = children_by_parent_id(Book, book_id, Quote, Quote.text)
 
@@ -707,7 +688,6 @@ def create_app():
 
     # /http://127.0.0.1:5000/api/quotes/8e7cdd6a-0cf9-446a-9529-57efc7b742fb/fake_quotes/list?offset=0&limit=100
     @app.route('/api/quotes/<quote_id>/fake_quotes/list')
-    @cache.cached(query_string=True)
     def api_fake_quotes_by_quote_id(quote_id):
         result = children_by_parent_id(Quote, quote_id, FakeQuote, FakeQuote.text)
 
@@ -729,7 +709,6 @@ def create_app():
         return jsonify(result)
 
     @app.route('/api/fake_books/<fake_book_id>/fake_quotes/list')
-    @cache.cached(query_string=True)
     def api_fake_quotes_by_fake_book_id(fake_book_id):
         result = children_by_parent_id(FakeBook, fake_book_id, FakeQuote, FakeQuote.text)
 
