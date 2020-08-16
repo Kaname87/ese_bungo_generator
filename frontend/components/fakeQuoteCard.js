@@ -84,7 +84,7 @@ export default function fakeQuoteCard({ fakeQuoteData, isError = false }) {
               <a className={styles.originalQuote}>{quote.text}</a>
             </Link>
           )}
-          {/* http://localhost:3000/quotes/9aa52db6-4ebb-406e-9c94-67a0574e5438/fake_quotes/list/1 */}
+
           <cite className={styles.originalCite}>
             {isError ? (
               <span>{author.name}</span>

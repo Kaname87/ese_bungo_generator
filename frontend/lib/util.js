@@ -23,7 +23,7 @@ export async function getAllChildrenPagePaths(
   countPerPage = COUNT_PER_PAGE,
   fallback = false
 ) {
-  console.log("getAllChildrenPagePath");
+
   let parentIdList = await recFetchIdList(getAllParentFn);
 
   let cnt = 0; // For debug
@@ -37,7 +37,6 @@ export async function getAllChildrenPagePaths(
     return [...(await memo), results];
   }, []);
 
-  //
   const flatAllPaths = allPathes
     .map((oneParantePaths) => oneParantePaths.paths)
     .flat();
@@ -102,14 +101,9 @@ export async function recFetchIdList(fn, offset = 0, totalIdList = []) {
 
 export async function recFetchList(fn, id, offset = 0, totalList = []) {
   const res = await fn(id, offset);
-  // console.log('recFetchList')
 
   const { children_list: resultList, children_next_offset: nextOffset } = res;
-  // console.log(await fn(id, offset))
-  // console.log({resultList})
-  // console.log({nextOffset})
   if (!nextOffset || nextOffset < 0) {
-    // console.log(totalList)
 
     return totalList.concat(resultList);
   }

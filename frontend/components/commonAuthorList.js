@@ -4,7 +4,6 @@ import { CHILDREN_MAX_DISPLAY } from "../config/const";
 
 export default function CommonAuthorList({ targetAuthorList, isFake = false }) {
   const child_key = isFake ? "fake_book" : "book";
-  console.log(child_key);
   const getAuthorLinkInfo = (isFake, id) =>
     isFake
       ? {

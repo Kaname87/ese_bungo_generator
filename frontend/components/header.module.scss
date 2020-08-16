@@ -1,14 +1,9 @@
-// @import '../styles/vars';
 @import '../styles/utils';
 
 .header {
-  //   color: $var;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
   width: 100%;
-  // margin: 4% 0 4% 0;
   margin: 4% 0 2% 0;
+
   .serviceNameWrapper {
     display: flex;
     justify-content: space-between;

@@ -9,12 +9,8 @@
 
     @include tablet {
         display: none;
-        // max-width: 30%;
-        // min-width: 30%;
     }
     @include desktop {
         display: none;
-        // max-width: 30%;
-        // min-width: 30%;
     }
 }

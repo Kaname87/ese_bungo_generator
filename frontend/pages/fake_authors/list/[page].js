@@ -47,7 +47,6 @@ export async function getStaticProps({ params }) {
   );
 
   const randomData = await getRandomFakeQuoteIdList();
-  //   console.log(fakeAuthorList)
 
   return {
     props: {

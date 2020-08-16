@@ -25,8 +25,6 @@ export default function FakeQuote({
   )
 }
 
-// http://localhost:3000/fake_quotes/98b382c5-8ef9-4e78-ac77-c7d05fe20fb1
-
 export async function getStaticPaths() {
   return await getIdPaths(getFakeQuoteIdList)
 }
