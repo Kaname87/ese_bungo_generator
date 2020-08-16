@@ -17,29 +17,23 @@ export default function Layout({ children, pageTitle='', randomIdList=[] }) {
   return (
     <div className={styles.container}>
       <Head>
-        <link rel="icon" href="/favicon.ico" />
         <meta
           name="description"
-          content="Learn how to build a personal website using Next.js"
+          content="文豪の作品の名文を元に自動生成されたテキスト集です。文章中に使用された名詞に類似する名詞をランダムに置き換えることで文章を生成しています。"
         />
-        <meta
-          property="og:image"
-          content={`https://og-image.now.sh/${encodeURI(
-            siteTitle(pageTitle)
-          )}.png?theme=light&md=0&fontSize=75px&images=https%3A%2F%2Fassets.zeit.co%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fnextjs-black-logo.svg`}
-        />
+        <meta name="og:image" content="/images/ogp.png" />
         <meta name="og:title" content={siteTitle(pageTitle)} />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="keywords" content="文豪,名言,エセ,似非,Word2Vec" />
+
+        <title>{siteTitle(pageTitle)}</title>
+        <link rel="icon" href="/images/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+
       </Head>
       <Header />
       <main className={styles.main}>{children}</main>
-      {/* {!home && (
-        <div className={styles.backToHome}>
-          <Link href="/">
-            <a>← Back to home</a>
-          </Link>
-        </div>
-      )} */}
+
       <Footer randomIdList={randomIdList} />
     </div>
   );
