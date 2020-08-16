@@ -20,3 +20,6 @@ gensim
 # Web
 ## development
 python -m web.app
+
+# New demo
+https://esebungo.vercel.app/
