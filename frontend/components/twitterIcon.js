@@ -1,5 +1,7 @@
 import styles from "./twitterIcon.module.scss";
-import { SITE_URL } from "../config/const";
+// import { SITE_URL } from "../config/const";
+// TODO: This should be moved to Server Props to use env var
+const SITE_URL = 'https://esebungo.vercel.app'
 
 const getShareLink = (
   fakeAuthor,
