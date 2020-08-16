@@ -4,7 +4,7 @@ import random
 import urllib.parse
 
 from flask import Flask, request, render_template, redirect, url_for, _app_ctx_stack, abort, flash, jsonify
-from flask_caching import Cache
+# from flask_caching import Cache
 from flask_paginate import Pagination, get_page_parameter
 from sqlalchemy import func, exc, and_
 from sqlalchemy.orm import scoped_session, contains_eager
@@ -28,7 +28,7 @@ def create_app():
     app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
     app.json_encoder = util.AppModelEncoder
 
-    cache = Cache(app)
+    # cache = Cache(app)
 
     if os.environ['FLASK_ENV'] != 'production':
         @app.route('/')
@@ -260,7 +260,6 @@ def create_app():
         ])
         return '{}{}'.format(name, message)
 
-    @cache.memoize()
     def get_pagenate(page, model_class, filters=None):
         msg = " " # "全{total}人中 {start} - {end}人表示中</b>"
 
@@ -274,7 +273,6 @@ def create_app():
 
         return pagination
 
-    @cache.memoize()
     def get_offset(page):
         return PER_PAGE * (page-1)
 
@@ -581,7 +579,6 @@ def create_app():
             'next_offset': get_next_offset(offset, limit, m_list)
         }
 
-    @cache.memoize()
     def total_count(model, filters):
         query = app.session.query(model)
         if filters is not None:
