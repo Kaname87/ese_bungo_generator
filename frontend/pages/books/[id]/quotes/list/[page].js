@@ -12,7 +12,7 @@ import { COUNT_PER_PAGE } from "../../../../../config/const";
 
 import CommonQuoteList from "../../../../../components/commonQuoteList";
 
-import AozoraInfo from "../../../../../components/AozoraInfo";
+import AozoraInfo from "../../../../../components/aozoraInfo";
 
 export default function BookQuoteList({
   data: { author, book, quoteList, total, randomIdList },
@@ -23,14 +23,16 @@ export default function BookQuoteList({
   return (
     <Layout pageTitle={pageTitle} randomIdList={randomIdList}>
       <h1>{pageTitle}</h1>
-      <h3>
+      <p>
         <Link
           href="/authors/[id]/fake_authors/list/[page]"
           as={`/authors/${author.id}/fake_authors/list/1`}
         >
           <a>{author.name}</a>
         </Link>
-      </h3>
+        {` 著`}
+      </p>
+
       <PagerWrapper
         page={page}
         total={total}
@@ -38,6 +40,7 @@ export default function BookQuoteList({
         href="/quotes/list/[page]"
         asCallback={(page) => `/quotes/list/${page}`}
       >
+        <h4>引用</h4>
         <CommonQuoteList targetQuoteList={quoteList} />
       </PagerWrapper>
       <AozoraInfo book={book} />

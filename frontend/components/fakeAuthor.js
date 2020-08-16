@@ -7,7 +7,7 @@ export default function FakeAuthor({
   author
 }) {
   return (
-    <RelatedInfo>
+    <RelatedInfo hideLineBottom>
       {author && (
       <p className={styles.author}>
         <Link

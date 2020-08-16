@@ -23,16 +23,14 @@ export default function CommonBookList({ targetBookList, isFake=false }) {
   }
 
   return (
-    <div className={styles.targetBookList}>
-        <h4>掲載著作</h4>
+
+    <div className={styles.targetList}>
        {targetBookList && (
-        <div className={styles.targetList}>
-          {targetBookList.map(book => (
+          targetBookList.map(book => (
             <div key={book.id} className={styles.book}>
                 {getBookLinkbyId(isFake, book.id, book.title)}
             </div>
-          ))}
-        </div>
+          ))
       )}
     </div>
   );

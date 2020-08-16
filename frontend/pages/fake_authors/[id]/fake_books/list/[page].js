@@ -28,7 +28,7 @@ export default function AuthorFakeBookList({
   return (
     <Layout pageTitle={pageTitle} randomIdList={randomIdList}>
       <h1>{pageTitle}</h1>
-
+      <OriginalAuthor author={author} />
       <PagerWrapper
         page={page}
         total={total}
@@ -38,9 +38,9 @@ export default function AuthorFakeBookList({
           `/fake_authors/${fakeAuthor.id}/fake_books/list/${page}`
         }
       >
+        <h4>作品</h4>
         <CommonBookList targetBookList={fakeBookList} isFake />
       </PagerWrapper>
-      <OriginalAuthor author={author} />
     </Layout>
   );
 }

@@ -24,7 +24,6 @@ export default function CommonQuoteList({ targetQuoteList, isFake=false }) {
 
   return (
     <div className={styles.targetQuoteList}>
-        <h4>引用</h4>
        {targetQuoteList && (
         <div className={styles.targetList}>
           {targetQuoteList.map(quote => (

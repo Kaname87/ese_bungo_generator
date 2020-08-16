@@ -5,7 +5,7 @@ import RelatedInfo from "./relatedInfo";
 
 export default function OriginalBook({ book }) {
   return (
-    <RelatedInfo>
+    <RelatedInfo head="派生元" hideLineTop>
       <p className={styles.author}>
         <Link
           href="/books/[id]/quotes/list/[page]"

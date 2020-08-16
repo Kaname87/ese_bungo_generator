@@ -20,8 +20,8 @@ export default function AuthorFakeAuthorList({
   const pageTitle = `エセ文豪一覧 ${author.name}関連`;
   return (
     <Layout pageTitle={pageTitle} randomIdList={randomIdList}>
-      <h1>{pageTitle}</h1>
-
+      <h1>エセ文豪一覧</h1>
+      <OriginalAuthor author={author} />
       <PagerWrapper
         page={page}
         total={total}
@@ -31,7 +31,6 @@ export default function AuthorFakeAuthorList({
       >
         <CommonAuthorList targetAuthorList={fakeAuthorList} isFake />
       </PagerWrapper>
-      <OriginalAuthor author={author} />
     </Layout>
   );
 }

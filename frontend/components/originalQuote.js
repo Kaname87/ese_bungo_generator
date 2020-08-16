@@ -6,7 +6,7 @@ import RelatedInfo from "./relatedInfo";
 export default function OriginalQuote({ quote }) {
 
   return (
-    <RelatedInfo>
+    <RelatedInfo head="派生元" hideLineTop>
       <p className={styles.author}>
         <Link
           href="/quotes/[id]/fake_quotes/list/[page]"

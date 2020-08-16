@@ -6,7 +6,7 @@ import RelatedInfo from "./relatedInfo";
 export default function OriginaAuthor({ author }) {
   return (
 
-    <RelatedInfo>
+    <RelatedInfo head="派生元" hideLineTop>
       <p className={styles.author}>
         <Link
           href="/authors/[id]/books/list/[page]"

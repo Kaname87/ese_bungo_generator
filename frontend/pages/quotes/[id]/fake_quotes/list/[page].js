@@ -16,15 +16,15 @@ export default function QuoteFakeQuoteList({
     fakeQuoteList,
     total,
     randomIdList,
-  },
+},
   page,
   perPage,
 }) {
-  const pageTitle = `${quote.text}`
+  const pageTitle = `${quote.text}関連 エセ引用一覧`
   return (
     <Layout pageTitle={pageTitle} randomIdList={randomIdList}>
-      <h1>{pageTitle}</h1>
-
+      <h1>エセ引用一覧</h1>
+      <OriginalQuote quote={quote}/>
       <PagerWrapper
         page={page}
         total={total}
@@ -35,7 +35,6 @@ export default function QuoteFakeQuoteList({
         <CommonQuoteList targetQuoteList={fakeQuoteList} isFake />
 
       </PagerWrapper>
-      <OriginalQuote quote={quote} />
     </Layout>
   );
 }

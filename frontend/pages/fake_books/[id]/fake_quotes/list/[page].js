@@ -29,15 +29,16 @@ export default function FakeBookFakeQuoteList({
   return (
     <Layout pageTitle={pageTitle} randomIdList={randomIdList}>
       <h1>{pageTitle}</h1>
-
-      <h3>
+      <OriginalBook book={book} />
+      <p>
         <Link
           href="/fake_authors/[id]/fake_books/list/[page]"
           as={`/fake_authors/${fakeAuthor.id}/fake_books/list/1`}
         >
           <a>{fakeAuthor.name}</a>
         </Link>
-      </h3>
+        {` 著`}
+      </p>
       <PagerWrapper
         page={page}
         total={total}
@@ -47,9 +48,9 @@ export default function FakeBookFakeQuoteList({
           `/fake_books/${fakeBook.id}/fake_quotes/list/${page}`
         }
       >
+        <h4>引用</h4>
         <CommonQuoteList targetQuoteList={fakeQuoteList} isFake />
       </PagerWrapper>
-      <OriginalBook book={book} />
     </Layout>
   );
 }

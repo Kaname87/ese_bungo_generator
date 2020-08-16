@@ -17,7 +17,7 @@ export default function PagerWrapper({
         href={href}
         asCallback={asCallback}
       />
-      <div>{children}</div>
+      {children}
       <Pager
         page={page}
         total={total}
