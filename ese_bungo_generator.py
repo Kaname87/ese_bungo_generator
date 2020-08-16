@@ -233,6 +233,19 @@ def generate_ese_bungo_all(num=1, is_tmp=True):
 
     return orginal_list, results
 
+def tmp_replace_word(text, noun_list_dict, num=10):
+    tagger = util.create_tagger()
+    result_list = []
+    for _ in range(num):
+        replaced, _ = replace_noun_by_similar_word(
+            text,
+            noun_list_dict,
+            tagger,
+            {} # not used
+        )
+        result_list.append(replaced)
+    return result_list
+
 
 def output_ese_bungo_to_csv(num=1):
     '''
@@ -564,6 +577,10 @@ def generate_fake_books_and_quotes(num=5, author_id=None):
                         }
                         results.append(generated_data)
     return results
+
+
+
+
 
 if __name__ == '__main__':
     # results = generate_fake_books_and_quotes_tmp()

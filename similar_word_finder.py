@@ -182,6 +182,11 @@ def tmp(target, noun_topn=9):
 if __name__ == "__main__":
     # out_put_for_twitter()
 
-    print(tmp('青空文庫'))
+    print(
+        tmp(
+            'すみません。あなたがアクセスしたページは、削除されたか、URLが変更されているため表示することができません'
+        )
+    )
+    # print(tmp('。'))
 
     print('Done')
