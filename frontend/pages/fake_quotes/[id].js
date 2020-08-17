@@ -1,6 +1,6 @@
 import Layout from '../../components/layout';
 import FakeQuoteCard from '../../components/fakeQuoteCard';
-
+import TwitterIcon from "../../components/twitterIcon";
 import {
   getFakeQuote,
   getFakeQuoteIdList,
@@ -14,13 +14,22 @@ export default function FakeQuote({
     randomIdList,
   }
 }) {
-
+  const {
+    fakeAuthor,
+    fakeBook,
+    fakeQuote,
+  } = fakeQuoteData;
   return (
     // Check if this affect to pageload
     <Layout pageTitle={fakeQuoteData.fakeQuote.text} randomIdList={randomIdList}>
       <FakeQuoteCard
         fakeQuoteData={fakeQuoteData}
       />
+      <TwitterIcon
+          fakeAuthor={fakeAuthor}
+          fakeBook={fakeBook}
+          fakeQuote={fakeQuote}
+        />
     </Layout>
   )
 }

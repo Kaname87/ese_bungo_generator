@@ -2,24 +2,12 @@ import styles from "./fakeQuoteCard.module.scss";
 
 import Profile from "./profile";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 
 import RandomButton from "./randomButton";
-import { useRouter } from "next/router";
-
-import TwitterIcon from "./twitterIcon";
 
 const fakeQuotePath = "/fake_quotes/[id]";
 
 export default function fakeQuoteCard({ fakeQuoteData, isError = false }) {
-  const router = useRouter();
-  const [data, setData] = useState(fakeQuoteData);
-
-  useEffect(() => {
-    if (data.fakeQuote.id !== fakeQuoteData.fakeQuote.id) {
-      setData(fakeQuoteData);
-    }
-  }, [fakeQuoteData.fakeQuote.id]);
 
   const {
     fakeQuote,
@@ -29,7 +17,7 @@ export default function fakeQuoteCard({ fakeQuoteData, isError = false }) {
     book,
     author,
     randomIdList = [],
-  } = data;
+  } = fakeQuoteData;
 
   return (
     <section>
@@ -109,13 +97,6 @@ export default function fakeQuoteCard({ fakeQuoteData, isError = false }) {
           </cite>
         </blockquote>
       </div>
-      {!isError && (
-        <TwitterIcon
-          fakeAuthor={fakeAuthor}
-          fakeBook={fakeBook}
-          fakeQuote={fakeQuote}
-        />
-      )}
     </section>
   );
 }

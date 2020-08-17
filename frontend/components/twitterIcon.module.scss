@@ -12,10 +12,11 @@ $desktop-width: 1024px;
 }
 
 .sns {
-  bottom: 10px;
-  position: fixed;
-  margin: 1em;
-  right: 0;
+  margin-top: 8%;
+  margin-bottom: 3%;
+  // position: fixed;
+  // margin: 0.3em;
+  // right: 0;
 }
 
 @-webkit-keyframes bounceIn {
@@ -58,10 +59,8 @@ $desktop-width: 1024px;
 
 .twitterIcon {
   display: block;
-  width: 45px;
-  height: 45px;
   text-align: center;
-  margin: 20px auto 0;
+  margin: 0 auto;
   cursor: pointer;
   -webkit-transition: all 0.1s ease-out;
   transition: all 0.1s ease-out;
@@ -70,6 +69,19 @@ $desktop-width: 1024px;
   font-size: 0.1px;
   background-image: url("/images/twitter_icon_black.svg");
 
+  width: 40px;
+  height: 40px;
+  @include tablet {
+    width: 50px;
+    height: 50px;
+    // margin: 20px 20px 0;
+  }
+  @include desktop {
+    width: 50px;
+    height: 50px;
+    // margin: 20px 30px 0;
+  }
+
   &:active {
     background-image: url("/images/twitter_icon_blue.svg");
     -webkit-animation: bounceIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1)
@@ -77,16 +89,7 @@ $desktop-width: 1024px;
     animation: bounceIn 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
   }
 
-  @include tablet {
-    width: 55px;
-    height: 55px;
-    margin: 20px 20px 0;
-  }
-  @include desktop {
-    width: 55px;
-    height: 55px;
-    margin: 20px 30px 0;
-  }
+
 
   &:hover {
     @include desktop {

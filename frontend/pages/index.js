@@ -1,5 +1,6 @@
 import Layout from "../components/layout";
 import FakeQuoteCard from "../components/fakeQuoteCard";
+import TwitterIcon from "../components/twitterIcon";
 
 import { getFakeQuote, getRandomFakeQuoteIdList } from "../lib/api";
 
@@ -7,12 +8,21 @@ import About from "../components/about";
 import { TOP_PAGE_FAKE_QUOTE_ID } from "../config/const";
 
 export default function Home({ data }) {
-  return (
-    <Layout pageTitle="表紙" randomIdList={data.randomIdList}>
 
+  const {
+    fakeAuthor,
+    fakeBook,
+    fakeQuote,
+  } = data
+  return (
+    <Layout randomIdList={data.randomIdList}>
       <FakeQuoteCard fakeQuoteData={data} />
       <About />
-
+      <TwitterIcon
+          fakeAuthor={fakeAuthor}
+          fakeBook={fakeBook}
+          fakeQuote={fakeQuote}
+        />
     </Layout>
   );
 }

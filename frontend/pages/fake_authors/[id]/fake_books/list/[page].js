@@ -38,7 +38,7 @@ export default function AuthorFakeBookList({
           `/fake_authors/${fakeAuthor.id}/fake_books/list/${page}`
         }
       >
-        <h4>作品</h4>
+        <h4>著作</h4>
         <CommonBookList targetBookList={fakeBookList} isFake />
       </PagerWrapper>
     </Layout>

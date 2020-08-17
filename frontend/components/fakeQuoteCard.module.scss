@@ -16,7 +16,6 @@
     }
 }
 
-
 .fakeAuthorWrapper {
     display: flex;
     flex-wrap: nowrap;
@@ -46,7 +45,12 @@
     justify-content: flex-start;
     margin: auto;
     flex-grow: 3;
+
+    @include mobile {
+        padding: 0 5%;
+    }
 }
+
 .fakeQuote {
     font-size: 1.2rem;
     margin: 0 5%;

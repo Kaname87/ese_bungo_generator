@@ -28,7 +28,7 @@ export default function AuthorBookList({
         href="/authors/[id]/books/list/[page]"
         asCallback={(page) => `/authors/${author.id}/books/list/${page}`}
       >
-        <h4>作品</h4>
+        <h4>著作</h4>
         <CommonBookList targetBookList={bookList} />
       </PagerWrapper>
 
