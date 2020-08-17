@@ -7,7 +7,7 @@ const getShareLink = (
   fakeAuthor,
   fakeBook,
   fakeQuote,
-  hashtag = "エセ文豪"
+  hashtag = "エセ文庫"
 ) => {
   const url = encodeURIComponent(`${SITE_URL}/fake_quotes/${fakeQuote.id}`);
   const shareText = getShareText(fakeAuthor, fakeBook, fakeQuote);
