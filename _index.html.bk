@@ -49,10 +49,6 @@
         width: 100%;
         margin: 4% 0 2% 0;
       }
-      h1 {
-        font-size: 1.5rem;
-      color: #7c4657;
-      }
 
       .service-name-wrapper {
         display: flex;
@@ -105,7 +101,6 @@
         display: flex;
         flex-direction: column;
         text-align: center;
-        padding: 0 5%;
       }
 
       .fake {
@@ -265,51 +260,157 @@
         }
       }
     </style>
+    <script type="text/javascript" src="js/ese_bungo_list.js"></script>
+    <script type="text/javascript" src="js/author_image_list.js"></script>
   </head>
 
   <body>
     <header>
       <div class="service-name-wrapper">
-        <div class="page-controller prev" >←</div>
+        <div class="page-controller prev" onclick="pickPrevNovel()">←</div>
         <div><span id="service-name">エセ文豪 エセ名言集</span></div>
-        <div class="page-controller next">
+        <div class="page-controller next" onclick="pickNextNovel()">
           <span id="page"></span>
         </div>
       </div>
     </header>
 
     <main class="main">
-      <h1>サイト移転のお知らせ</h1>
-      <a href="https://esebungo.vercel.app/" target="_blank" rel="noopener noreferrer">移転先: https://esebungo.vercel.app</a>
       <div class="fake">
         <div class="author-wrapper">
-          <div class="page-controller prev" >←</div>
-          <div id="fake-author">
-            <img class="profile" src="./image/bungo/fuyume.jpg"
-            alt="エセ文豪近影"></img>
-          </div>
-          <div class="page-controller next">→</div>
+          <div class="page-controller prev" onclick="pickPrevNovel()">←</div>
+          <div id="fake-author"></div>
+          <div class="page-controller next" onclick="pickNextNovel()">→</div>
         </div>
-        <div class="novel">
-          <p id="fake-quote">
-            このソーシャル・ネットワーキング・サービスのポータルサイトは先述のソーシャル・ネットワーキング・サービスに新築しました。現在アップロード中のソーシャル・ネットワーキング・サービスは近日ジャスト前倒しです。
-          </p>
 
-          <p id="fake-cite">
-            ソーシャル・ネットワーキング・サービス共同運営者『ソーシャル・ネットワーキング・サービス移設のメール』
-          </p>
+        <div class="novel">
+          <p id="fake-quote"></p>
+          <p id="fake-cite"></p>
         </div>
       </div>
       <div class="original">
         <blockquote>
-          <p id="original-quote">
-            このサイトのコンテンツは上記のサイトに移転しました。現在閲覧中のサイトは近日クローズ予定です。
-          </p>
-          <cite id="original-cite">
-            サイト運営者『サイト移転のお知らせ』
-          </cite>
+          <p id="original-quote"></p>
+          <cite id="original-cite"></cite>
         </blockquote>
       </div>
     </main>
+    <script>
+      function getRandomVal(list) {
+        return list[Math.floor(list.length * Math.random())];
+      }
+
+      function getRandomIdx(list) {
+        return Math.floor(list.length * Math.random());
+      }
+
+      function pickNovelByPage(page, reloadAuthorImage) {
+        document.getElementById("page").innerHTML = page;
+        const idx = page - 1;
+        setNovel(idx, reloadAuthorImage);
+      }
+
+      function isValidPage(page) {
+        return (
+          !isNaN(page) && 0 < page && page < Object.keys(ESE_BUNGO_LIST).length
+        );
+      }
+
+      function pickPrevNovel() {
+        const pageText = document.getElementById("page").innerText;
+        if (!pageText) return;
+
+        const prevPage = parseInt(pageText) - 1;
+        if (isValidPage(prevPage)) {
+          pickNovelByPage(prevPage, false);
+        }
+      }
+
+      function pickNextNovel() {
+        const pageText = document.getElementById("page").innerText;
+        if (!pageText) return;
+
+        const nextPage = parseInt(pageText) + 1;
+        if (isValidPage(nextPage)) {
+          pickNovelByPage(nextPage, false);
+        }
+      }
+
+      function pickRandomNovel(reloadAuthorImage = false) {
+        const idx = getRandomIdx(ESE_BUNGO_LIST);
+        const page = idx + 1;
+        document.getElementById("page").innerHTML = page;
+
+        setNovel(idx, reloadAuthorImage);
+      }
+
+      function setNovel(idx, reloadAuthorImage) {
+        const fakeNovel = ESE_BUNGO_LIST[idx];
+        const fakeAuthor = fakeNovel[0];
+        const fakeTitle = fakeNovel[1];
+        const fakeQuote = fakeNovel[2];
+        const originalIdx = fakeNovel[3];
+
+        const fakeCite = fakeAuthor + "『" + fakeTitle + "』";
+        document.getElementById("fake-cite").innerHTML = fakeCite;
+        document.getElementById("fake-quote").innerHTML = fakeQuote;
+
+        if (reloadAuthorImage) {
+          const authorImage =
+            '<img class="profile" onclick="pickRandomNovel()" src="' +
+            getRandomVal(AUTHOR_IMAGE_LIST) +
+            '" alt="エセ文豪近影"></img>';
+          document.getElementById("fake-author").innerHTML = authorImage;
+          '<a href="#">' + authorImage + "</a>";
+        }
+
+        const orginallNovel = ORIGINAL_LIST[originalIdx];
+        const originalAuthor = orginallNovel[0];
+        const originalTitle = orginallNovel[1];
+        const originalQuote = orginallNovel[2];
+        const originalUrl = orginallNovel[3];
+
+        const titleLink =
+          '<a href="' +
+          originalUrl +
+          '" target="_blank" rel="noopener noreferrer">' +
+          originalAuthor +
+          "『" +
+          originalTitle +
+          "』" +
+          "</a>";
+        document.getElementById("original-cite").innerHTML = titleLink;
+        document.getElementById("original-quote").innerHTML = originalQuote;
+
+        const page = idx + 1
+        history.pushState('', '', '/?page=' + page)
+      }
+
+      function init() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const page = urlParams.get("page");
+
+        if (isValidPage(page)) {
+          window.onload = pickNovelByPage(page, true);
+        } else {
+          window.onload = pickRandomNovel(true);
+        }
+
+        document.onkeydown = function(e) {
+          switch (e.keyCode) {
+            case 13: // enter
+              pickRandomNovel();
+            case 37: // left
+              pickPrevNovel();
+              break;
+            case 39: // right
+              pickNextNovel();
+              break;
+          }
+        };
+      }
+
+      init();
+    </script>
   </body>
 </html>
