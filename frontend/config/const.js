@@ -2,7 +2,7 @@ export const COUNT_PER_PAGE_AUTHOR = 10;
 export const COUNT_PER_PAGE = 10;
 export const CHILDREN_MAX_DISPLAY = 3;
 
-export const SITE_NAME = 'エセ文豪文庫'
+export const SITE_NAME = 'エセ文庫'
 export const SITE_URL = `${process.env.SITE_URL}`
 export const API_BASE_URL = `${process.env.API_BASE_URL}`
 

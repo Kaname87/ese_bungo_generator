@@ -21,7 +21,7 @@ export default function Layout({ children, pageTitle='', randomIdList=[] }) {
           name="description"
           content="文豪の作品の名文を元に自動生成されたテキスト集です。文章中に使用された名詞に類似する名詞をランダムに置き換えることで文章を生成しています。"
         />
-        <meta name="og:image" content="/images/ogp.png" />
+        <meta name="og:image" content="https://esebunko.vercel.app/images/ogp.png" />
         <meta name="og:title" content={siteTitle(pageTitle)} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="keywords" content="文豪,名言,エセ,似非,Word2Vec" />

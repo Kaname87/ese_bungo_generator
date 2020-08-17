@@ -22,4 +22,4 @@ gensim
 python -m web.app
 
 # New demo
-https://esebungo.vercel.app/
+https://esebunko.vercel.app/
