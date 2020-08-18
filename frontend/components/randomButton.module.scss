@@ -1,0 +1,16 @@
+@import '../styles/utils';
+
+.random {
+    flex-grow: 1;
+    color: transparent;
+    width: 25%;
+    font-size: 0.6rem;
+    color: #f8f6f5;
+
+    @include tablet {
+        display: none;
+    }
+    @include desktop {
+        display: none;
+    }
+}

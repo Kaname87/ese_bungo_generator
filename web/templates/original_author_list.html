@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}原作一覧{% endblock %}
+
+{% block content %}
+  <h1>原作一覧</h1>
+  {{ pagination.links }}
+  <div class="original-book-list">
+  {% for author in authors %}
+      <div class="original-book">
+        <p class="author">
+            <a href={{ url_for('list_all_fake_books' ,author_name=author.name) }}>{{author.name}}</a>
+        </p>
+        <ul>
+            {% for book in author.books %}
+            <li>
+                <a href={{ url_for('list_quotes_by_book' ,book_id=book.id) }}>『{{book.title}}』</a>
+            </li>
+            {% endfor %}
+            {% if author.book_count > 3 %}
+              <li class="have-more">他</li>
+            {% endif %}
+        </ul>
+      </div>
+  {% endfor %}
+  </div>
+  {{ pagination.links }}
+{% endblock content %}

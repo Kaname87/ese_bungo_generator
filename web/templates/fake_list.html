@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}エセ文豪一覧{% endblock %}
+
+{% block content %}
+  <h1>エセ文豪一覧</h1>
+  {% if author.name %}
+
+  <p class="original_author original-text-color">
+    原著:
+    <a class="original-text-color" href={{ url_for('list_all_fake_books', author_name=author.name) }}>
+      {{author.name}}
+    </a>
+  </p>
+  {% endif %}
+
+  <div class="original-book-list-small">
+      {% for book in author.books %}
+          <a class="original-book-small" href={{ url_for('list_quotes_by_book' ,book_id=book.id) }}>『{{book.title}}』</a>
+      {% endfor %}
+　</div>
+
+
+
+  {{ pagination.links }}
+  <div class="original-book-list">
+  {% for fake_author in fake_authors %}
+      <div class="original-book">
+      <p class="author">
+          <a href={{ url_for('list_fake_books', fake_author_name=fake_author.name) }}>{{fake_author.name}}</a>
+      </p>
+      <ul>
+          {% for fake_book in fake_author.fake_books %}
+          <li>『{{fake_book.title}}』</li>
+          {% endfor %}
+          {% if fake_author.fake_book_count > 3 %}
+            <li class="have-more">他</li>
+          {% endif %}
+      </ul>
+      </div>
+  {% endfor %}
+  </div>
+  {{ pagination.links }}
+{% endblock content %}

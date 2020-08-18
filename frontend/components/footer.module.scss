@@ -1,0 +1,34 @@
+@import '../styles/vars';
+.footer {
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: center;
+
+    // position: fixed;
+    // left: 0;
+    // bottom: 0;
+    // width: 100%;
+    padding: 5px 0;
+    // text-align: center;
+}
+.footer ul {
+    display: flex;
+    margin: 0 0 0 1em;
+    padding: 0;
+    list-style-type: none;
+}
+.footer li {
+    margin: 0.2em;
+    padding: 0.5em;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.site-font-color {
+    color: $important-color;
+}
+
+.footer li,
+.footer a {
+    color: $important-color;
+}

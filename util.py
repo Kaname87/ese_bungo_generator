@@ -1,21 +1,24 @@
-import MeCab
 import random
 import string
-from gensim.models import KeyedVectors
-
+import json
 
 def load_model(path):
+    from gensim.models import KeyedVectors
     return KeyedVectors.load_word2vec_format(path, binary=True)
 
-
+cache = {}
 def create_tagger(tagger_name="-Ochasen"):
     '''
     タガー作成
     '''
+    if 'tagger' in cache:
+        print('cahce')
+        return cache['tagger']
+    import MeCab
     tagger = MeCab.Tagger(tagger_name)
     tagger.parse('')
+    cache['tagger'] = tagger
     return tagger
-
 
 def strip_unnecessary_characters(similar_word):
     '''
@@ -38,6 +41,8 @@ def in_target_noun_type(part):
     '名詞-サ変接続'「翻訳する」の「翻訳」など
     '名詞-非自立-副詞可能'「人の上」のように「の」あとの「上」など
     '名詞-形容動詞語幹' 「不滅 」「幸福」など
+
+    '名詞-ナイ形容詞語幹' 「申し訳ない」の「申し訳」これ今は一旦除外
     '''
     return '名詞-一般' in part \
         or '名詞-固有' in part \
@@ -45,6 +50,7 @@ def in_target_noun_type(part):
         or '名詞-サ変接続' in part \
         or '名詞-非自立-副詞可能' in part \
         or '名詞-形容動詞語幹' in part
+
 
 
 def has_part_length(word_detail):
@@ -102,8 +108,15 @@ def generate_unique_place_holder(placeholder_dict):
 def diff_list(a, b):
     return list(set(a)-set(b))
 
+def read_json_to_dict(file_path):
+    res = {}
+    with open(file_path) as f:
+        res = json.loads(f.read())
+    return res
+
 
 if __name__ == "__main__":
     text = '俺がおまえで、お前が俺で'
     out = get_noun_list(text)
     print(out)
+

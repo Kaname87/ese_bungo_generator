@@ -17,3 +17,9 @@ mecab-python3
 gensim
 が必要です。
 
+# Web
+## development
+python -m web.app
+
+# New demo
+https://esebunko.vercel.app/

@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}{{fake_quote.original_quote.text}}{% endblock %}
+
+{% block header_page_controller_prev %}
+  {% if prev_fake_quote_id is not none %}
+    <a class="prev-next prev" href={{ url_for('show_fake_quote', fake_quote_id=prev_fake_quote_id) }}>乱</a>
+    {% else %}
+    <div class="prev disabled">前</div>
+  {% endif %}
+{% endblock %}
+
+{% block header_page_controller_next %}
+    <a class="prev-next next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
+{% endblock %}
+
+{% block content %}
+  <div class="fake">
+    <div class="author-wrapper">
+      <a class="page-controller prev-next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
+
+      <div class="fake-author hide" id="fake_author_profile">
+          <img
+            id="fake_author_profile_image"
+            class="profile"
+            src=""
+            alt="エセ文豪近影"
+            data-profile-image-idx="{{ profile_image_idx }}"
+          />
+      </div>
+      <a class="page-controller prev-next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
+    </div>
+
+    <div class="novel">
+      <p class="fake-quote">{{ fake_quote.text }}</p>
+      <p class="fake-cite">
+        <a href={{ url_for('list_fake_books', fake_author_name=fake_quote.fake_book.fake_author.name) }}>{{ fake_quote.fake_book.fake_author.name }}</a>『{{ fake_quote.fake_book.title }}』
+      </p>
+    </div>
+  </div>
+  <div class="original">
+    <blockquote>
+      <a class="original-quote" href=" {{url_for('list_fake_quotes_by_quote', quote_id=fake_quote.original_quote.id)}}">
+        {{ fake_quote.original_quote.text }}
+      </a>
+
+      <!-- <p id="original-quote">{{ fake_quote.original_quote.text }}</p> -->
+
+      <cite class="original-cite">
+        <a href={{ url_for('list_all_fake_books', author_name=fake_quote.original_quote.book.author.name) }}>
+          {{ fake_quote.original_quote.book.author.name }}
+        </a>
+        <a href={{ url_for('list_quotes_by_book' ,book_id=fake_quote.original_quote.book.id) }}>『{{fake_quote.original_quote.book.title}}』</a>
+      </cite>
+    </blockquote>
+  </div>
+  <div class="sns">
+    <a target="_blank" rel="noopener noreferrer" id="twitter_share" class="sns-icon twitter-icon" href="https://twitter.com/intent/tweet?text={{twitter_share.text}}&hashtags=エセ文豪&url={{twitter_share.url}}">Twitter</a>
+  </div>
+{% endblock %}
+
+{% block script %}
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var profileImageList = [
+    'hayashi.jpg',
+    'fuyume.jpg',
+    'akutako.jpg',
+  ];
+  var imageDirPath = '/static/image/bungo/';
+
+  var profileImageElm = document.getElementById('fake_author_profile_image');
+
+
+  // Listner
+  profileImageElm.addEventListener('click', function(event) {
+    var target = event.target;
+    var newIdx = parseInt(target.dataset.profileImageIdx) + 1;
+    if (newIdx > profileImageList.length-1) {
+      newIdx = 0;
+    }
+    target.dataset.profileImageIdx = newIdx;
+    event.target.src = imageDirPath + profileImageList[newIdx]
+  });
+
+  profileImageElm.addEventListener('load', function(event) {
+    document.getElementById('fake_author_profile').classList.remove('hide');
+  });
+
+  // Set profile image index
+  document.getElementById('twitter_share').addEventListener('click', function(event) {
+    event.target.href += encodeURIComponent(
+      '?profile=' + profileImageElm.dataset.profileImageIdx
+    );
+  });
+
+  var prevNextList = document.getElementsByClassName('prev-next')
+  for (var i = 0; i < prevNextList.length; i++) {
+    prevNextList[i].addEventListener('click', function (event) {
+      event.target.href += ('?profile=' + profileImageElm.dataset.profileImageIdx)
+    });
+  }
+
+  function initProfile() {
+    var initIdx = (
+        isNaN(profileImageElm.dataset.profileImageIdx) || (profileImageElm.dataset.profileImageIdx > profileImageList.length -1)
+      )
+      ? 0
+      : profileImageElm.dataset.profileImageIdx;
+    var initImage = profileImageList[initIdx];
+
+    profileImageElm.dataset.profileImageIdx = initIdx;
+    profileImageElm.src = imageDirPath + initImage;
+  }
+
+  initProfile();
+});
+</script>
+{% endblock %}

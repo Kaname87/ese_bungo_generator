@@ -1,11 +1,14 @@
+#!/usr/bin/python
 import json
 import csv
 import random
 
-# from util import create_tagger, is_target_noun
-# from const import ORIGINAL_NOVEL_FILE, NAME_CHARCTER_LIST_FILE, SIMILAR_NOUN_LIST_FILE, ESE_BUNGO_LIST, TWEET_SOURCE_FILE_NAME
 import util
 import const
+
+import psycopg2
+
+# from config import config
 
 
 def read_json_to_dict(file_path):
@@ -40,21 +43,28 @@ def create_replace_char_idx_list(name):
     return replace_char_idx_list
 
 
-def generate_name(author_name):
+def generate_fake_name(author_name, is_tmp=False):
     '''
     名前の文字を置き換えて、新しい文字を生成
     名前の全ての文字を置き換えるのではなく、一部のみを置き換える。
     全部を置き換えると、元ネタと離れすぎるため
     '''
-    name_char_dict = read_json_to_dict(const.NAME_CHARCTER_LIST_FILE)
+    name_char_list = const.NAME_CHARCTER_LIST_FILE
+    if is_tmp:
+        name_char_list = const.NAME_CHARCTER_LIST_FILE_TMP
+    name_char_dict = read_json_to_dict(name_char_list)
     # 置き換え対象の文字のindexを取得
     replace_char_idx_list = create_replace_char_idx_list(author_name)
 
     replaced_name = ''
     for idx, name_char in enumerate(author_name):
         if idx in replace_char_idx_list:
-            similar_char_list = name_char_dict[name_char]
-            replaced_name += random.choice(similar_char_list)
+            try:
+                similar_char_list = name_char_dict[name_char]
+                replaced_name += random.choice(similar_char_list)
+            except KeyError as e:
+                print(e)
+                replaced_name += name_char
         else:
             # 置き換え対処じゃないのはそのまま追加
             replaced_name += name_char
@@ -123,6 +133,12 @@ def replace_noun_by_similar_word(target_text, similar_noun_list, tagger, used_wo
     return replaced_text, used_word
 
 
+def tmp():
+    tagger = util.create_tagger()
+    source_dict = read_json_to_dict(const.ORIGINAL_NOVEL_FILE_TMP)
+    noun_list_dict = read_json_to_dict(const.SIMILAR_NOUN_LIST_FILE)
+
+
 def random_generate_ese_bungo_one():
     '''
     一つだけrandomで取得する用
@@ -141,7 +157,7 @@ def random_generate_ese_bungo_one():
         quote, noun_list_dict, tagger, used_word)
     generated_title, used_word = replace_noun_by_similar_word(
         title, noun_list_dict, tagger, used_word)
-    generated_name = generate_name(author_name)
+    generated_name = generate_fake_name(author_name)
 
     print(author_name, title, quote)
     print('')
@@ -155,7 +171,7 @@ def random_generate_ese_bungo_one():
     return original, generated
 
 
-def generate_ese_bungo_all(num=1):
+def generate_ese_bungo_all(num=1, is_tmp=True):
     '''
     元データにある文言をnum分だけ変換
     '''
@@ -201,7 +217,7 @@ def generate_ese_bungo_all(num=1):
                     generated_title, used_word = replace_noun_by_similar_word(
                         title, noun_list_dict, tagger, used_word)
 
-                    generated_name = generate_name(author_name)
+                    generated_name = generate_fake_name(author_name)
 
                     print(author_name, title, quote)
                     print('')
@@ -216,6 +232,19 @@ def generate_ese_bungo_all(num=1):
     print('total:', len(results))
 
     return orginal_list, results
+
+def tmp_replace_word(text, noun_list_dict, num=10):
+    tagger = util.create_tagger()
+    result_list = []
+    for _ in range(num):
+        replaced, _ = replace_noun_by_similar_word(
+            text,
+            noun_list_dict,
+            tagger,
+            {} # not used
+        )
+        result_list.append(replaced)
+    return result_list
 
 
 def output_ese_bungo_to_csv(num=1):
@@ -248,10 +277,315 @@ def output_ese_bungo_to_js(num=1):
         f.write(original_list + '\n')
         f.write(ese_bungo_list)
 
+def get_connect():
+    return psycopg2.connect("dbname=ese_bungo user=kaname")
 
-if __name__ == "__main__":
-    # generate_ese_bungo_all()
-    output_ese_bungo_to_js(60)
-    # output_ese_bungo_to_csv(120)
-    #     # output_ese_bungo_to_js(15000)
-    print('Done')
+
+# def select_or_insert_fake_author(cur, author_id, author_name):
+#     cur.execute("SELECT id from fake_authors where author_id = %s and name = %s", (originl_author_id, author_name))
+
+#     if cur.rowcount == 0:
+#         print("Insert new fake_author: {}".format(author_name))
+#         cur.execute("INSERT INTO authors (author_id, name) VALUES (%s, %s) RETURNING id", (originl_author_id, author_name))
+
+#     return cur.fetchone()[0]
+
+# def select_or_insert_quote(cur, book_id, text):
+#     cur.execute("SELECT id from quotes where book_id = %s and text = %s",
+#         (book_id, text))
+
+#     if cur.rowcount == 0:
+#         print("Insert new quote: {}".format(text))
+#         cur.execute("INSERT INTO quotes (book_id, text) VALUES (%s, %s) RETURNING id",
+#             (book_id, text))
+#     # else:
+#     #     print("Already exiest")
+
+#     return cur.fetchone()[0]
+
+def import_data():
+
+    conn = None
+    try:
+        conn = get_connect()
+
+        cur = conn.cursor()
+
+        source_dict = util.read_json_to_dict(const.ORIGINAL_NOVEL_FILE)
+        print(source_dict)
+
+        for author_name, books in source_dict.items():
+            print('Procss: {}'.format(author_name))
+
+            author_id =select_or_insert_author(cur, author_name)
+            for book in books:
+                book_id = select_or_insert_book(cur, author_id, book.get('title'), book.get('url'))
+                for quote_text in book['quotes']:
+                    quote_id = select_or_insert_quote(cur, book_id, quote_text)
+
+        cur.close()
+
+        conn.commit()
+    except (Exception, psycopg2.DatabaseError) as error:
+        conn.rollback()
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+
+def get_all_authors(cur):
+    cur.execute('SELECT id, name FROM authors')
+    return cur.fetchall()
+
+def get_author(cur, author_id):
+    cur.execute('SELECT id, name FROM authors where id = %s', (author_id, ))
+    return cur.fetchall()
+
+def get_all_books(cur):
+    cur.execute('SELECT id, title, url FROM books')
+    return cur.fetchall()
+
+def get_all_books_by_author(cur, author_id):
+    cur.execute('SELECT id, title, url FROM books where author_id = %s', (author_id, ))
+    return cur.fetchall()
+
+def get_all_quotes_by_book(cur, book_id):
+    cur.execute('SELECT id, text FROM quotes where book_id = %s', (book_id, ))
+    return cur.fetchall()
+
+def does_fake_author_exist(cur, author_id, name):
+    cur.execute('SELECT id FROM fake_authors where author_id = %s and name = %s', (author_id, name))
+    return cur.rowcount != 0
+
+def does_fake_book_exist(cur, book_id, title):
+    cur.execute('SELECT id FROM fake_bookes where book_id and text = %s', (title, ))
+    return cur.rowcount != 0
+
+def does_fake_quote_exist(cur, fake_book_id, text):
+    cur.execute('SELECT id FROM fake_quotes where fake_book_id = %s and text = %s', (fake_book_id, text))
+    return cur.rowcount != 0
+
+def select_or_insert_fake_author(cur, original_author_id, name):
+    cur.execute("SELECT id from fake_authors where author_id = %s and name = %s", (original_author_id, name))
+
+    if cur.rowcount == 0:
+        print("Insert new fake_author: {}".format(name))
+        cur.execute("INSERT INTO fake_authors (author_id, name) VALUES (%s, %s) RETURNING id", (original_author_id, name))
+
+    return cur.fetchone()[0]
+
+def select_or_insert_fake_book(cur, original_book_id, fake_author_id, title):
+    cur.execute("SELECT id from fake_books where book_id = %s and fake_author_id = %s and title = %s", (original_book_id, fake_author_id, title))
+
+    if cur.rowcount == 0:
+        print("Insert new fake_book: {}".format(title))
+        cur.execute("INSERT INTO fake_books (book_id, fake_author_id, title) VALUES (%s, %s, %s) RETURNING id", (original_book_id, fake_author_id, title))
+
+    return cur.fetchone()[0]
+
+def select_or_insert_fake_quote(cur, original_quote_id, fake_book_id, text):
+    cur.execute('SELECT id FROM fake_quotes where quote_id = %s and fake_book_id = %s and text = %s',
+        (original_quote_id, fake_book_id, text))
+
+    if cur.rowcount == 0:
+        cur.execute("INSERT INTO fake_quotes (quote_id, fake_book_id, text) VALUES (%s, %s, %s) RETURNING id",
+            (original_quote_id, fake_book_id, text))
+    return cur.fetchone()[0]
+
+def insert_fake_author(cur, original_author_id, name):
+    print("Insert new fake_author: {}".format(name))
+    cur.execute("INSERT INTO fake_authors (author_id, name) VALUES (%s, %s) RETURNING id",
+        (original_author_id, name))
+
+    return cur.fetchone()[0]
+
+def insert_fake_quote(cur, original_quite_id, fake_book_id, text):
+    print("Insert new fake_quote: {}".format(text))
+    cur.execute("INSERT INTO fake_quotes (quote_id, fake_book_id, text) VALUES (%s, %s, %s) RETURNING id",
+        (original_quite_id, fake_book_id, text))
+
+    return cur.fetchone()[0]
+
+def insert_fake_books_and_quotes(results):
+    conn = get_connect()
+    with conn:
+        cur = conn.cursor()
+
+        try:
+            for data in results:
+                if does_fake_quote_exist(cur, data['fake_text']):
+                    # Avoid duplication for fake quote
+                    print('Already exists: {}'.format(data['fake_text']))
+                    continue
+
+                fake_book_id = select_or_insert_fake_book(cur, data['book_id'], data['fake_title'])
+                insert_fake_quote(cur, data['quote_id'], fake_book_id, data['fake_text'])
+
+            conn.commit()
+        except (Exception, psycopg2.DatabaseError) as error:
+            conn.rollback()
+            print(error)
+
+def insert_fake_data(results):
+    conn = get_connect()
+    with conn:
+        cur = conn.cursor()
+
+        try:
+            for data in results:
+                print(data)
+                fake_author_id = select_or_insert_fake_author(cur, data['author_id'], data['fake_name'])
+                fake_book_id = select_or_insert_fake_book(cur, data['book_id'], fake_author_id, data['fake_title'])
+                fake_quote_id = select_or_insert_fake_quote(cur, data['quote_id'], fake_book_id, data['fake_text'])
+                print(fake_author_id, fake_book_id, fake_quote_id)
+
+            conn.commit()
+        except (Exception, psycopg2.DatabaseError) as error:
+            conn.rollback()
+            print('Error')
+            print(error)
+
+def generate_and_insert_fake_authors(num=10):
+    conn = get_connect()
+    with conn:
+        try:
+            cur = conn.cursor()
+
+            # Author
+            authors = get_all_authors(cur)
+            for author in authors:
+                author_id = author[0]
+                author_name = author[1]
+                print(author_name)
+                for _ in range(num):
+                    generated_name = generate_fake_name(author_name)
+                    if does_fake_author_exist(cur, author_id, generated_name):
+                        continue
+                    insert_fake_author(cur, author_id, generated_name)
+
+            conn.commit()
+        except (Exception, psycopg2.DatabaseError) as error:
+            conn.rollback()
+            print(error)
+
+def generate_fake_author_tmp(num=10):
+    source_dict= read_json_to_dict(const.ORIGINAL_NOVEL_SOURCE_TMP)
+
+    for author_name, data in source_dict.items():
+        print('-----------')
+        print(author_name)
+        for _ in range(num):
+            generated_name = generate_fake_name(author_name, is_tmp=True)
+            print(generated_name)
+
+def generate_fake_books_and_quotes_tmp(num=5):
+    tagger = util.create_tagger()
+    noun_list_dict = read_json_to_dict(const.SIMILAR_NOUN_LIST_FILE_TMP)
+
+    source_dict= read_json_to_dict(const.ORIGINAL_NOVEL_SOURCE_TMP)
+    results = []
+
+    for author_name, data in source_dict.items():
+        print('-----------')
+        print(author_name)
+        for book in data['novels']:
+            title = book['title']
+            for quote_text in book['quotes']:
+                for _ in range(num):
+                    # 1つの作品（タイトル＋クオート）の中で、おなじ単語は同じように変換するようにused_wordに保持。
+                    # 『走れメロス』の「メロスは激怒した。」のようにタイトル中の単語が本文中で使われてる時、
+                    # 別々に変換すると面白みが減るため
+                    used_word = {}
+
+                    fake_quote_text, used_word = replace_noun_by_similar_word(
+                        quote_text, noun_list_dict, tagger, used_word)
+
+                    fake_title, used_word = replace_noun_by_similar_word(
+                        title, noun_list_dict, tagger, used_word)
+
+                    generated_data = {
+                        # 'author_id': author_id,
+                        'fake_name': generate_fake_name(author_name, is_tmp=True),
+                        # 'book_id': book_id,
+                        'fake_title' : fake_title,
+                        # 'quote_id': quote_id,
+                        'fake_text': fake_quote_text,
+                    }
+                    results.append(generated_data)
+    return results
+
+def generate_fake_books_and_quotes(num=5, author_id=None):
+
+    '''
+    元データにある文言をnum分だけ変換
+    '''
+    tagger = util.create_tagger()
+    noun_list_dict = read_json_to_dict(const.SIMILAR_NOUN_LIST_FILE)
+
+    results = []
+
+    conn = get_connect()
+    with conn:
+        cur = conn.cursor()
+
+        # Author
+        authors = []
+        if author_id is None:
+            authors = get_all_authors(cur)
+        else:
+            authors = get_author(cur, author_id)
+            print(authors)
+
+        for author in authors:
+            author_id = author[0]
+            author_name = author[1]
+
+            # Book
+            books = get_all_books_by_author(cur, author_id)
+            for book in books:
+
+                book_id = book[0]
+                title = book[1]
+                url = book[2]
+
+                # Quote
+                quotes = get_all_quotes_by_book(cur, book_id)
+                for quote in quotes:
+                    quote_id = quote[0]
+                    quote_text = quote[1]
+
+                    for _ in range(num):
+                        # 1つの作品（タイトル＋クオート）の中で、おなじ単語は同じように変換するようにused_wordに保持。
+                        # 『走れメロス』の「メロスは激怒した。」のようにタイトル中の単語が本文中で使われてる時、
+                        # 別々に変換すると面白みが減るため
+                        used_word = {}
+
+                        fake_quote_text, used_word = replace_noun_by_similar_word(
+                            quote_text, noun_list_dict, tagger, used_word)
+
+                        fake_title, used_word = replace_noun_by_similar_word(
+                            title, noun_list_dict, tagger, used_word)
+
+                        generated_data = {
+                            'author_id': author_id,
+                            'fake_name': generate_fake_name(author_name),
+                            'book_id': book_id,
+                            'fake_title' : fake_title,
+                            'quote_id': quote_id,
+                            'fake_text': fake_quote_text,
+                        }
+                        results.append(generated_data)
+    return results
+
+
+
+
+
+if __name__ == '__main__':
+    # results = generate_fake_books_and_quotes_tmp()
+    # for r in results:
+    #     print(r)
+    results = generate_fake_books_and_quotes(3)
+    insert_fake_data(results)
+    pass

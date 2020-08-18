@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}{{fake_quote.original_quote.text}}{% endblock %}
+
+
+{% block content %}
+  <div class="fake">
+    <div class="author-wrapper">
+      <a class="page-controller prev-next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
+      <div class="fake-author" id="fake_author_profile">
+        <img id="fake_author_profile_image" class="profile" src="/static/image/bungo/hayashi.jpg" alt="エセ文豪近影" data-profile-image-idx="0" />
+      </div>
+      <a class="page-controller prev-next" href={{ url_for('show_random_quote', fake_quote_id=next_fake_quote_id) }}>乱</a>
+    </div>
+
+    <div class="novel">
+      <p class="fake-quote">{{ fake_quote.text }}</p>
+      <p class="fake-cite">
+        <a href={{ url_for('list_fake_books', fake_author_name=fake_quote.fake_book.fake_author.name) }}>{{ fake_quote.fake_book.fake_author.name }}</a>『{{ fake_quote.fake_book.title }}』
+      </p>
+    </div>
+  </div>
+  <div class="original">
+    <blockquote>
+      <a class="original-quote" href=" {{url_for('list_fake_quotes_by_quote', quote_id=fake_quote.original_quote.id)}}">
+        {{ fake_quote.original_quote.text }}
+      </a>
+
+
+      <cite class="original-cite">
+        <a href={{ url_for('list_all_fake_books', author_name=fake_quote.original_quote.book.author.name) }}>
+          {{ fake_quote.original_quote.book.author.name }}
+        </a>
+        <a href={{ url_for('list_quotes_by_book' ,book_id=fake_quote.original_quote.book.id) }}>『{{fake_quote.original_quote.book.title}}』</a>
+      </cite>
+    </blockquote>
+  </div>
+
+  <section style="font-size: 0.8rem; margin: 30px 10%; padding-bottom: 30px; color:#7c4657; border:0.5px solid #7c4657;">
+    <h4>序文</h4>
+      文豪の作品の名文を元に生成された名文集です。<br>
+      文章中に使用された名詞に類似する名詞をランダムに置き換えることで文章を生成しています。
+      <br>
+      <br>
+    単語の類似度の判定はWord2Vecを使用し、モデルには東北大学 乾・岡崎研究室の<a href="http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/" target="_blank" rel="noopener noreferrer">学習済みモデル</a>を使用しています。
+    生成元の作品は全て<a href="https://www.aozora.gr.jp/index.html" target="_blank" rel="noopener noreferrer">青空文庫</a>からの引用です。
+  </section>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

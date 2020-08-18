@@ -1,0 +1,24 @@
+
+html,
+body {
+  font-size: 16px;
+  background-image: url("../public/images/whitepaper.jpg");
+
+
+  color: #000;
+  font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
+        "Hiragino Mincho Pro", "メイリオ";
+}
+body a {
+    color: #000;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
