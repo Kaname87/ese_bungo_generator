@@ -239,12 +239,12 @@ def create_app():
     # def not_found(e):
     #     return render_template('404.html')
 
-    if os.environ['FLASK_ENV'] == 'production':
-        @app.errorhandler(Exception)
-        def handle_exception(e):
-            print(e)
-            app.session.rollback()
-            return render_template('500.html')
+    # if os.environ['FLASK_ENV'] == 'production':
+    #     @app.errorhandler(Exception)
+    #     def handle_exception(e):
+    #         print(e)
+    #         app.session.rollback()
+    #         return render_template('500.html')
 
     @app.teardown_appcontext
     def remove_session(*args, **kwargs):
