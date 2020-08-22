@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { parseRequest } from "./_lib/parser";
 import { getHtml } from "./_lib/template";
-import { writeTempFile } from "./_lib/file";
+// import { writeTempFile } from "./_lib/file";
 import { getScreenshot } from "./_lib/chromium";
 
 const isDev = process.env.NOW_REGION === "dev1";
@@ -13,14 +13,6 @@ export default async function handler(
   try {
     const parsedReq = parseRequest(req);
     const html = getHtml(parsedReq);
-    // View
-    return renderHtml(res, html);
-
-    const { fakeAuthor, fakeBook, fakeQuote } = parsedReq;
-    const fileName = `${fakeAuthor}-${fakeBook}-${fakeQuote}`;
-
-    const filePath = await writeTempFile(fileName, html);
-    const fileUrl = `file://${filePath}`;
 
     const file = await getScreenshot(html, "png", isDev);
 

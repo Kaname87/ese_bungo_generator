@@ -6,8 +6,6 @@ html,body {
   color: #000;
   font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
         "Hiragino Mincho Pro", "メイリオ";
-    max-width: 1200px;
-    min-width: 1200px;
     margin: 0 auto;
 }
 body a {
