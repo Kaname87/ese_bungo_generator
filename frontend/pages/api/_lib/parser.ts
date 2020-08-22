@@ -13,6 +13,7 @@ export function parseRequest(req: IncomingMessage) {
     profileName,
   } = query;
 
+
   if (Array.isArray(author)) {
     throw new Error("Author can't be array");
   }
@@ -34,16 +35,16 @@ export function parseRequest(req: IncomingMessage) {
   if (Array.isArray(profileName)) {
     throw new Error("profileName can't be array");
   }
-
+  console.log(author);
+  console.log(decodeURIComponent(author));
   const parsedReq: ParsedRequest = {
-    author,
-    book,
-    quote,
-    fakeAuthor,
-    fakeBook,
-    fakeQuote,
+    author: decodeURIComponent(author),
+    book: decodeURIComponent(book),
+    quote: decodeURIComponent(quote),
+    fakeAuthor: decodeURIComponent(fakeAuthor),
+    fakeBook: decodeURIComponent(fakeBook),
+    fakeQuote: decodeURIComponent(fakeQuote),
     profileName,
   };
-
   return parsedReq;
 }

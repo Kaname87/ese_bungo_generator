@@ -12,6 +12,7 @@ export default async function handler(
 ) {
   try {
     const parsedReq = parseRequest(req);
+    console.log(parsedReq)
     const html = getHtml(parsedReq);
     // return renderHtml(res, html)
     const file = await getScreenshot(html, "png", isDev);
