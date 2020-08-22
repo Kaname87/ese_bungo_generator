@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 import { API_BASE_URL } from "../config/const"
 export async function getFakeQuote(id) {
     const res = await fetch(`${API_BASE_URL}/fake_quotes/${id}`)
-    //
+
     const {
         fake_quote:fakeQuote,
         fake_book:fakeBook,
