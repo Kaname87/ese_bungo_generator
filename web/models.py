@@ -141,7 +141,7 @@ class FakeAuthor(AppBase):
 #   id UUID DEFAULT uuid_generate_v4(),
 #   book_id UUID NOT NULL,
 #   fake_author_id UUID NOT NULL,
-#   title COLLATE "ja-x-icu" VARCHAR(250) NOT NULL,
+#   title VARCHAR(250) COLLATE "ja-x-icu" NOT NULL,
 #   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 #   PRIMARY KEY(id),
