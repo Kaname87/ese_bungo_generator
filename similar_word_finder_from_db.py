@@ -16,7 +16,7 @@ def read_json_to_dict(file_path):
 # from web.database import SessionLocal, engine
 # from web import models
 def get_connect():
-    return psycopg2.connect("dbname=ese_bungo user=kaname")
+    return psycopg2.connect("dbname=ese_bungo user=postgres")
 
 def find_similar_word(model, word, topn=10):
     similar_word_tuple_list = []

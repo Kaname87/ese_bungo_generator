@@ -5,7 +5,7 @@ import util
 # from config import config
 
 def get_connect():
-    return psycopg2.connect("dbname=ese_bungo user=kaname")
+    return psycopg2.connect("dbname=ese_bungo user=postgres")
 
 
 def select_or_insert_author(cur, author_name, author_name_kana, ):
