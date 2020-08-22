@@ -13,7 +13,7 @@ export default async function handler(
   try {
     const parsedReq = parseRequest(req);
     const html = getHtml(parsedReq);
-
+    // return renderHtml(res, html)
     const file = await getScreenshot(html, "png", isDev);
 
     res.statusCode = 200;
