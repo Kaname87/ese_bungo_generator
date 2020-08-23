@@ -9,10 +9,7 @@ interface Options {
 }
 
 export async function getOptions(isDev: boolean) {
-  console.log('setfont');
-  console.log(__dirname);
-  console.log(`${process.cwd()}`);
-  console.log(`${process.cwd()}/pages/api/_fonts/nishiki.otf`)
+
 
   let isExist = await fs.existsSync(`${process.cwd()}/pages/api/_fonts/nishiki.otf`);
   console.log(isExist)

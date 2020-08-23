@@ -11,6 +11,7 @@ export function parseRequest(req: IncomingMessage) {
     fakeBook,
     fakeQuote,
     profileName,
+    preview,
   } = query;
 
 
@@ -35,6 +36,9 @@ export function parseRequest(req: IncomingMessage) {
   if (Array.isArray(profileName)) {
     throw new Error("profileName can't be array");
   }
+  if (Array.isArray(preview)) {
+    throw new Error("preview can't be array");
+  }
 
   const parsedReq: ParsedRequest = {
     author: author && decodeURIComponent(author),
@@ -44,6 +48,7 @@ export function parseRequest(req: IncomingMessage) {
     fakeBook: fakeBook && decodeURIComponent(fakeBook),
     fakeQuote:fakeQuote && decodeURIComponent(fakeQuote),
     profileName,
+    preview,
   };
   return parsedReq;
 }

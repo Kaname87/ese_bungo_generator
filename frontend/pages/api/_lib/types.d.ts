@@ -6,5 +6,6 @@ interface ParsedRequest {
   fakeBook: string;
   fakeQuote: string;
   profileName: string;
+  preview: string;
 }
 type FileType = "png" | "jpeg";

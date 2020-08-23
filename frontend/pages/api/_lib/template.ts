@@ -2,7 +2,7 @@ function getCss() {
   return `
   @font-face {
     font-family: 錦明朝;
-    src: url("nishiki.otf") format("opentype");
+    src: url("https://esebunko.vercel.app/fonts/nishiki.otf") format("opentype");
 }
 html,body {
   font-size: 16px;
@@ -166,7 +166,7 @@ export function getHtml(parsedReq: ParsedRequest) {
     fakeQuote = "アンジェリカは激高した。",
     profileName = "hayashi",
   } = parsedReq;
-  console.log(author)
+
   return `
   <!DOCTYPE html>
   <html>
