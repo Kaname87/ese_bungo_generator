@@ -1,12 +1,15 @@
 function getCss() {
   return `
+  @font-face {
+    font-family: 錦明朝;
+    src: url("nishiki.otf") format("opentype");
+}
 html,body {
   font-size: 16px;
   background-image: url("https://esebunko.vercel.app/images/whitepaper.jpg");
   color: #000;
-  font-family: "游明朝", YuMincho, "Hiragino Mincho ProN",
-        "Hiragino Mincho Pro", "メイリオ";
-    margin: 0 auto;
+  font-family: 錦明朝;
+  margin: 0 auto;
 }
 body a {
     color: #000;
@@ -163,6 +166,7 @@ export function getHtml(parsedReq: ParsedRequest) {
     fakeQuote = "アンジェリカは激高した。",
     profileName = "hayashi",
   } = parsedReq;
+  console.log(author)
   return `
   <!DOCTYPE html>
   <html>

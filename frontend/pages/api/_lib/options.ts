@@ -1,4 +1,5 @@
-import chrome from "chrome-aws-lambda";
+import chromium from "chrome-aws-lambda";
+import fs from "fs";
 const exePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 interface Options {
@@ -8,6 +9,16 @@ interface Options {
 }
 
 export async function getOptions(isDev: boolean) {
+  console.log('setfont');
+  console.log(__dirname);
+  console.log(`${process.cwd()}`);
+  console.log(`${process.cwd()}/pages/api/_fonts/nishiki.otf`)
+
+  let isExist = await fs.existsSync(`${process.cwd()}/pages/api/_fonts/nishiki.otf`);
+  console.log(isExist)
+  await chromium.font(`${process.cwd()}/pages/api/_fonts/nishiki.otf`);
+
+  console.log(chromium.font)
   let options: Options;
   if (isDev) {
     options = {
@@ -17,9 +28,9 @@ export async function getOptions(isDev: boolean) {
     };
   } else {
     options = {
-      args: chrome.args,
-      executablePath: await chrome.executablePath,
-      headless: chrome.headless,
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     };
   }
   return options;

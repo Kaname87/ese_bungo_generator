@@ -15,6 +15,8 @@ export default async function handler(
     console.log(parsedReq)
     const html = getHtml(parsedReq);
 
+    // return renderHtml(res, html)
+
     const file = await getScreenshot(html, "png", isDev);
 
     res.statusCode = 200;

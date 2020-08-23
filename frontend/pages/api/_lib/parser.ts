@@ -35,15 +35,14 @@ export function parseRequest(req: IncomingMessage) {
   if (Array.isArray(profileName)) {
     throw new Error("profileName can't be array");
   }
-  console.log(author);
-  console.log(decodeURIComponent(author));
+
   const parsedReq: ParsedRequest = {
-    author: decodeURIComponent(author),
-    book: decodeURIComponent(book),
-    quote: decodeURIComponent(quote),
-    fakeAuthor: decodeURIComponent(fakeAuthor),
-    fakeBook: decodeURIComponent(fakeBook),
-    fakeQuote: decodeURIComponent(fakeQuote),
+    author: author && decodeURIComponent(author),
+    book: book && decodeURIComponent(book),
+    quote:quote && decodeURIComponent(quote),
+    fakeAuthor: fakeAuthor && decodeURIComponent(fakeAuthor),
+    fakeBook: fakeBook && decodeURIComponent(fakeBook),
+    fakeQuote:fakeQuote && decodeURIComponent(fakeQuote),
     profileName,
   };
   return parsedReq;
