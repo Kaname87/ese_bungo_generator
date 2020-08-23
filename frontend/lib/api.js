@@ -31,9 +31,9 @@ export async function getRandomFakeQuote(id=null) {
 }
 
 export async function getRandomFakeQuoteIdList(id=null) {
-    let randomApi = `${API_BASE_URL}/fake_quotes/random_id_list`
+    let randomApi = `${API_BASE_URL}/fake_quotes/random_id_list?limit=5`
     if (id) {
-        randomApi += `?fake_quote_id=${id}`
+        randomApi += `&fake_quote_id=${id}`
     }
     const res = await fetch(randomApi)
     return res.json()

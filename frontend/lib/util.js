@@ -32,7 +32,7 @@ export async function getAllChildrenPagePaths(
   const allPathes = await parentIdList.reduce(async (memo, parentId) => {
     await memo;
     const results = await getChildrenPagePaths(parentId, getListFn, countPerPage, fallback);
-    await delay(300);
+    await delay(200);
     console.log((cnt += 1));
     return [...(await memo), results];
   }, []);
@@ -95,7 +95,7 @@ export async function recFetchIdList(fn, offset = 0, totalIdList = []) {
   if (nextOffset < 0) {
     return totalIdList.concat(idList);
   }
-  await delay(300);
+  await delay(200);
   return await recFetchIdList(fn, nextOffset, totalIdList.concat(idList));
 }
 
@@ -107,7 +107,7 @@ export async function recFetchList(fn, id, offset = 0, totalList = []) {
 
     return totalList.concat(resultList);
   }
-  await delay(300);
+  await delay(200);
   return await recFetchList(fn, id, nextOffset, totalList.concat(resultList));
 }
 
